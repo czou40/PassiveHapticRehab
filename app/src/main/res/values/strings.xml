@@ -8,6 +8,7 @@
     <string name="previous">Previous</string>
     <string name="vibrate">Vibrate</string>
     <string name="stop">Stop</string>
+    <string name="toggle">View Gyroscope Data Instead of TouchScreen Sensor Data</string>
 
     <string name="hello_first_fragment">Touch anywhere. Click the button for vibration.</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
