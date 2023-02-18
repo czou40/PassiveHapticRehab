@@ -10,6 +10,6 @@
     <string name="stop">Stop</string>
     <string name="toggle">View Gyroscope Data Instead of TouchScreen Sensor Data</string>
 
-    <string name="hello_first_fragment">Touch anywhere. Click the button for vibration.</string>
+    <string name="hello_first_fragment">Touch blank space and move your finger for screen sensor readings (not all phones support them). Put the phone on a hard surface and click the button for vibration. During vibration, touchscreen sensor readings are disabled. Note: placing your finger at different locations during vibration, even with the same amount of force, can have dramatically different effects on the gyroscope readings. It is recommended that you place your finger at the center of the phone screen to measure the relative pressure your finger applies to the screen during vibration.</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>

@@ -116,11 +116,15 @@ public class FirstFragment extends Fragment implements SensorEventListener {
                 }
                 float pressure = motionEvent.getPressure();
                 float area = motionEvent.getSize();
+                int numFingers = motionEvent.getPointerCount();
                 Log.i("MotionEvent", String.valueOf(motionEvent.getPointerCount()));
                 pressures.add(pressure);
                 screenSensorDataSeries.appendData(new DataPoint(pressures.size(), pressure), false, 10000);
                 graphView.getViewport().setMaxX(pressures.size() * 1.01);
-                binding.textviewFirst.setText(String.format("Pressure: %.4f\nArea: %.4f", pressure, area));
+                binding.textviewFirst.setText(
+                        String.format("Pressure: %.4f\tArea: %.4f\tNum Fingers: %d\n%s",
+                                pressure, area, numFingers,
+                                numFingers > 1 ? "Touchscreen sensor readings are not accurate for multiple fingers.": ""));
 
                 return true;
             }
