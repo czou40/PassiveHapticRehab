@@ -148,7 +148,7 @@ public class FirstFragment extends Fragment implements SensorEventListener {
                     sensorManager.unregisterListener(FirstFragment.this);
                 } else {
                     FirstFragment.this.isVibrating = true;
-                    long[] pattern = {0, 1000};
+                    long[] pattern = {0, 30000};
                     VibrationEffect effect = VibrationEffect.createWaveform(pattern, 1);
                     vibrator.vibrate(effect);
                     binding.buttonFirst.setText(R.string.stop);
@@ -189,10 +189,10 @@ public class FirstFragment extends Fragment implements SensorEventListener {
             gyroscopeX.add(x);
             gyroscopeY.add(y);
             gyroscopeZ.add(z);
-            gyroscopeXDataSeries.appendData(new DataPoint(gyroscopeX.size(), x), false, 10000);
-            gyroscopeYDataSeries.appendData(new DataPoint(gyroscopeY.size(), y), false, 10000);
-            gyroscopeZDataSeries.appendData(new DataPoint(gyroscopeZ.size(), z), false, 10000);
-            graphView2.getViewport().setMinX(Math.max(0, gyroscopeX.size() - 2000));
+            gyroscopeXDataSeries.appendData(new DataPoint(gyroscopeX.size(), x), false, 1000);
+            gyroscopeYDataSeries.appendData(new DataPoint(gyroscopeY.size(), y), false, 1000);
+            gyroscopeZDataSeries.appendData(new DataPoint(gyroscopeZ.size(), z), false, 1000);
+            graphView2.getViewport().setMinX(Math.max(0, gyroscopeX.size() - 1000));
             graphView2.getViewport().setMaxX(gyroscopeX.size());
         }
     }
