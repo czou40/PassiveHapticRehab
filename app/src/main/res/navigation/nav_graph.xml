@@ -7,22 +7,82 @@
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="com.example.phl.FirstFragment"
+        android:name="com.example.phl.activities.workflow.FirstFragment"
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_first">
 
         <action
             android:id="@+id/action_FirstFragment_to_SecondFragment"
             app:destination="@id/SecondFragment" />
+        <action
+            android:id="@+id/action_FirstFragment_to_calibrationInstructionFragment"
+            app:destination="@id/calibrationInstructionFragment" />
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
-        android:name="com.example.phl.SecondFragment"
+        android:name="com.example.phl.activities.workflow.SecondFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_second">
 
         <action
             android:id="@+id/action_SecondFragment_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/CalibrationFragment"
+        android:name="com.example.phl.activities.workflow.CalibrationFragment"
+        android:label="@string/calibration_fragment_label"
+        tools:layout="@layout/fragment_calibration">
+        <action
+            android:id="@+id/action_CalibrationFragment_to_calibrationObjectListFragment"
+            app:destination="@id/calibrationObjectListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/calibrationInstructionFragment"
+        android:name="com.example.phl.activities.workflow.CalibrationInstructionFragment"
+        android:label="fragment_calibration_instruction"
+        tools:layout="@layout/fragment_calibration_instruction" >
+        <action
+            android:id="@+id/action_calibrationInstructionFragment_to_CalibrationFragment"
+            app:destination="@id/CalibrationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/calibrationObjectListFragment"
+        android:name="com.example.phl.activities.workflow.CalibrationObjectListFragment"
+        android:label="fragment_calibration_object_list"
+        tools:layout="@layout/fragment_calibration_object_list" >
+        <action
+            android:id="@+id/action_calibrationObjectListFragment_to_CalibrationInstructionFragment"
+            app:destination="@id/calibrationInstructionFragment" />
+        <action
+            android:id="@+id/action_calibrationObjectListFragment_to_measurementInstructionFragment"
+            app:destination="@id/measurementInstructionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/measurementFragment"
+        android:name="com.example.phl.activities.workflow.MeasurementFragment"
+        android:label="fragment_measurement"
+        tools:layout="@layout/fragment_measurement" >
+        <action
+            android:id="@+id/action_measurementFragment_to_measurementResultFragment"
+            app:destination="@id/measurementResultFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/measurementInstructionFragment"
+        android:name="com.example.phl.activities.workflow.MeasurementInstructionFragment"
+        android:label="fragment_measurement_instruction"
+        tools:layout="@layout/fragment_measurement_instruction" >
+        <action
+            android:id="@+id/action_measurementInstructionFragment_to_measurementFragment"
+            app:destination="@id/measurementFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/measurementResultFragment"
+        android:name="com.example.phl.activities.workflow.MeasurementResultFragment"
+        android:label="fragment_measurement_result"
+        tools:layout="@layout/fragment_measurement_result" >
+        <action
+            android:id="@+id/action_measurementResultFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
     </fragment>
 </navigation>

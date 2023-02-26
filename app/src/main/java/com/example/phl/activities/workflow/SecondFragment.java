@@ -1,5 +1,6 @@
-package com.example.phl;
+package com.example.phl.activities.workflow;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,11 +10,14 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.example.phl.R;
 import com.example.phl.databinding.FragmentSecondBinding;
 
 public class SecondFragment extends Fragment {
 
     private FragmentSecondBinding binding;
+    private Context mContext;
+
 
     @Override
     public View onCreateView(
@@ -36,6 +40,12 @@ public class SecondFragment extends Fragment {
                         .navigate(R.id.action_SecondFragment_to_FirstFragment);
             }
         });
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mContext = context;
     }
 
     @Override

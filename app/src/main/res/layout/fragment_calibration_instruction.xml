@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:text="@string/place_phone"
+        android:layout_height="wrap_content" android:layout_width="match_parent"/>
+
+    <TextView
+        android:id="@+id/textview_do_not_place_object"
+        android:text="@string/do_not_place_object"
+        android:layout_height="wrap_content" android:layout_width="match_parent"/>
+
+    <TextView
+        android:id="@+id/textview_place_object_1"
+        android:text="@string/input_weight"
+        android:layout_height="wrap_content" android:layout_width="match_parent"/>
+
+    <TextView
+        android:text="@string/continue_to_next"
+        android:layout_height="wrap_content" android:layout_width="match_parent"/>
+
+    <TextView
+        android:id="@+id/textview_place_object_2"
+        android:text="@string/place_object"
+        android:layout_height="wrap_content" android:layout_width="match_parent"/>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/phone_will_vibrate_5"/>
+
+
+    <LinearLayout
+        android:id="@+id/weight_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/weight_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="numberDecimal"
+            android:hint="@string/weight"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/g"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/continue_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/vibrate"/>
+</LinearLayout>
+
