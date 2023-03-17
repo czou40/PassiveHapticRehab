@@ -1,4 +1,4 @@
-package com.example.phl.activities.workflow;
+package com.example.phl.activities.spasticity;
 
 import android.content.Context;
 import android.os.Bundle;

@@ -7,6 +7,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,7 +25,7 @@ public class SensorData  implements SensorEventListener  {
 
     private HashMap<String, List<Double>> map = new HashMap<>();
 
-    public static final String[] includedSensors = new String[]{"gyroscopeY", "accelerometerZ"};
+    public static final String[] includedSensors = new String[]{ "accelerometerZ"};
 
 
     private SensorManager sensorManager;
@@ -68,19 +70,66 @@ public class SensorData  implements SensorEventListener  {
     }
 
     public Double[] getDatapoint() {
-        Double[] averages = new Double[includedSensors.length];
+//        Double[] averages = new Double[includedSensors.length];
+//        for (int i = 0; i < includedSensors.length; i++) {
+//            String sensor = includedSensors[i];
+//            int finalI = i;
+//            Objects.requireNonNull(map.get(sensor)).stream().mapToDouble(Double::doubleValue).average().ifPresent(average -> averages[finalI] = average);
+//        }
+        Double[][] squaredDifferences = new Double[includedSensors.length][];
         for (int i = 0; i < includedSensors.length; i++) {
             String sensor = includedSensors[i];
-            int finalI = i;
-            Objects.requireNonNull(map.get(sensor)).stream().mapToDouble(Double::doubleValue).average().ifPresent(average -> averages[finalI] = average);
+            Double[] sensorData = new Double[Objects.requireNonNull(map.get(sensor)).size()];
+            sensorData = Objects.requireNonNull(map.get(sensor)).toArray(sensorData);
+            squaredDifferences[i] = calculateSmoothedAverage(sensorData, 20);
+            for (int j = 0; j < squaredDifferences[i].length; j++) {
+                squaredDifferences[i][j] = squaredDifferences[i][j] - sensorData[j];
+                squaredDifferences[i][j] = squaredDifferences[i][j] * squaredDifferences[i][j];
+            }
         }
+
         Double[] standardDeviation = new Double[includedSensors.length];
         for (int i = 0; i < includedSensors.length; i++) {
-            String sensor = includedSensors[i];
             int finalI = i;
-            Objects.requireNonNull(map.get(sensor)).stream().mapToDouble(Double::doubleValue).map(x -> Math.pow(x - averages[finalI], 2)).average().ifPresent(variance -> standardDeviation[finalI] = Math.sqrt(variance));
+            Arrays.stream(squaredDifferences[i]).mapToDouble(Double::doubleValue).average().ifPresent(average -> standardDeviation[finalI] = Math.sqrt(average));
         }
         return standardDeviation;
+    }
+
+    public static Double[] calculateSmoothedAverage(Double[] values, int windowSize) {
+        Double[] smoothedAverages = new Double[values.length];
+        int n = values.length;
+
+        if (n == 0 || windowSize <= 1) {
+            return values.clone();
+        }
+
+        if (windowSize > n) {
+            windowSize = n;
+        }
+
+        int paddingSizeLeft = (windowSize - 1) / 2;
+        int paddingSizeRight = windowSize - 1 - paddingSizeLeft;
+
+        double windowSum = 0.0;
+        for (int i = 0; i < windowSize; i++) {
+            windowSum += values[i];
+        }
+
+        for (int i = 0; i <= paddingSizeLeft; i++) {
+            smoothedAverages[i] = windowSum / windowSize;
+        }
+
+        for (int i = windowSize; i < n; i++) {
+            windowSum += values[i] - values[i - windowSize];
+            smoothedAverages[i - windowSize + paddingSizeLeft + 1] = windowSum / windowSize;
+        }
+
+        for (int i = n - paddingSizeRight; i < n; i++) {
+            smoothedAverages[i] = windowSum / windowSize;
+        }
+
+        return smoothedAverages;
     }
 
     public void startCollectingData() {

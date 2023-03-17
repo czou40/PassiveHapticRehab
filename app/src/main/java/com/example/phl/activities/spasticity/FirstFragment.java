@@ -1,4 +1,4 @@
-package com.example.phl.activities.workflow;
+package com.example.phl.activities.spasticity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -31,7 +31,6 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -104,8 +103,8 @@ public class FirstFragment extends Fragment implements SensorEventListener {
         // set manual X bounds
         graphView2.getViewport().setXAxisBoundsManual(true);
 //        graphView2.addSeries(gyroscopeXDataSeries);
-        graphView2.addSeries(gyroscopeYDataSeries);
-//        graphView2.addSeries(gyroscopeZDataSeries);
+//        graphView2.addSeries(gyroscopeYDataSeries);
+        graphView2.addSeries(gyroscopeZDataSeries);
 
         graphView3.getViewport().setXAxisBoundsManual(true);
 //        graphView3.addSeries(accelerometerXDataSeries);
@@ -194,6 +193,7 @@ public class FirstFragment extends Fragment implements SensorEventListener {
                     FirstFragment.this.isVibrating = true;
                     long[] pattern = {0, 30000};
                     VibrationEffect effect = VibrationEffect.createWaveform(pattern, 1);
+//                    VibrationEffect effect = VibrationEffect.createOneShot(65535, 255);
                     vibrator.vibrate(effect);
                     binding.buttonFirst.setText(R.string.stop);
                     // Register the gyroscope sensor listener

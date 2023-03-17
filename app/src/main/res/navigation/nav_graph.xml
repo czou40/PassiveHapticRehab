@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="com.example.phl.activities.workflow.FirstFragment"
+        android:name="com.example.phl.activities.spasticity.FirstFragment"
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_first">
 
@@ -20,7 +20,7 @@
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
-        android:name="com.example.phl.activities.workflow.SecondFragment"
+        android:name="com.example.phl.activities.spasticity.SecondFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_second">
 
@@ -30,7 +30,7 @@
     </fragment>
     <fragment
         android:id="@+id/CalibrationFragment"
-        android:name="com.example.phl.activities.workflow.CalibrationFragment"
+        android:name="com.example.phl.activities.spasticity.CalibrationFragment"
         android:label="@string/calibration_fragment_label"
         tools:layout="@layout/fragment_calibration">
         <action
@@ -39,7 +39,7 @@
     </fragment>
     <fragment
         android:id="@+id/calibrationInstructionFragment"
-        android:name="com.example.phl.activities.workflow.CalibrationInstructionFragment"
+        android:name="com.example.phl.activities.spasticity.CalibrationInstructionFragment"
         android:label="fragment_calibration_instruction"
         tools:layout="@layout/fragment_calibration_instruction" >
         <action
@@ -48,7 +48,7 @@
     </fragment>
     <fragment
         android:id="@+id/calibrationObjectListFragment"
-        android:name="com.example.phl.activities.workflow.CalibrationObjectListFragment"
+        android:name="com.example.phl.activities.spasticity.CalibrationObjectListFragment"
         android:label="fragment_calibration_object_list"
         tools:layout="@layout/fragment_calibration_object_list" >
         <action
@@ -60,7 +60,7 @@
     </fragment>
     <fragment
         android:id="@+id/measurementFragment"
-        android:name="com.example.phl.activities.workflow.MeasurementFragment"
+        android:name="com.example.phl.activities.spasticity.MeasurementFragment"
         android:label="fragment_measurement"
         tools:layout="@layout/fragment_measurement" >
         <action
@@ -69,7 +69,7 @@
     </fragment>
     <fragment
         android:id="@+id/measurementInstructionFragment"
-        android:name="com.example.phl.activities.workflow.MeasurementInstructionFragment"
+        android:name="com.example.phl.activities.spasticity.MeasurementInstructionFragment"
         android:label="fragment_measurement_instruction"
         tools:layout="@layout/fragment_measurement_instruction" >
         <action
@@ -78,7 +78,7 @@
     </fragment>
     <fragment
         android:id="@+id/measurementResultFragment"
-        android:name="com.example.phl.activities.workflow.MeasurementResultFragment"
+        android:name="com.example.phl.activities.spasticity.MeasurementResultFragment"
         android:label="fragment_measurement_result"
         tools:layout="@layout/fragment_measurement_result" >
         <action

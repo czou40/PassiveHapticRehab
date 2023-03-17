@@ -1,4 +1,4 @@
-package com.example.phl.activities.workflow;
+package com.example.phl.activities.spasticity;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import com.example.phl.R;
 import com.example.phl.data.Dataset;
 import com.example.phl.databinding.FragmentCalibrationInstructionBinding;
+
 
 /**
  * A simple {@link Fragment} subclass.

@@ -8,12 +8,14 @@
     <string name="next">Next</string>
     <string name="calibrate">Calibrate</string>
     <string name="start_workflow">Start Workflow</string>
+    <string name="spasticity_test">Spasticity Test</string>
+    <string name="tactile_sensation_test">Tactile Sensation Test</string>
     <string name="previous">Previous</string>
     <string name="vibrate">Vibrate</string>
     <string name="calibrate_with_another_object">Calibrate with another object</string>
     <string name="stop">Stop</string>
     <string name="toggle">View Gyroscope Data Instead of TouchScreen Sensor Data</string>
-
+    <string name="tactile_sensation_test_description">Please hold the phone using the affected hand. During the assessment. Use the other hand to click on the button to continue. The test aims to measure the ability to feel the vibration of the phone. The phone will vibrate with different intensities. You will be asked to click on the button to indicate whether you felt the vibration or not. Each vibration is about 5 seconds.</string>
     <string name="hello_first_fragment">Touch blank space and move your finger for screen sensor readings (not all phones support them). Put the phone on a hard surface and click the button for vibration. During vibration, touchscreen sensor readings are disabled. Note: placing your finger at different locations during vibration, even with the same amount of force, can have dramatically different effects on the gyroscope readings. It is recommended that you place your finger at the center of the phone screen to measure the relative pressure your finger applies to the screen during vibration.</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <!-- TODO: Remove or change this placeholder text -->
@@ -37,7 +39,13 @@
     <string name="phone_will_vibrate_5">The phone will vibrate for 5 seconds.</string>
     <string name="phone_will_vibrate_20">The phone will vibrate for 20 seconds.</string>
     <string name="counting_down">Counting down</string>
-    <string name="place_hand">With the help of the other hand, unfold your bad hand. Place your index finger, middle finger, ring finger, and pinky finger of the bad hand on the center of the phone screen like what is shown in the picture below. The palm of the bad hand must stay on the table. Then, use the "good" hand to click on the "vibrate" button. When the phone starts vibrating, try the best to lift the fingers (without help from the other hand) so that they do not touch the screen.</string>
+    <string name="place_hand">With the help of the other hand, unfold your affected hand. Place your index finger, middle finger, ring finger, and pinky finger of the affected hand on the center of the phone screen like what is shown in the picture below. The palm of the affected hand must stay on the table. Then, use the unaffected hand to click on the "vibrate" button. When the phone starts vibrating, try the best to lift the fingers (without help from the other hand) so that they do not touch the screen.</string>
     <string name="force">Force (N):</string>
     <string name="total_data_points_needed">Total data points needed: %d</string>
+    <string name="i_felt_the_vibration">I felt the vibration</string>
+    <string name="i_did_not_feel_the_vibration">I did not feel the vibration</string>
+    <string name="i_am_not_sure">I am not sure</string>
+    <string name="start_spasticity_test">Start Spasticity Test</string>
+    <string name="start_tactile_sensation_test">Start Tactile Sensation Test</string>
+    <string name="view_my_progress">View My Progress</string>
 </resources>

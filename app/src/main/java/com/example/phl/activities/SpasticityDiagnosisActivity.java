@@ -1,30 +1,25 @@
 package com.example.phl.activities;
 
 import android.content.Context;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.util.Log;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.navigation.ui.AppBarConfiguration;
 
 import com.example.phl.data.Dataset;
 import com.example.phl.data.SensorData;
-import com.example.phl.databinding.ActivityDiagnosisWorkflowBinding;
+import com.example.phl.databinding.ActivitySpasticityDiagnosisBinding;
+import com.example.phl.databinding.ActivitySpasticityDiagnosisBinding;
 
-import java.util.LinkedList;
-import java.util.List;
-
-public class DiagnosisWorkflowActivity extends AppCompatActivity{
+public class SpasticityDiagnosisActivity extends AppCompatActivity{
 
     private AppBarConfiguration appBarConfiguration;
-    private ActivityDiagnosisWorkflowBinding binding;
+    private ActivitySpasticityDiagnosisBinding binding;
 
 //    List<Float> pressures = new LinkedList<>();
 
@@ -40,7 +35,7 @@ public class DiagnosisWorkflowActivity extends AppCompatActivity{
 
         vibrator = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
 
-        binding = ActivityDiagnosisWorkflowBinding.inflate(getLayoutInflater());
+        binding = ActivitySpasticityDiagnosisBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         Dataset.initializeInstance(SensorData.includedSensors.length);
@@ -82,6 +77,24 @@ public class DiagnosisWorkflowActivity extends AppCompatActivity{
 
     @Override
     public void onBackPressed() {
-
+        // display a warning dialog, then navigate to main activity
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Warning");
+        builder.setMessage("Are you sure you want to exit?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // navigate to main activity
+                finish();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // do nothing
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

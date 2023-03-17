@@ -1,4 +1,4 @@
-package com.example.phl.activities.workflow;
+package com.example.phl.activities.spasticity;
 
 import android.content.Context;
 import android.hardware.SensorManager;
@@ -15,21 +15,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.phl.R;
-import com.example.phl.activities.DiagnosisWorkflowActivity;
+import com.example.phl.activities.SpasticityDiagnosisActivity;
 import com.example.phl.data.Dataset;
 import com.example.phl.data.SensorData;
-import com.example.phl.databinding.FragmentCalibrationBinding;
-import com.example.phl.databinding.FragmentSecondBinding;
-import com.example.phl.utils.UnitConverter;
-
-import java.util.Objects;
+import com.example.phl.databinding.FragmentMeasurementBinding;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CalibrationFragment extends Fragment {
+public class MeasurementFragment extends Fragment {
     private  Context mContext;
-    private FragmentCalibrationBinding binding;
+    private FragmentMeasurementBinding binding;
 
     CountDownTimer countDownTimer1;
     CountDownTimer countDownTimer2;
@@ -37,36 +33,47 @@ public class CalibrationFragment extends Fragment {
 
     SensorData sensorData;
 
-    double weight;
+    double result;
 
-    boolean isGrams = true;
-
-
-    public CalibrationFragment() {
+    public MeasurementFragment() {
         // Required empty public constructor
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null && getArguments().containsKey("weight")) {
-            weight = getArguments().getDouble("weight");
-        } else {
-            throw new IllegalArgumentException("Must pass weight");
+//        if (getArguments() != null && getArguments().containsKey("weight")) {
+//            weight = getArguments().getDouble("weight");
+//        } else {
+//            throw new IllegalArgumentException("Must pass weight");
+//        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        countDownTimer1.cancel();
+        countDownTimer2.cancel();
+        countDownTimer3.cancel();
+        ((SpasticityDiagnosisActivity) requireActivity()).stopVibration();
+        if (sensorData != null) {
+            sensorData.stopCollectingData();
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentCalibrationBinding.inflate(inflater, container, false);
+        binding = FragmentMeasurementBinding.inflate(inflater, container, false);
         binding.continueButton.setVisibility(View.INVISIBLE);
         binding.textviewCountingDown.setText(R.string.counting_down);
         binding.continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavHostFragment.findNavController(CalibrationFragment.this)
-                        .navigate(R.id.action_CalibrationFragment_to_calibrationObjectListFragment);
+                Bundle bundle = new Bundle();
+                bundle.putDouble("result", result);
+                NavHostFragment.findNavController(MeasurementFragment.this)
+                        .navigate(R.id.action_measurementFragment_to_measurementResultFragment, bundle);
             }
         });
 
@@ -77,7 +84,7 @@ public class CalibrationFragment extends Fragment {
                 );
             }
             public void onFinish() {
-                ((DiagnosisWorkflowActivity) requireActivity()).startVibration();
+                ((SpasticityDiagnosisActivity) requireActivity()).startVibration();
                 binding.textviewTimer.setText("");
                 countDownTimer2.start();
             }
@@ -93,7 +100,7 @@ public class CalibrationFragment extends Fragment {
             }
         };
 
-        countDownTimer3 = new CountDownTimer(5000, 100) {
+        countDownTimer3 = new CountDownTimer(20000, 100) {
             public void onTick(long millisUntilFinished) {
                 binding.textviewTimer.setText(
                         String.valueOf(millisUntilFinished / 1000)
@@ -102,8 +109,8 @@ public class CalibrationFragment extends Fragment {
 
             public void onFinish() {
                 sensorData.stopCollectingData();
-                Dataset.getInstance().add(sensorData.getDatapoint(), isGrams ? UnitConverter.gramsToNewtons(weight) : UnitConverter.ouncesToNewtons(weight));
-                ((DiagnosisWorkflowActivity) requireActivity()).stopVibration();
+                result = Dataset.getInstance().predict(sensorData.getDatapoint());
+                ((SpasticityDiagnosisActivity) requireActivity()).stopVibration();
                 binding.textviewCountingDown.setText(R.string.continue_to_next);
                 binding.continueButton.setVisibility(View.VISIBLE);
                 binding.textviewTimer.setText("");
