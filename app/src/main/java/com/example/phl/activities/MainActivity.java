@@ -17,8 +17,6 @@ public class MainActivity extends AppCompatActivity {
         Button button1 = findViewById(R.id.button1);
         Button button2 = findViewById(R.id.button2);
         Button button3 = findViewById(R.id.button3);
-        // button 1: navigate to spacitity diagnosis
-        // button 2: navigate to tactile sensation
         button1.setOnClickListener(v -> {
             // navigate to spasticity diagnosis
             Intent intent = new Intent(this, SpasticityDiagnosisActivity.class);

@@ -61,13 +61,13 @@
             android:text="@string/next" />
 
         <Button
-            android:id="@+id/button_workflow"
+            android:id="@+id/button_workflow_legacy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/start_workflow_legacy" />
 
         <Button
-            android:id="@+id/button_workflow_legacy"
+            android:id="@+id/button_workflow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/start_workflow_v2" />

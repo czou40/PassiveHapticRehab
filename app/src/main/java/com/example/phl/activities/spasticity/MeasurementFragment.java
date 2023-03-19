@@ -16,9 +16,12 @@ import android.view.ViewGroup;
 
 import com.example.phl.R;
 import com.example.phl.activities.SpasticityDiagnosisActivity;
-import com.example.phl.data.spasticity.Dataset;
-import com.example.phl.data.spasticity.SensorData;
+import com.example.phl.data.spasticity.SpasticityOperations;
+import com.example.phl.data.spasticity.data_collection.RawDataset;
+import com.example.phl.data.spasticity.data_collection.SensorData;
 import com.example.phl.databinding.FragmentMeasurementBinding;
+
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,6 +29,8 @@ import com.example.phl.databinding.FragmentMeasurementBinding;
 public class MeasurementFragment extends Fragment {
     private  Context mContext;
     private FragmentMeasurementBinding binding;
+
+    private boolean isOnLegacyWorkflow;
 
     CountDownTimer countDownTimer1;
     CountDownTimer countDownTimer2;
@@ -42,6 +47,7 @@ public class MeasurementFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.isOnLegacyWorkflow = ((SpasticityDiagnosisActivity) requireActivity()).isOnLegacyWorkflow();
 //        if (getArguments() != null && getArguments().containsKey("weight")) {
 //            weight = getArguments().getDouble("weight");
 //        } else {
@@ -109,7 +115,13 @@ public class MeasurementFragment extends Fragment {
 
             public void onFinish() {
                 sensorData.stopCollectingData();
-                result = Dataset.getInstance().predict(sensorData.getDatapoint());
+                if (MeasurementFragment.this.isOnLegacyWorkflow) {
+                    result = RawDataset.getInstance().predict(sensorData.getDatapoint());
+                } else {
+                    RawDataset.getInstance().add(sensorData.getDatapoint(), 0.0);
+                    result = RawDataset.getInstance().getScore();
+                    SpasticityOperations.insertData(getContext(), new Date(), result);
+                }
                 ((SpasticityDiagnosisActivity) requireActivity()).stopVibration();
                 binding.textviewCountingDown.setText(R.string.continue_to_next);
                 binding.continueButton.setVisibility(View.VISIBLE);

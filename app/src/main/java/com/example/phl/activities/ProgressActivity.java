@@ -6,12 +6,13 @@ import android.os.Bundle;
 
 import com.example.phl.R;
 
-import android.util.Pair;
 import android.widget.Toast;
 
-import com.example.phl.data.AppDatabase;
+import com.example.phl.data.ProgressData;
 import com.example.phl.data.sensation.TactileSensation;
 import com.example.phl.data.sensation.TactileSensationOperations;
+import com.example.phl.data.spasticity.Spasticity;
+import com.example.phl.data.spasticity.SpasticityOperations;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -22,7 +23,6 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -49,7 +49,7 @@ public class ProgressActivity extends AppCompatActivity {
                 if (position == TACTILE_SENSATION_TAB_INDEX) {
                     loadTactileSensationData();
                 } else if (position == SPASTICITY_TAB_INDEX) {
-                    lineChart.clear();
+                    loadSpasticityData();
                 }
             }
 
@@ -67,26 +67,41 @@ public class ProgressActivity extends AppCompatActivity {
     }
 
     private void loadTactileSensationData() {
-        TactileSensationOperations.loadData(this, new AppDatabase.OnDataLoadedListener() {
+        TactileSensationOperations.loadData(this, new TactileSensationOperations.OnDataLoadedListener() {
             @Override
             public void onDataLoaded(List<TactileSensation> tactileSensations) {
                 if (tactileSensations != null && tactileSensations.size() > 0) {
                     configureLineChart(tactileSensations);
+                } else {
+                    ProgressData test = new TactileSensation();
+                    Toast.makeText(ProgressActivity.this, "No data found", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void loadSpasticityData() {
+        SpasticityOperations.loadData(this, new SpasticityOperations.OnDataLoadedListener() {
+            @Override
+            public void onDataLoaded(List<Spasticity> spasticities ) {
+                if (spasticities != null && spasticities.size() > 0) {
+                    configureLineChart(spasticities);
                 } else {
                     Toast.makeText(ProgressActivity.this, "No data found", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
-    private void configureLineChart(List<TactileSensation> data) {
+
+    private void configureLineChart(List<? extends ProgressData> data) {
         List<Entry> entries = new ArrayList<>();
 
         for (int i = 0; i < data.size(); i++) {
-            TactileSensation datapoint = data.get(i);
-            entries.add(new Entry(i, datapoint.getValue()));
+            ProgressData datapoint = data.get(i);
+            entries.add(new Entry(i, datapoint.getValue().floatValue()));
         }
 
-        LineDataSet dataSet = new LineDataSet(entries, "Tactile Sensation");
+        LineDataSet dataSet = new LineDataSet(entries, "Label");
         LineData lineData = new LineData(dataSet);
         lineChart.setData(lineData);
 
@@ -94,20 +109,29 @@ public class ProgressActivity extends AppCompatActivity {
         xAxis.setValueFormatter(new DateValueFormatter(data));
         xAxis.setLabelCount(data.size(), true);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+        // Set the minimum range of the x-axis to at least 2 integers
+        xAxis.setAxisMinimum(0f);
+        xAxis.setAxisMaximum( data.size()-1);
+
         lineChart.getAxisRight().setEnabled(false);
         lineChart.getDescription().setEnabled(false);
         lineChart.getLegend().setEnabled(false);
 
-//        lineChart.animateX(100);
+        // Enable zooming
+        lineChart.setPinchZoom(true);
+        lineChart.setDoubleTapToZoomEnabled(true);
+
+        lineChart.animateX(100);
 
         lineChart.invalidate();
     }
 
     private static class DateValueFormatter extends ValueFormatter {
         private final SimpleDateFormat dateFormat;
-        List<TactileSensation> data;
+        List<? extends ProgressData> data;
 
-        public DateValueFormatter(List<TactileSensation> data) {
+        public DateValueFormatter(List<? extends ProgressData> data) {
             dateFormat = new SimpleDateFormat("MMM dd", Locale.getDefault());
             this.data = data;
         }

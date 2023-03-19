@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.phl.R;
+import com.example.phl.activities.SpasticityDiagnosisActivity;
 import com.example.phl.databinding.FragmentMeasurementInstructionBinding;
 
 public class MeasurementInstructionFragment extends Fragment {
@@ -22,6 +23,9 @@ public class MeasurementInstructionFragment extends Fragment {
 //    // TODO: Rename and change types of parameters
 //    private String mParam1;
 //    private String mParam2;
+
+    private boolean isOnLegacyWorkflow;
+
 
     private FragmentMeasurementInstructionBinding binding;
     public MeasurementInstructionFragment() {
@@ -49,6 +53,7 @@ public class MeasurementInstructionFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.isOnLegacyWorkflow = ((SpasticityDiagnosisActivity) requireActivity()).isOnLegacyWorkflow();
 //        if (getArguments() != null) {
 //            mParam1 = getArguments().getString(ARG_PARAM1);
 //            mParam2 = getArguments().getString(ARG_PARAM2);
@@ -60,6 +65,15 @@ public class MeasurementInstructionFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentMeasurementInstructionBinding.inflate(inflater, container, false);
+
+        if(this.isOnLegacyWorkflow) {
+            binding.legacy.setVisibility(View.VISIBLE);
+            binding.newWorkflow.setVisibility(View.GONE);
+        } else {
+            binding.legacy.setVisibility(View.GONE);
+            binding.newWorkflow.setVisibility(View.VISIBLE);
+        }
+
         binding.continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

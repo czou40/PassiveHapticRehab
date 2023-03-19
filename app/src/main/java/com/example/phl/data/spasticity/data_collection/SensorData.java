@@ -1,4 +1,4 @@
-package com.example.phl.data.spasticity;
+package com.example.phl.data.spasticity.data_collection;
 
 import android.content.Context;
 import android.hardware.Sensor;

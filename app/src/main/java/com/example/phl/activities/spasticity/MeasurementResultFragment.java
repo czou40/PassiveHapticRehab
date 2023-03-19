@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.phl.R;
+import com.example.phl.activities.SpasticityDiagnosisActivity;
 import com.example.phl.databinding.FragmentMeasurementResultBinding;
 
 public class MeasurementResultFragment extends Fragment {
@@ -25,6 +26,8 @@ public class MeasurementResultFragment extends Fragment {
 
     private double result;
     private FragmentMeasurementResultBinding binding;
+
+    private boolean isOnLegacyWorkflow;
 
 
     public MeasurementResultFragment() {
@@ -57,6 +60,8 @@ public class MeasurementResultFragment extends Fragment {
         } else {
             throw new IllegalArgumentException("MeasurementResultFragment must be created with a result");
         }
+        this.isOnLegacyWorkflow = ((SpasticityDiagnosisActivity) requireActivity()).isOnLegacyWorkflow();
+
     }
 
     @Override
@@ -69,6 +74,13 @@ public class MeasurementResultFragment extends Fragment {
             NavHostFragment.findNavController(MeasurementResultFragment.this)
                     .navigate(R.id.action_measurementResultFragment_to_FirstFragment);
         });
+        if(this.isOnLegacyWorkflow) {
+            binding.legacy.setVisibility(View.VISIBLE);
+            binding.newWorkflow.setVisibility(View.GONE);
+        } else {
+            binding.legacy.setVisibility(View.GONE);
+            binding.newWorkflow.setVisibility(View.VISIBLE);
+        }
         return binding.getRoot();
     }
 }

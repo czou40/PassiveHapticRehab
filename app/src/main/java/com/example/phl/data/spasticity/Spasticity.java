@@ -1,12 +1,12 @@
-package com.example.phl.data.sensation;
+package com.example.phl.data.spasticity;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import java.util.Date;
 
-@Entity(tableName = "tactile_sensation")
-public class TactileSensation implements com.example.phl.data.ProgressData {
+@Entity(tableName = "spasticity")
+public class Spasticity implements com.example.phl.data.ProgressData {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -15,7 +15,7 @@ public class TactileSensation implements com.example.phl.data.ProgressData {
     private Date date;
 
     @ColumnInfo(name = "value")
-    private Integer value;
+    private Double value;
 
     // Getters and setters
 
@@ -35,16 +35,16 @@ public class TactileSensation implements com.example.phl.data.ProgressData {
         this.date = date;
     }
 
-    public Integer getValue() {
+    public Double getValue() {
         return value;
     }
 
     @Override
     public void setValue(Number value) {
-        this.value = value.intValue();
+        this.value = value.doubleValue();
     }
 
-    public void setValue(Integer value) {
+    public void setValue(Double value) {
         this.value = value;
     }
 }

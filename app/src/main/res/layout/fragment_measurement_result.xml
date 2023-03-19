@@ -19,10 +19,19 @@
         app:layout_constraintTop_toTopOf="parent" >
 
         <TextView
+            android:id="@+id/legacy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="48sp"
             android:text="@string/force"
+            />
+
+        <TextView
+            android:id="@+id/new_workflow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="32sp"
+            android:text="Score (Lower is better):"
             />
 
         <TextView

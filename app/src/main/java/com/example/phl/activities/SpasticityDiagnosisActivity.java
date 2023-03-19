@@ -11,8 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.navigation.ui.AppBarConfiguration;
 
-import com.example.phl.data.spasticity.Dataset;
-import com.example.phl.data.spasticity.SensorData;
+import com.example.phl.data.spasticity.data_collection.RawDataset;
+import com.example.phl.data.spasticity.data_collection.SensorData;
 import com.example.phl.databinding.ActivitySpasticityDiagnosisBinding;
 
 public class SpasticityDiagnosisActivity extends AppCompatActivity{
@@ -25,6 +25,7 @@ public class SpasticityDiagnosisActivity extends AppCompatActivity{
     private Vibrator vibrator;
     private boolean isVibrationOn = false;
 
+    private boolean isOnLegacyWorkflow = false;
 
 
     @Override
@@ -37,7 +38,7 @@ public class SpasticityDiagnosisActivity extends AppCompatActivity{
         binding = ActivitySpasticityDiagnosisBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        Dataset.initializeInstance(SensorData.includedSensors.length);
+        RawDataset.initializeInstance(SensorData.includedSensors.length);
 
 
 //        setSupportActionBar(binding.toolbar);
@@ -95,5 +96,13 @@ public class SpasticityDiagnosisActivity extends AppCompatActivity{
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    public boolean isOnLegacyWorkflow() {
+        return isOnLegacyWorkflow;
+    }
+
+    public void setOnLegacyWorkflow(boolean onLegacyWorkflow) {
+        isOnLegacyWorkflow = onLegacyWorkflow;
     }
 }

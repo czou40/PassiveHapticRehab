@@ -18,7 +18,7 @@ public class TactileSensationOperations {
         new InsertTask(db).execute(tactileSensation);
     }
 
-    public static void loadData(Context context, AppDatabase.OnDataLoadedListener listener) {
+    public static void loadData(Context context, TactileSensationOperations.OnDataLoadedListener listener) {
         AppDatabase db = AppDatabase.getInstance(context);
         new LoadDataTask(db, listener).execute();
     }
@@ -40,10 +40,10 @@ public class TactileSensationOperations {
 
     private static class LoadDataTask extends AsyncTask<Void, Void, List<TactileSensation>> {
 
-        private AppDatabase.OnDataLoadedListener listener;
+        private TactileSensationOperations.OnDataLoadedListener listener;
         private AppDatabase db;
 
-        public LoadDataTask(AppDatabase db, AppDatabase.OnDataLoadedListener listener) {
+        public LoadDataTask(AppDatabase db, TactileSensationOperations.OnDataLoadedListener listener) {
             this.db = db;
             this.listener = listener;
         }
@@ -60,5 +60,9 @@ public class TactileSensationOperations {
                 listener.onDataLoaded(tactileSensations);
             }
         }
+    }
+
+    public static interface OnDataLoadedListener {
+        void onDataLoaded(List<TactileSensation> tactileSensations);
     }
 }

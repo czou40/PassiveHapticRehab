@@ -1,65 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <TextView
-        android:text="@string/place_phone"
-        android:layout_height="wrap_content" android:layout_width="match_parent"/>
-
-    <TextView
-        android:id="@+id/textview_do_not_place_object"
-        android:text="@string/do_not_place_object"
-        android:layout_height="wrap_content" android:layout_width="match_parent"/>
-
-    <TextView
-        android:id="@+id/textview_place_object_1"
-        android:text="@string/input_weight"
-        android:layout_height="wrap_content" android:layout_width="match_parent"/>
-
-    <TextView
-        android:text="@string/continue_to_next"
-        android:layout_height="wrap_content" android:layout_width="match_parent"/>
-
-    <TextView
-        android:id="@+id/textview_place_object_2"
-        android:text="@string/place_object"
-        android:layout_height="wrap_content" android:layout_width="match_parent"/>
-
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/phone_will_vibrate_5"/>
-
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/weight_input_layout"
+        android:id="@+id/legacy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <EditText
-            android:id="@+id/weight_input"
-            android:layout_width="0dp"
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:inputType="numberDecimal"
-            android:hint="@string/weight"/>
+            android:text="@string/place_phone" />
 
+        <TextView
+            android:id="@+id/textview_do_not_place_object"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/do_not_place_object" />
+
+        <TextView
+            android:id="@+id/textview_place_object_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/input_weight" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/continue_to_next" />
+
+        <TextView
+            android:id="@+id/textview_place_object_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/place_object" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/phone_will_vibrate_5" />
+
+
+        <LinearLayout
+            android:id="@+id/weight_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/weight_input"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="@string/weight"
+                android:inputType="numberDecimal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/g" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/new_workflow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/legacy">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/g"/>
+            android:text="Place the phone on the unaffected hand as shown in the picture below."/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/do_not_place_object"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/do_not_press_or_squeeze"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/continue_to_next"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/phone_will_vibrate_5"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="256dp"
+            android:src="@drawable/instruction_1"
+            android:layout_weight="30"/>
     </LinearLayout>
 
     <Button
         android:id="@+id/continue_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/vibrate"/>
-</LinearLayout>
+        android:text="@string/vibrate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/new_workflow" />
+</androidx.constraintlayout.widget.ConstraintLayout>
 

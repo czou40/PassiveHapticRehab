@@ -52,4 +52,5 @@
     <string name="tactile_sensation">Tactile Sensation</string>
     <string name="spasticity">Spasticity</string>
     <string name="start_workflow_legacy">Start Workflow (Legacy)</string>
+    <string name="do_not_press_or_squeeze">Do not press or squeeze the phone.</string>
 </resources>

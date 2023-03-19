@@ -16,8 +16,8 @@ import android.view.ViewGroup;
 
 import com.example.phl.R;
 import com.example.phl.activities.SpasticityDiagnosisActivity;
-import com.example.phl.data.spasticity.Dataset;
-import com.example.phl.data.spasticity.SensorData;
+import com.example.phl.data.spasticity.data_collection.RawDataset;
+import com.example.phl.data.spasticity.data_collection.SensorData;
 import com.example.phl.databinding.FragmentCalibrationBinding;
 import com.example.phl.utils.UnitConverter;
 
@@ -37,6 +37,8 @@ public class CalibrationFragment extends Fragment {
     double weight;
 
     boolean isGrams = true;
+
+    private boolean isOnLegacyWorkflow;
 
 
     public CalibrationFragment() {
@@ -63,6 +65,7 @@ public class CalibrationFragment extends Fragment {
         } else {
             throw new IllegalArgumentException("Must pass weight");
         }
+        this.isOnLegacyWorkflow = ((SpasticityDiagnosisActivity) requireActivity()).isOnLegacyWorkflow();
     }
 
     @Override
@@ -74,8 +77,13 @@ public class CalibrationFragment extends Fragment {
         binding.continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavHostFragment.findNavController(CalibrationFragment.this)
-                        .navigate(R.id.action_CalibrationFragment_to_calibrationObjectListFragment);
+                if (CalibrationFragment.this.isOnLegacyWorkflow) {
+                    NavHostFragment.findNavController(CalibrationFragment.this)
+                            .navigate(R.id.action_CalibrationFragment_to_calibrationObjectListFragment);
+                } else {
+                    NavHostFragment.findNavController(CalibrationFragment.this)
+                            .navigate(R.id.nav1);
+                }
             }
         });
 
@@ -111,7 +119,7 @@ public class CalibrationFragment extends Fragment {
 
             public void onFinish() {
                 sensorData.stopCollectingData();
-                Dataset.getInstance().add(sensorData.getDatapoint(), isGrams ? UnitConverter.gramsToNewtons(weight) : UnitConverter.ouncesToNewtons(weight));
+                RawDataset.getInstance().add(sensorData.getDatapoint(), isGrams ? UnitConverter.gramsToNewtons(weight) : UnitConverter.ouncesToNewtons(weight));
                 ((SpasticityDiagnosisActivity) requireActivity()).stopVibration();
                 binding.textviewCountingDown.setText(R.string.continue_to_next);
                 binding.continueButton.setVisibility(View.VISIBLE);

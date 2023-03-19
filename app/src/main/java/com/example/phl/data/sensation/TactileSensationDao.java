@@ -20,7 +20,7 @@ public interface TactileSensationDao {
     TactileSensation getTactileSensationById(int id);
 
     @Query("UPDATE tactile_sensation SET value = :value WHERE id = :id")
-    void updateTactileSensation(int id, int value);
+    void updateTactileSensation(int id, Integer value);
 
     @Query("DELETE FROM tactile_sensation WHERE id = :id")
     void deleteTactileSensation(int id);

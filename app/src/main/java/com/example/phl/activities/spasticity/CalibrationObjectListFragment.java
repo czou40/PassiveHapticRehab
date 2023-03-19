@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.phl.R;
-import com.example.phl.data.spasticity.Dataset;
+import com.example.phl.data.spasticity.data_collection.RawDataset;
 import com.example.phl.databinding.FragmentCalibrationObjectListBinding;
 
 import java.util.Arrays;
@@ -66,8 +66,8 @@ public class CalibrationObjectListFragment extends Fragment {
         // Inflate the layout for this fragment
         binding = FragmentCalibrationObjectListBinding.inflate(inflater, container, false);
         StringBuilder displayText = new StringBuilder();
-        List<Double[]> x = Dataset.getInstance().getX();
-        List<Double> y = Dataset.getInstance().getY();
+        List<Double[]> x = RawDataset.getInstance().getX();
+        List<Double> y = RawDataset.getInstance().getY();
         for (int i = 0; i < x.size(); i++) {
             displayText.append(Arrays.toString(x.get(i))).append(" -> ").append(y.get(i)).append("\n");
         }

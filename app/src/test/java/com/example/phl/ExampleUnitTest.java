@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-import com.example.phl.data.spasticity.Dataset;
+import com.example.phl.data.spasticity.data_collection.RawDataset;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -29,10 +29,10 @@ public class ExampleUnitTest {
         x[3] = new double[] {1,17};
         x[4] = new double[] {1,21};
 
-        Dataset dataset = new Dataset(2);
+        RawDataset rawDataset = new RawDataset(2);
 
-        dataset.addAll(x, y);
+        rawDataset.addAll(x, y);
 
-        assertEquals(90, dataset.predict(new double[] {1,19}), 0.0001);
+        assertEquals(90, rawDataset.predict(new double[] {1,19}), 0.0001);
     }
 }

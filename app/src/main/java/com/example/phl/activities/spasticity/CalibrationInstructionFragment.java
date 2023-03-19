@@ -15,7 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.phl.R;
-import com.example.phl.data.spasticity.Dataset;
+import com.example.phl.activities.SpasticityDiagnosisActivity;
+import com.example.phl.data.spasticity.data_collection.RawDataset;
 import com.example.phl.databinding.FragmentCalibrationInstructionBinding;
 
 
@@ -28,6 +29,8 @@ public class CalibrationInstructionFragment extends Fragment {
 
     private boolean isFirstCalibration = true;
 
+    private boolean isOnLegacyWorkflow;
+
     public CalibrationInstructionFragment() {
         // Required empty public constructor
     }
@@ -35,13 +38,21 @@ public class CalibrationInstructionFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.isFirstCalibration = Dataset.getInstance().size() == 0;
+        this.isFirstCalibration = RawDataset.getInstance().size() == 0;
+        this.isOnLegacyWorkflow = ((SpasticityDiagnosisActivity) requireActivity()).isOnLegacyWorkflow();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentCalibrationInstructionBinding.inflate(inflater, container, false);
+        if(this.isOnLegacyWorkflow) {
+            binding.legacy.setVisibility(View.VISIBLE);
+            binding.newWorkflow.setVisibility(View.GONE);
+        } else {
+            binding.legacy.setVisibility(View.GONE);
+            binding.newWorkflow.setVisibility(View.VISIBLE);
+        }
         if (isFirstCalibration) {
             binding.textviewPlaceObject1.setVisibility(View.GONE);
             binding.textviewPlaceObject2.setVisibility(View.GONE);

@@ -36,6 +36,9 @@
         <action
             android:id="@+id/action_CalibrationFragment_to_calibrationObjectListFragment"
             app:destination="@id/calibrationObjectListFragment" />
+        <action
+            android:id="@+id/nav1"
+            app:destination="@id/measurementInstructionFragment" />
     </fragment>
     <fragment
         android:id="@+id/calibrationInstructionFragment"

@@ -1,4 +1,4 @@
-package com.example.phl.data.spasticity;
+package com.example.phl.data.spasticity.data_collection;
 
 import org.apache.commons.math3.exception.MathIllegalArgumentException;
 import org.apache.commons.math3.linear.ArrayRealVector;
@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class Dataset {
+public class RawDataset {
     private final int numFeatures;
     private List<Double[]> x = new ArrayList<>();
     private List<Double> y = new ArrayList<>();
@@ -19,9 +19,9 @@ public class Dataset {
 
     private boolean isRegressionCalculated = false;
 
-    private static Dataset instance;
+    private static RawDataset instance;
 
-    public Dataset(int numFeatures) {
+    public RawDataset(int numFeatures) {
         this.numFeatures = numFeatures;
     }
 
@@ -100,20 +100,41 @@ public class Dataset {
         return predict(newX);
     }
 
-    public static Dataset initializeInstance(int numFeatures) {
+    /**
+     * This method is used in the simplified version.
+     * The phone only collects the data when the phone is placed on the unaffected hand and when the phone is placed on the affected hand.
+     * Only two samples are collected.
+     * We just return the ratio of the two samples. The higher the ratio, the better.
+     * @return
+     */
+    public double getScore() {
+        if (x.size() != 2) {
+            throw new IllegalStateException("RawDataset must have exactly 2 samples");
+        }
+        double sum = 0.0;
+        for (int i = 0; i < numFeatures; i++) {
+            if (x.get(0)[i] != 0.0) {
+                sum += x.get(1)[i] / x.get(0)[i];
+            }
+        }
+        double score = sum / numFeatures;
+        return score * 100.0;
+    }
+
+    public static RawDataset initializeInstance(int numFeatures) {
         if (instance == null) {
-            instance = new Dataset(numFeatures);
+            instance = new RawDataset(numFeatures);
         }
         return instance;
     }
 
     public static void reset(int numFeatures) {
-        instance = new Dataset(numFeatures);
+        instance = new RawDataset(numFeatures);
     }
 
-    public static Dataset getInstance() {
+    public static RawDataset getInstance() {
         if (instance == null) {
-            throw new IllegalStateException("Dataset instance not initialized");
+            throw new IllegalStateException("RawDataset instance not initialized");
         }
         return instance;
     }
@@ -151,5 +172,7 @@ public class Dataset {
             vectorX = vectorX.append(new ArrayRealVector(x));
             return vectorX.dotProduct(b);
         }
+
+
     }
 }

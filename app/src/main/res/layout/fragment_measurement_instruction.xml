@@ -2,29 +2,64 @@
 <LinearLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:weightSum="100"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <TextView
-        android:text="@string/place_phone"
-        android:layout_height="wrap_content" android:layout_width="match_parent"/>
-
-
-
-    <TextView
-        android:text="@string/place_hand"
-        android:layout_height="wrap_content" android:layout_width="match_parent"/>
-
-    <TextView
-        android:layout_width="match_parent"
+    <LinearLayout android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/phone_will_vibrate_20"/>
+        android:orientation="vertical"
+        android:id="@+id/legacy">
+        <TextView
+            android:text="@string/place_phone"
+            android:layout_height="wrap_content" android:layout_width="match_parent"/>
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:src="@drawable/instruction"
-        android:layout_weight="70"/>
+
+
+        <TextView
+            android:text="@string/place_hand"
+            android:layout_height="wrap_content" android:layout_width="match_parent"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/phone_will_vibrate_20"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="256dp"
+            android:src="@drawable/instruction" />
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/new_workflow">
+        <TextView
+            android:text="Place the phone on the affected hand with the help of the unaffected hand, as shown in the picture below."
+            android:layout_height="wrap_content" android:layout_width="match_parent"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/do_not_place_object"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Try your best to lift your fingers and not squeeze the phone."/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/continue_to_next"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/phone_will_vibrate_20"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="256dp"
+            android:src="@drawable/instruction_2" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/continue_button"

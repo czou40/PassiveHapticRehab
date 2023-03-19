@@ -22,8 +22,9 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.phl.R;
-import com.example.phl.data.spasticity.Dataset;
-import com.example.phl.data.spasticity.SensorData;
+import com.example.phl.activities.SpasticityDiagnosisActivity;
+import com.example.phl.data.spasticity.data_collection.RawDataset;
+import com.example.phl.data.spasticity.data_collection.SensorData;
 import com.example.phl.databinding.FragmentFirstBinding;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
@@ -161,9 +162,20 @@ public class FirstFragment extends Fragment implements SensorEventListener {
         binding.buttonWorkflow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ((SpasticityDiagnosisActivity) requireActivity()).setOnLegacyWorkflow(false);
                 NavHostFragment.findNavController(FirstFragment.this)
                         .navigate(R.id.action_FirstFragment_to_calibrationInstructionFragment);
         }});
+
+        binding.buttonWorkflowLegacy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((SpasticityDiagnosisActivity) requireActivity()).setOnLegacyWorkflow(true);
+                NavHostFragment.findNavController(FirstFragment.this)
+                        .navigate(R.id.action_FirstFragment_to_calibrationInstructionFragment);
+            }});
+
+
 
         binding.buttonFirst.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -257,7 +269,7 @@ public class FirstFragment extends Fragment implements SensorEventListener {
     @Override
     public void onResume() {
         super.onResume();
-        Dataset.reset(SensorData.includedSensors.length);
+        RawDataset.reset(SensorData.includedSensors.length);
     }
 
     @Override
