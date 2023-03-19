@@ -11,9 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.navigation.ui.AppBarConfiguration;
 
-import com.example.phl.data.Dataset;
-import com.example.phl.data.SensorData;
-import com.example.phl.databinding.ActivitySpasticityDiagnosisBinding;
+import com.example.phl.data.spasticity.Dataset;
+import com.example.phl.data.spasticity.SensorData;
 import com.example.phl.databinding.ActivitySpasticityDiagnosisBinding;
 
 public class SpasticityDiagnosisActivity extends AppCompatActivity{

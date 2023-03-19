@@ -22,15 +22,13 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.phl.R;
-import com.example.phl.data.Dataset;
-import com.example.phl.data.SensorData;
+import com.example.phl.data.spasticity.Dataset;
+import com.example.phl.data.spasticity.SensorData;
 import com.example.phl.databinding.FragmentFirstBinding;
-import com.example.phl.utils.FileWriter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -160,14 +158,6 @@ public class FirstFragment extends Fragment implements SensorEventListener {
             }
         });
 
-        binding.switch1.setVisibility(View.GONE);
-//        binding.switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                showGyroscope = isChecked;
-//            }
-//        });
-
         binding.buttonWorkflow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -187,8 +177,8 @@ public class FirstFragment extends Fragment implements SensorEventListener {
                     binding.buttonFirst.setText(R.string.vibrate);
                     // Unregister the gyroscope sensor listener
                     sensorManager.unregisterListener(FirstFragment.this);
-                    FileWriter.writeToCSV("data.csv", Arrays.asList("Gyroscope X", "Gyroscope Y", "Gyroscope Z", "Accelerometer X", "Accelerometer Y", "Accelerometer Z"), Arrays.asList(gyroscopeX, gyroscopeY, gyroscopeZ, accelerometerX, accelerometerY, accelerometerZ));
-                    Toast.makeText(mContext, "Data saved to data.csv", Toast.LENGTH_SHORT).show();
+//                    FileWriter.writeToCSV("data.csv", Arrays.asList("Gyroscope X", "Gyroscope Y", "Gyroscope Z", "Accelerometer X", "Accelerometer Y", "Accelerometer Z"), Arrays.asList(gyroscopeX, gyroscopeY, gyroscopeZ, accelerometerX, accelerometerY, accelerometerZ));
+//                    Toast.makeText(mContext, "Data saved to data.csv", Toast.LENGTH_SHORT).show();
                 } else {
                     FirstFragment.this.isVibrating = true;
                     long[] pattern = {0, 30000};

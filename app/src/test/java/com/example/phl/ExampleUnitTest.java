@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-import com.example.phl.data.Dataset;
+import com.example.phl.data.spasticity.Dataset;
 
 /**
  * Example local unit test, which will execute on the development machine (host).

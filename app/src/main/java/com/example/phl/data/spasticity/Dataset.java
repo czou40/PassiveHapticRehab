@@ -1,4 +1,4 @@
-package com.example.phl.data;
+package com.example.phl.data.spasticity;
 
 import org.apache.commons.math3.exception.MathIllegalArgumentException;
 import org.apache.commons.math3.linear.ArrayRealVector;

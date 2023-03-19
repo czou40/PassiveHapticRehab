@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Button button1 = findViewById(R.id.button1);
         Button button2 = findViewById(R.id.button2);
+        Button button3 = findViewById(R.id.button3);
         // button 1: navigate to spacitity diagnosis
         // button 2: navigate to tactile sensation
         button1.setOnClickListener(v -> {
@@ -26,6 +27,11 @@ public class MainActivity extends AppCompatActivity {
         button2.setOnClickListener(v -> {
             // navigate to tactile sensation
             Intent intent = new Intent(this, TactileSensationActivity.class);
+            startActivity(intent);
+        });
+        button3.setOnClickListener(v -> {
+            // navigate to progress
+            Intent intent = new Intent(this, ProgressActivity.class);
             startActivity(intent);
         });
     }

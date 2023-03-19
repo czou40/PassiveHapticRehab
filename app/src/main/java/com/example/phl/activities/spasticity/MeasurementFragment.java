@@ -16,8 +16,8 @@ import android.view.ViewGroup;
 
 import com.example.phl.R;
 import com.example.phl.activities.SpasticityDiagnosisActivity;
-import com.example.phl.data.Dataset;
-import com.example.phl.data.SensorData;
+import com.example.phl.data.spasticity.Dataset;
+import com.example.phl.data.spasticity.SensorData;
 import com.example.phl.databinding.FragmentMeasurementBinding;
 
 /**

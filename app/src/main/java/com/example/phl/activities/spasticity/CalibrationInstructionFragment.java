@@ -15,7 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.phl.R;
-import com.example.phl.data.Dataset;
+import com.example.phl.data.spasticity.Dataset;
 import com.example.phl.databinding.FragmentCalibrationInstructionBinding;
 
 

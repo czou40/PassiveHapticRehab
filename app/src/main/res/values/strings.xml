@@ -48,4 +48,8 @@
     <string name="start_spasticity_test">Start Spasticity Test</string>
     <string name="start_tactile_sensation_test">Start Tactile Sensation Test</string>
     <string name="view_my_progress">View My Progress</string>
+    <string name="start_workflow_v2">Start Workflow v2</string>
+    <string name="tactile_sensation">Tactile Sensation</string>
+    <string name="spasticity">Spasticity</string>
+    <string name="start_workflow_legacy">Start Workflow (Legacy)</string>
 </resources>
