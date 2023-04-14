@@ -17,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
         Button button1 = findViewById(R.id.button1);
         Button button2 = findViewById(R.id.button2);
         Button button3 = findViewById(R.id.button3);
+        Button button4 = findViewById(R.id.button4);
         button1.setOnClickListener(v -> {
             // navigate to spasticity diagnosis
             Intent intent = new Intent(this, SpasticityDiagnosisActivity.class);
@@ -30,6 +31,11 @@ public class MainActivity extends AppCompatActivity {
         button3.setOnClickListener(v -> {
             // navigate to progress
             Intent intent = new Intent(this, ProgressActivity.class);
+            startActivity(intent);
+        });
+        button4.setOnClickListener(v -> {
+            // navigate to bluetooth
+            Intent intent = new Intent(this, BluetoothActivity.class);
             startActivity(intent);
         });
     }

@@ -35,5 +35,13 @@
             android:textColor="@android:color/white"
             android:layout_marginTop="16dp" />
 
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bluetooth Test"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="16dp" />
+
     </LinearLayout>
 </ScrollView>
