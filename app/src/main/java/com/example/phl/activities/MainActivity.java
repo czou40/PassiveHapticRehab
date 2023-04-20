@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.widget.Button;
 
 import com.example.phl.R;
+import com.example.phl.services.RemoteControlService;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,5 +33,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, ProgressActivity.class);
             startActivity(intent);
         });
+        Intent intent = new Intent(this, RemoteControlService.class);
+        startService(intent);
     }
 }
