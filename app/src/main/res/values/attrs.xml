@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MyButton">
+        <attr name="group" format="enum">
+            <enum name="FORWARD" value="0"/>
+            <enum name="BACKWARD" value="1"/>
+            <enum name="EXIT" value="2"/>
+            <enum name="YES" value="3"/>
+            <enum name="NO" value="4"/>
+            <enum name="UNCERTAIN" value="5"/>
+            <enum name="START" value="6"/>
+            <enum name="STOP" value="7"/>
+            <enum name="OTHER" value="8"/>
+        </attr>
+    </declare-styleable>
+</resources>
