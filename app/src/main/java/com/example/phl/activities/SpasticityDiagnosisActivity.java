@@ -1,10 +1,14 @@
 package com.example.phl.activities;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.util.Log;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,8 +18,11 @@ import androidx.navigation.ui.AppBarConfiguration;
 import com.example.phl.data.spasticity.data_collection.RawDataset;
 import com.example.phl.data.spasticity.data_collection.SensorData;
 import com.example.phl.databinding.ActivitySpasticityDiagnosisBinding;
+import com.example.phl.services.RemoteControlService;
 
-public class SpasticityDiagnosisActivity extends AppCompatActivity{
+import java.time.LocalDate;
+
+public class SpasticityDiagnosisActivity extends MyBaseActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivitySpasticityDiagnosisBinding binding;
@@ -26,7 +33,6 @@ public class SpasticityDiagnosisActivity extends AppCompatActivity{
     private boolean isVibrationOn = false;
 
     private boolean isOnLegacyWorkflow = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

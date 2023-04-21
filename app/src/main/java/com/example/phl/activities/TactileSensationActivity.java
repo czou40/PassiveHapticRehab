@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-public class TactileSensationActivity extends AppCompatActivity {
+public class TactileSensationActivity extends MyBaseActivity {
 
     private SpeechRecognizer speechRecognizer;
 
@@ -342,5 +342,10 @@ public class TactileSensationActivity extends AppCompatActivity {
                 finish();
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        // do nothing
     }
 }

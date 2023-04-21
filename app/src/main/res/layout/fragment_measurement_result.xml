@@ -43,9 +43,7 @@
             />
     </LinearLayout>
 
-
-
-    <Button
+    <com.example.phl.views.MyButton
         android:id="@+id/button_measurement_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -53,5 +51,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linearlayout_measurement_result" />
+        app:layout_constraintTop_toBottomOf="@id/linearlayout_measurement_result"
+        app:group="forward"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

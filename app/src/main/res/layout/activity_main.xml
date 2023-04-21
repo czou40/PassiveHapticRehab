@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true">
 
     <LinearLayout
@@ -11,29 +12,65 @@
         android:gravity="center"
         android:padding="16dp">
 
-        <Button
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/qr_code_text_view"
+            android:text="@string/qr_code_for_remote_control"
+            />
+
+        <ImageView
+            android:id="@+id/qr_code_image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+             />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/connecting"
+            android:text="@string/connecting_to_server"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/no_internet"
+            android:text="@string/no_internet_connection_remote_control_is_not_available"
+            />
+
+        <com.example.phl.views.MyButton
             android:id="@+id/button1"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/start_spasticity_test"
-            android:textColor="@android:color/white"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            />
 
-        <Button
+        <com.example.phl.views.MyButton
             android:id="@+id/button2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/start_tactile_sensation_test"
-            android:textColor="@android:color/white"
             android:layout_marginTop="16dp" />
 
-        <Button
+        <com.example.phl.views.MyButton
             android:id="@+id/button3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/view_my_progress"
-            android:textColor="@android:color/white"
             android:layout_marginTop="16dp" />
+
+        <com.example.phl.views.MyButton
+            android:id="@+id/my_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="My Button"
+            app:group="forward"
+            app:allow_remote_control_when_not_shown="true"
+            android:visibility="gone"
+           />
 
     </LinearLayout>
 </ScrollView>
