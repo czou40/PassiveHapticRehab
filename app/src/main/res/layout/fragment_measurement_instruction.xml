@@ -61,7 +61,7 @@
             android:src="@drawable/instruction_2" />
     </LinearLayout>
 
-    <Button
+    <com.example.phl.views.MyButton
         android:id="@+id/continue_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

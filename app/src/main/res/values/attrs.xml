@@ -2,15 +2,17 @@
 <resources>
     <declare-styleable name="MyButton">
         <attr name="group" format="enum">
-            <enum name="FORWARD" value="0"/>
-            <enum name="BACKWARD" value="1"/>
-            <enum name="EXIT" value="2"/>
-            <enum name="YES" value="3"/>
-            <enum name="NO" value="4"/>
-            <enum name="UNCERTAIN" value="5"/>
-            <enum name="START" value="6"/>
-            <enum name="STOP" value="7"/>
-            <enum name="OTHER" value="8"/>
+            <enum name="forward" value="0"/>
+            <enum name="backward" value="1"/>
+            <enum name="exit" value="2"/>
+            <enum name="yes" value="3"/>
+            <enum name="no" value="4"/>
+            <enum name="uncertain" value="5"/>
+            <enum name="start" value="6"/>
+            <enum name="stop" value="7"/>
+            <enum name="other" value="8"/>
         </attr>
+        <attr name="force_remote_control" format="boolean"/>
     </declare-styleable>
+    <attr name="myButtonStyle"  format="reference"/>
 </resources>

@@ -54,19 +54,19 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/graph3">
 
-        <Button
+        <com.example.phl.views.MyButton
             android:id="@+id/button_first"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/next" />
 
-        <Button
+        <com.example.phl.views.MyButton
             android:id="@+id/button_workflow_legacy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/start_workflow_legacy" />
 
-        <Button
+        <com.example.phl.views.MyButton
             android:id="@+id/button_workflow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

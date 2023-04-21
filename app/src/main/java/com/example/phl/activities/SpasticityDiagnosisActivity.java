@@ -34,23 +34,6 @@ public class SpasticityDiagnosisActivity extends AppCompatActivity {
 
     private boolean isOnLegacyWorkflow = false;
 
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.d("SpasticityDiagnosis", "Received broadcast " + intent.getStringExtra("command"));
-            // check if the intent is to start vibration
-
-            if (intent.getStringExtra("command").equals("start_vibration")) {
-                Log.d("SpasticityDiagnosis", "Starting vibration");
-                startVibration();
-            }
-            // check if the intent is to stop vibration
-            else if (intent.getStringExtra("command").equals("stop_vibration")) {
-                stopVibration();
-            }
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -78,19 +61,6 @@ public class SpasticityDiagnosisActivity extends AppCompatActivity {
 //        return NavigationUI.navigateUp(navController, appBarConfiguration)
 //                || super.onSupportNavigateUp();
 //    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        registerReceiver(broadcastReceiver, new IntentFilter(RemoteControlService.ACTION));
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        unregisterReceiver(broadcastReceiver);
-    }
 
     public void startVibration() {
         isVibrationOn = true;

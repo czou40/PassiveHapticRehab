@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <Button
+        <com.example.phl.views.MyButton
             android:id="@+id/add_new_object_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
             android:layout_weight="1"
             style="?android:attr/buttonBarButtonStyle" />
 
-        <Button
+        <com.example.phl.views.MyButton
             android:id="@+id/continue_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
