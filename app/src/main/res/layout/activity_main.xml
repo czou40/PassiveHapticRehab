@@ -68,8 +68,8 @@
             android:layout_height="wrap_content"
             android:text="My Button"
             app:group="forward"
-            app:force_remote_control="true"
-            android:visibility="invisible"
+            app:allow_remote_control_when_not_shown="true"
+            android:visibility="gone"
            />
 
     </LinearLayout>

@@ -58,7 +58,7 @@
             android:id="@+id/button_first"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/next" />
+            android:text="@string/vibrate" />
 
         <com.example.phl.views.MyButton
             android:id="@+id/button_workflow_legacy"
@@ -70,34 +70,8 @@
             android:id="@+id/button_workflow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:group="start"
             android:text="@string/start_workflow_v2" />
 
     </LinearLayout>
-<!--    <Button-->
-<!--        android:id="@+id/button_first"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="@string/next"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/graph3" />-->
-
-<!--    <Button-->
-<!--        android:id="@+id/button_workflow"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="@string/start_workflow"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/graph3"-->
-<!--        app:layout_constraintLeft_toRightOf="@+id/button_first"/>-->
-
-<!--    <Button-->
-<!--        android:id="@+id/button_workflow_legacy"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="@string/start_workflow"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/graph3"-->
-<!--        app:layout_constraintLeft_toRightOf="@+id/button_workflow"/>-->
 </androidx.constraintlayout.widget.ConstraintLayout>

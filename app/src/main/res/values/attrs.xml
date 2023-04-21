@@ -12,7 +12,8 @@
             <enum name="stop" value="7"/>
             <enum name="other" value="8"/>
         </attr>
-        <attr name="force_remote_control" format="boolean"/>
+        <attr name="allow_remote_control_when_not_shown" format="boolean"/>
+        <attr name="prevent_accidental_clicks" format="boolean"/>
     </declare-styleable>
     <attr name="myButtonStyle"  format="reference"/>
 </resources>

@@ -5,15 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.TypedArray;
+import android.os.CountDownTimer;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
-import android.widget.Button;
+import android.widget.Toast;
 
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.core.view.ViewCompat;
+import androidx.annotation.Nullable;
 
 import com.example.phl.R;
 import com.example.phl.services.RemoteControlService;
@@ -23,9 +23,13 @@ public class MyButton extends MaterialButton {
 
     private Group group;
 
-    private boolean forceRemoteControl = false;
+    private boolean allowRemoteControlWhenNotShown = false;
 
     private boolean isReceiverRegistered = false;
+
+    private boolean preventAccidentalClicks = true;
+
+    private OnClickListener onClickListener;
 
     private BroadcastReceiver remoteControlReceiver = new BroadcastReceiver() {
         @Override
@@ -35,17 +39,30 @@ public class MyButton extends MaterialButton {
             if (command != null) {
                 Group commandGroup = Group.fromString(command);
                 if (command.trim().equalsIgnoreCase(MyButton.this.getText().toString().trim())) {
-                    if ((forceRemoteControl || isShown()) && isEnabled()) {
-                        performClick();
+                    if ((allowRemoteControlWhenNotShown || isShown()) && isEnabled()) {
+                        if (preventAccidentalClicks) {
+                            if (onClickListener != null) {
+                                onClickListener.onClick(MyButton.this);
+                            }
+                        } else {
+                            performClick();
+                        }
                     }
                 } else if (commandGroup != Group.OTHER && commandGroup == group) {
-                    if ((forceRemoteControl || isShown()) && isEnabled()) {
-                        performClick();
+                    if ((allowRemoteControlWhenNotShown || isShown()) && isEnabled()) {
+                        if (preventAccidentalClicks) {
+                            if (onClickListener != null) {
+                                onClickListener.onClick(MyButton.this);
+                            }
+                        } else {
+                            performClick();
+                        }
                     }
                 }
             }
         }
     };
+
 
     @Override
     protected void onAttachedToWindow() {
@@ -72,7 +89,7 @@ public class MyButton extends MaterialButton {
             ViewParent parent = getParent();
             if (parent instanceof View) {
                 View parentView = (View) parent;
-                if (parentView.isShown() && forceRemoteControl) {
+                if (parentView.isShown() && allowRemoteControlWhenNotShown) {
                     registerReceiverIfNotRegistered();
                 } else {
                     unregisterReceiverIfRegistered();
@@ -82,6 +99,125 @@ public class MyButton extends MaterialButton {
             }
         }
     }
+
+    @Override
+    public void setOnClickListener(@Nullable OnClickListener l) {
+        onClickListener = l;
+        if (preventAccidentalClicks) {
+            if (onClickListener == null) {
+                super.setOnTouchListener(null);
+            } else {
+                super.setOnTouchListener(new OnTouchListener() {
+                    private long firstTime=0;
+                    private long secondTime=0;
+
+                    private CountDownTimer countDownTimer;
+
+                    private Toast toast;
+
+                    private boolean isBadTouch = false;
+
+                    private boolean isInside(View v, MotionEvent e) {
+                        return !(e.getX() < 0 || e.getY() < 0
+                                || e.getX() > v.getMeasuredWidth()
+                                || e.getY() > v.getMeasuredHeight());
+                    }
+
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        int numFingers = motionEvent.getPointerCount();
+                        if (numFingers > 1) {
+                            if (countDownTimer != null) {
+                                countDownTimer.cancel();
+                            }
+                            if (!isBadTouch) {
+                                if (toast != null) {
+                                    toast.cancel();
+                                }
+                                toast = Toast.makeText(getContext(), "You can only use one finger to click the button.", Toast.LENGTH_SHORT);
+                                toast.show();
+                                isBadTouch = true;
+                            }
+                            return false;
+                        }
+                        if (!isInside(view, motionEvent)) {
+                            if (countDownTimer != null) {
+                                countDownTimer.cancel();
+                            }
+                            if (!isBadTouch) {
+                                if (toast != null) {
+                                    toast.cancel();
+                                }
+                                toast = Toast.makeText(getContext(), "You canceled the clicking by moving outside of the button", Toast.LENGTH_SHORT);
+                                toast.show();
+                                isBadTouch = true;
+                            }
+                            return false;
+                        }
+                        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                            isBadTouch = false;
+                            firstTime = System.currentTimeMillis();
+                            if (countDownTimer != null) {
+                                countDownTimer.cancel();
+                            }
+                            countDownTimer = new CountDownTimer(3000, 1000) {
+                                @Override
+                                public void onTick(long millisUntilFinished) {
+                                    if (toast != null) {
+                                        toast.cancel();
+                                    }
+                                    toast = Toast.makeText(getContext(), "Press the button for " + (int) Math.ceil(millisUntilFinished / 1000.0) + " more second(s) to confirm.", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                }
+
+                                @Override
+                                public void onFinish() {
+                                    if (toast != null) {
+                                        toast.cancel();
+                                    }
+                                    toast = Toast.makeText(getContext(), "Release the button to confirm.", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                }
+                            };
+                            countDownTimer.start();
+                        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                            if (isBadTouch) {
+                                return false;
+                            }
+                            secondTime = System.currentTimeMillis();
+                            if (secondTime - firstTime > 3000) {
+                                onClickListener.onClick(view);
+                            } else {
+                                if (countDownTimer != null) {
+                                    countDownTimer.cancel();
+                                }
+                                if (toast != null) {
+                                    toast.cancel();
+                                }
+                            }
+                        }
+                        return false;
+                    }
+                });
+            }
+        } else {
+            super.setOnClickListener(onClickListener);
+        }
+    }
+
+//    @Override
+//    public boolean performClick() {
+//        if (preventAccidentalClicks) {
+//            if (onClickListener == null) {
+//                return false;
+//            } else {
+//                onClickListener.onClick(this);
+//                return true;
+//            }
+//        } else {
+//            return super.performClick();
+//        }
+//    }
 
     private void registerReceiverIfNotRegistered() {
         if (!isReceiverRegistered) {
@@ -121,13 +257,15 @@ public class MyButton extends MaterialButton {
             try {
                 int groupValue = typedArray.getInt(R.styleable.MyButton_group, Group.OTHER.getValue());
                 group = Group.fromInt(groupValue);
-                forceRemoteControl = typedArray.getBoolean(R.styleable.MyButton_force_remote_control, false);
+                allowRemoteControlWhenNotShown = typedArray.getBoolean(R.styleable.MyButton_allow_remote_control_when_not_shown, false);
+                preventAccidentalClicks = typedArray.getBoolean(R.styleable.MyButton_prevent_accidental_clicks, true);
             } finally {
                 typedArray.recycle();
             }
         } else {
             group = Group.OTHER;
-            forceRemoteControl = false;
+            allowRemoteControlWhenNotShown = false;
+            preventAccidentalClicks = true;
         }
     }
 
