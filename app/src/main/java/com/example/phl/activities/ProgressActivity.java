@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class ProgressActivity extends AppCompatActivity {
+public class ProgressActivity extends MyBaseActivity {
 
     private LineChart lineChart;
 

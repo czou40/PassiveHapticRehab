@@ -21,7 +21,7 @@ import com.example.phl.services.RemoteControlService;
 import com.example.phl.utils.QRCodeGenerator;
 import com.example.phl.views.MyButton;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends MyBaseActivity {
 
     TextView noInternetConnection;
     TextView connecting;
@@ -68,17 +68,6 @@ public class MainActivity extends AppCompatActivity {
         connecting.setVisibility(View.GONE);
         qrCodeImageView.setVisibility(View.GONE);
         qrCodeTextView.setVisibility(View.GONE);
-    }
-
-    private void hideSystemUI() {
-        View decorView = getWindow().getDecorView();
-        decorView.setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN);
     }
 
     @Override
@@ -128,12 +117,16 @@ public class MainActivity extends AppCompatActivity {
         intentFilter.addAction(RemoteControlService.SOCKET_CONNECTED_ACTION);
         intentFilter.addAction(RemoteControlService.SOCKET_ERROR_ACTION);
         this.registerReceiver(broadcastReceiver, intentFilter);
-        hideSystemUI();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         this.unregisterReceiver(broadcastReceiver);
+    }
+
+    @Override
+    public void onBackPressed() {
+        // do nothing
     }
 }

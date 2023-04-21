@@ -22,7 +22,7 @@ import com.example.phl.services.RemoteControlService;
 
 import java.time.LocalDate;
 
-public class SpasticityDiagnosisActivity extends AppCompatActivity {
+public class SpasticityDiagnosisActivity extends MyBaseActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivitySpasticityDiagnosisBinding binding;
