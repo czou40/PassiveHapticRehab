@@ -25,9 +25,11 @@
 
         <activity
             android:name=".activities.ProgressActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activities.MainActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,9 +39,11 @@
         </activity>
         <activity
             android:name=".activities.TactileSensationActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activities.SpasticityDiagnosisActivity"
+            android:screenOrientation="portrait"
             android:exported="false"
             android:theme="@style/Theme.PHL.NoActionBar" />
     </application>

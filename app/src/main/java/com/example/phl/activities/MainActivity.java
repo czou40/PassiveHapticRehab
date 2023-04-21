@@ -108,6 +108,7 @@ public class MainActivity extends MyBaseActivity {
         displayConnecting();
         Intent intent = new Intent(this, RemoteControlService.class);
         startService(intent);
+        Log.d("MainActivity", "Started service");
     }
 
     @Override

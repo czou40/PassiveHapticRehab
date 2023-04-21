@@ -1,10 +1,14 @@
 package com.example.phl.activities;
 
+import android.content.pm.ActivityInfo;
+import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MyBaseActivity  extends AppCompatActivity {
+
     @Override
     protected void onResume() {
         super.onResume();
