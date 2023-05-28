@@ -1,0 +1,7 @@
+https://phl.czou.me {
+  reverse_proxy front-end:3000
+}
+
+https://phl.api.czou.me {
+  reverse_proxy back-end:8000
+}

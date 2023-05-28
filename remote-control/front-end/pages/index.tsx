@@ -3,7 +3,8 @@ import axios, { AxiosError } from 'axios';
 import { useZxing } from "react-zxing";
 import { useRouter } from 'next/router';
 import { time } from 'console';
-const API_SERVER = 'http://localhost:5000';
+const API_SERVER = process.env.NEXT_PUBLIC_API_SERVER;
+console.info(`API_SERVER: ${API_SERVER}`);
 
 const App: React.FC = () => {
     const [command, setCommand] = useState('');
