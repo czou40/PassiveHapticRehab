@@ -24,8 +24,7 @@ public class RemoteControlService extends Service {
 
     public static final String SOCKET_ERROR_ACTION = "com.example.phl.services.RemoteControlService.SOCKET_ERROR";
 
-
-    public static final String API_SERVER = "http://143.215.61.59:5000";
+    public static final String API_SERVER = "https://phl.api.czou.me";
 
     private static boolean isSocketConnected = false;
 
