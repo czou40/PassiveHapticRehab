@@ -29,11 +29,12 @@
         tools:layout_editor_absoluteY="302dp">
     </com.skyfishjy.library.RippleBackground>
 
-    <Button
+    <com.example.phl.views.MyButton
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/vibrate"/>
+        android:text="@string/vibrate"
+        app:group="forward"/>
 
     <LinearLayout
         android:id="@+id/result_layout"
@@ -44,23 +45,29 @@
         android:layout_marginTop="16dp"
         >
 
-        <Button
+        <com.example.phl.views.MyButton
             android:id="@+id/felt_vibration_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/i_felt_the_vibration"/>
+            android:text="@string/i_felt_the_vibration"
+            app:group="yes"
+            />
 
-        <Button
+        <com.example.phl.views.MyButton
             android:id="@+id/did_not_feel_vibration_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/i_did_not_feel_the_vibration"/>
+            android:text="@string/i_did_not_feel_the_vibration"
+            app:group="no"
+            />
 
-        <Button
+        <com.example.phl.views.MyButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/i_am_not_sure"
-            android:id="@+id/i_am_not_sure_button"/>
+            android:id="@+id/i_am_not_sure_button"
+            app:group="uncertain"
+            />
     </LinearLayout>
 
 </LinearLayout>

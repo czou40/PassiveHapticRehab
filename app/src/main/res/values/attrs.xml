@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MyButton">
+        <attr name="group" format="enum">
+            <enum name="forward" value="0"/>
+            <enum name="backward" value="1"/>
+            <enum name="exit" value="2"/>
+            <enum name="yes" value="3"/>
+            <enum name="no" value="4"/>
+            <enum name="uncertain" value="5"/>
+            <enum name="start" value="6"/>
+            <enum name="stop" value="7"/>
+            <enum name="other" value="8"/>
+        </attr>
+        <attr name="allow_remote_control_when_not_shown" format="boolean"/>
+        <attr name="prevent_accidental_clicks" format="boolean"/>
+    </declare-styleable>
+    <attr name="myButtonStyle"  format="reference"/>
+</resources>

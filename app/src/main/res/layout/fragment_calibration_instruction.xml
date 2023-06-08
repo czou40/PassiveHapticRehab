@@ -105,13 +105,14 @@
             android:layout_weight="30"/>
     </LinearLayout>
 
-    <Button
+    <com.example.phl.views.MyButton
         android:id="@+id/continue_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/vibrate"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_workflow" />
+        app:layout_constraintTop_toBottomOf="@+id/new_workflow"
+        app:group="forward"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
 
