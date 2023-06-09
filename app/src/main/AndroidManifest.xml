@@ -32,30 +32,19 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-<<<<<<< HEAD
-        android:theme="@style/Theme.PHL" >
-        <activity
-            android:name=".activities.BluetoothActivity"
-            android:exported="false" />
-=======
         android:theme="@style/Theme.PHL">
 
         <service
             android:name=".services.RemoteControlService"/>
 
->>>>>>> web-control-deploy
         <activity
             android:name=".activities.ProgressActivity"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activities.MainActivity"
-<<<<<<< HEAD
-            android:exported="true" >
-=======
             android:screenOrientation="portrait"
             android:exported="true">
->>>>>>> web-control-deploy
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
