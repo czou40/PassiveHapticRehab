@@ -77,6 +77,9 @@ public class MainActivity extends MyBaseActivity {
         Button button1 = findViewById(R.id.button1);
         Button button2 = findViewById(R.id.button2);
         Button button3 = findViewById(R.id.button3);
+        Button button4 = findViewById(R.id.button4);
+        Button button5= findViewById(R.id.button5);
+        Button button6 = findViewById(R.id.button6);
         MyButton myButton = findViewById(R.id.my_button);
         noInternetConnection = findViewById(R.id.no_internet);
         connecting = findViewById(R.id.connecting);
@@ -98,6 +101,11 @@ public class MainActivity extends MyBaseActivity {
         button3.setOnClickListener(v -> {
             // navigate to progress
             Intent intent = new Intent(this, ProgressActivity.class);
+            startActivity(intent);
+        });
+        button4.setOnClickListener(v -> {
+            // navigate to remote control
+            Intent intent = new Intent(this, BallTestActivity.class);
             startActivity(intent);
         });
         if (RemoteControlService.getSocketId() != null) {

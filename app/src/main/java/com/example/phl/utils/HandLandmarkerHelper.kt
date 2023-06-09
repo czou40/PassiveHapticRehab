@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.phl.activities
+package com.example.phl.utils
 
 import android.content.Context
 import android.graphics.Bitmap

@@ -26,12 +26,19 @@
         android:layout_height="match_parent"
         app:scaleType="fillStart" />
 
-    <com.example.phl.activities.OverlayView
+    <com.example.phl.views.HandLandmarkerOverlayView
         android:id="@+id/overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <TextView
+        android:id="@+id/strength_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="dasdasdsadsfsd"/>
+
     <include
         android:id="@+id/bottom_sheet_layout"
-        layout="@layout/info_bottom_sheet" />
+        layout="@layout/info_bottom_sheet"
+        android:visibility="gone"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

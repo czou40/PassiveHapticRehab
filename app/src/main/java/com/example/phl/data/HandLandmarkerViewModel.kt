@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package com.example.phl.activities
+package com.example.phl.data
 
 import androidx.lifecycle.ViewModel
+import com.example.phl.utils.HandLandmarkerHelper
 
 /**
  *  This ViewModel is used to store hand landmarker helper settings
  */
-class MainViewModel : ViewModel() {
+class HandLandmarkerViewModel : ViewModel() {
 
     private var _delegate: Int = HandLandmarkerHelper.DELEGATE_CPU
     private var _minHandDetectionConfidence: Float =

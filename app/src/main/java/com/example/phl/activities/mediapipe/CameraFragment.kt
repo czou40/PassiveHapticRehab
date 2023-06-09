@@ -24,26 +24,30 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Toast
-import androidx.camera.core.Preview
+import androidx.camera.core.AspectRatio
+import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
-import androidx.camera.core.Camera
-import androidx.camera.core.AspectRatio
+import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import com.example.phl.R
-import com.example.phl.activities.HandLandmarkerHelper
-import com.example.phl.activities.MainViewModel
+import com.example.phl.data.HandLandmarkerViewModel
 import com.example.phl.databinding.FragmentCameraBinding
+import com.example.phl.utils.HandLandmarkerHelper
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import kotlin.math.acos
+import kotlin.math.max
+import kotlin.math.roundToInt
+import kotlin.math.sqrt
 
 class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
 
@@ -57,7 +61,7 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
         get() = _fragmentCameraBinding!!
 
     private lateinit var handLandmarkerHelper: HandLandmarkerHelper
-    private val viewModel: MainViewModel by activityViewModels()
+    private val viewModel: HandLandmarkerViewModel by activityViewModels()
     private var preview: Preview? = null
     private var imageAnalyzer: ImageAnalysis? = null
     private var camera: Camera? = null
@@ -368,9 +372,35 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
             fragmentCameraBinding.viewFinder.display.rotation
     }
 
+    data class Point(val x: Double, val y: Double)
+
+    data class Point3D(val x: Double, val y: Double, val z: Double)
+
+    private fun distance(p1: Point, p2: Point): Double {
+        return sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y))
+    }
+
+    private fun distance(p1: Point3D, p2: Point3D): Double {
+        return sqrt(
+            (p1.x - p2.x) * (p1.x - p2.x) +
+                    (p1.y - p2.y) * (p1.y - p2.y) +
+                    (p1.z - p2.z) * (p1.z - p2.z)
+        )
+    }
+
+    private fun angle(a: Point, b: Point, c: Point): Double {
+        val ba = distance(b, a)
+        val bc = distance(b, c)
+        val ac = distance(a, c)
+
+        val cosAngle = (ba*ba + bc*bc - ac*ac) / (2 * ba * bc)
+
+        return Math.toDegrees(acos(cosAngle))
+    }
+
     // Update UI after hand have been detected. Extracts original
     // image height/width to scale and place the landmarks properly through
-    // OverlayView
+    // HandLandmarkerOverlayView
     override fun onResults(
         resultBundle: HandLandmarkerHelper.ResultBundle
     ) {
@@ -378,8 +408,64 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
             if (_fragmentCameraBinding != null) {
                 fragmentCameraBinding.bottomSheetLayout.inferenceTimeVal.text =
                     String.format("%d ms", resultBundle.inferenceTime)
+                val result = resultBundle.results.first()
+                val hands = result.landmarks()
+                if (hands != null && hands.size > 0) {
+                    val hand = hands[0]
+                    val points = ArrayList<Point>()
+                    for (i in 0 until hand.size) {
+                        val normalizedLandmark = hand[i]
+                        val normalizedlandmarkX = normalizedLandmark.x().toDouble() * resultBundle.inputImageWidth
+                        val normalizedlandmarkY = normalizedLandmark.y().toDouble() * resultBundle.inputImageHeight
+                        points.add(Point(normalizedlandmarkX, normalizedlandmarkY))
+//                        Log.d(
+//                            TAG,
+//                            String.format(
+//                                "Landmark %d: (%f, %f)",
+//                                i, normalizedlandmarkX, normalizedlandmarkY
+//                            )
+//                        )
+                    }
+                    // thumb = 1, 2, 3, 4
+                    val thumbAngles0 = angle(points[0], points[1], points[2])
+                    val thumbAngles1 = angle(points[1], points[2], points[3])
+                    val thumbAngles2 = angle(points[2], points[3], points[4])
+                    // index = 5, 6, 7, 8
+                    val indexAngles0 = angle(points[0], points[5], points[6])
+                    val indexAngles1 = angle(points[5], points[6], points[7])
+                    val indexAngles2 = angle(points[6], points[7], points[8])
+                    // middle = 9, 10, 11, 12
+                    val middleAngles0 = angle(points[0], points[9], points[10])
+                    val middleAngles1 = angle(points[9], points[10], points[11])
+                    val middleAngles2 = angle(points[10], points[11], points[12])
+                    // ring = 13, 14, 15, 16
+                    val ringAngles0 = angle(points[0], points[13], points[14])
+                    val ringAngles1 = angle(points[13], points[14], points[15])
+                    val ringAngles2 = angle(points[14], points[15], points[16])
+                    // pinkie = 17, 18, 19, 20
+                    val pinkieAngles0 = angle(points[0], points[17], points[18])
+                    val pinkieAngles1 = angle(points[17], points[18], points[19])
+                    val pinkieAngles2 = angle(points[18], points[19], points[20])
 
-                // Pass necessary information to OverlayView for drawing on the canvas
+                    val thumbAverage = (thumbAngles0 + thumbAngles1 + thumbAngles2) / 3
+                    val indexAverage = (indexAngles0 + indexAngles1 + indexAngles2) / 3
+                    val middleAverage = (middleAngles0 + middleAngles1 + middleAngles2) / 3
+                    val ringAverage = (ringAngles0 + ringAngles1 + ringAngles2) / 3
+                    val pinkieAverage = (pinkieAngles0 + pinkieAngles1 + pinkieAngles2) / 3
+
+                    val average = (thumbAverage + indexAverage + middleAverage + ringAverage + pinkieAverage) / 5
+
+                    val strength = ((180 - average) / 90 * 100).toInt()
+
+                    fragmentCameraBinding.strengthText.text = "Thumb extension: ${thumbAverage.toInt()}\n" +
+                            "Index extension: ${indexAverage.toInt()}\n" +
+                            "Middle extension: ${middleAverage.toInt()}\n" +
+                            "Ring extension: ${ringAverage.toInt()}\n" +
+                            "Pinkie extension: ${pinkieAverage.toInt()}\n" +
+                            "Average: ${average.toInt()}\n" +
+                            "Strength: $strength%"
+                }
+                // Pass necessary information to HandLandmarkerOverlayView for drawing on the canvas
                 fragmentCameraBinding.overlay.setResults(
                     resultBundle.results.first(),
                     resultBundle.inputImageHeight,

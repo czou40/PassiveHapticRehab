@@ -31,6 +31,8 @@ public class MyButton extends MaterialButton {
 
     private OnClickListener onClickListener;
 
+    private static final int DEFAULT_LONG_CLICK_DURATION = 0;
+
     private BroadcastReceiver remoteControlReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -160,7 +162,7 @@ public class MyButton extends MaterialButton {
                             if (countDownTimer != null) {
                                 countDownTimer.cancel();
                             }
-                            countDownTimer = new CountDownTimer(3000, 1000) {
+                            countDownTimer = new CountDownTimer(DEFAULT_LONG_CLICK_DURATION, 1000) {
                                 @Override
                                 public void onTick(long millisUntilFinished) {
                                     if (toast != null) {
@@ -185,7 +187,7 @@ public class MyButton extends MaterialButton {
                                 return false;
                             }
                             secondTime = System.currentTimeMillis();
-                            if (secondTime - firstTime > 3000) {
+                            if (secondTime - firstTime > DEFAULT_LONG_CLICK_DURATION) {
                                 onClickListener.onClick(view);
                             } else {
                                 if (countDownTimer != null) {

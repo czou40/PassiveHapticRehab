@@ -23,7 +23,7 @@
             android:id="@+id/qr_code_image_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-             />
+            />
 
         <TextView
             android:layout_width="wrap_content"
@@ -49,6 +49,33 @@
             />
 
         <com.example.phl.views.MyButton
+            android:id="@+id/button4"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start Ball Test"
+            android:layout_marginTop="16dp"
+            />
+
+        <com.example.phl.views.MyButton
+            android:id="@+id/button5"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start Tilt Test"
+            android:layout_marginTop="16dp"
+            />
+
+        <com.example.phl.views.MyButton
+            android:id="@+id/button6"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start MAS Test"
+            android:layout_marginTop="16dp"
+            />
+
+        <com.example.phl.views.MyButton
             android:id="@+id/button2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -70,7 +97,7 @@
             app:group="forward"
             app:allow_remote_control_when_not_shown="true"
             android:visibility="gone"
-           />
+            />
 
     </LinearLayout>
 </ScrollView>

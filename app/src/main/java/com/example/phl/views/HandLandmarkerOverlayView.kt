@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.phl.activities
+package com.example.phl.views
 
 import android.content.Context
 import android.graphics.Canvas
@@ -29,7 +29,7 @@ import com.google.mediapipe.tasks.vision.handlandmarker.HandLandmarkerResult
 import kotlin.math.max
 import kotlin.math.min
 
-class OverlayView(context: Context?, attrs: AttributeSet?) :
+class HandLandmarkerOverlayView(context: Context?, attrs: AttributeSet?) :
     View(context, attrs) {
 
     private var results: HandLandmarkerResult? = null
