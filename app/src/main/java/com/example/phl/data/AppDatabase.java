@@ -8,6 +8,8 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
+import com.example.phl.data.ball.BallTest;
+import com.example.phl.data.ball.BallTestDao;
 import com.example.phl.data.sensation.TactileSensation;
 import com.example.phl.data.sensation.TactileSensationDao;
 import com.example.phl.data.spasticity.Spasticity;
@@ -16,7 +18,7 @@ import com.example.phl.data.spasticity.SpasticityDao;
 import java.util.Date;
 import java.util.List;
 
-@Database(entities = {TactileSensation.class, Spasticity.class}, version = 3)
+@Database(entities = {TactileSensation.class, Spasticity.class, BallTest.class}, version = 4)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -24,6 +26,8 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract TactileSensationDao tactileSensationDao();
     public abstract SpasticityDao spasticityDao();
+
+    public abstract BallTestDao ballTestDao();
 
     public static AppDatabase getInstance(Context context) {
         if (db == null) {

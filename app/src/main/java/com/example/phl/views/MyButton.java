@@ -47,8 +47,8 @@ public class MyButton extends MaterialButton {
                                 onClickListener.onClick(MyButton.this);
                             }
                         } else {
-                            performClick();
                             abortBroadcast();
+                            performClick();
                         }
                     }
                 } else if (commandGroup != Group.OTHER && commandGroup == group) {
@@ -58,8 +58,8 @@ public class MyButton extends MaterialButton {
                                 onClickListener.onClick(MyButton.this);
                             }
                         } else {
-                            performClick();
                             abortBroadcast();
+                            performClick();
                         }
                     }
                 }

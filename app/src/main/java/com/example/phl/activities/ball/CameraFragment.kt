@@ -18,11 +18,12 @@ package com.example.phl.activities.ball
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.camera.core.AspectRatio
 import androidx.camera.core.Camera
@@ -40,12 +41,22 @@ import com.example.phl.data.HandLandmarkerViewModel
 import com.example.phl.databinding.FragmentCameraBinding
 import com.example.phl.utils.HandLandmarkerHelper
 import com.google.mediapipe.tasks.vision.core.RunningMode
-import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.math.acos
+import kotlin.math.ceil
 import kotlin.math.sqrt
+import android.view.animation.ScaleAnimation
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import com.example.phl.data.ball.BallTest
+import com.example.phl.data.ball.BallTestOperations
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.UUID
 
 class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
 
@@ -65,6 +76,10 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
     private var camera: Camera? = null
     private var cameraProvider: ProcessCameraProvider? = null
     private var cameraFacing = CameraSelector.LENS_FACING_FRONT
+
+    private var isSavingData = false
+
+    private var sessionId: String? = null
 
     /** Blocking ML operations are performed using this executor */
     private lateinit var backgroundExecutor: ExecutorService
@@ -90,7 +105,7 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
 
     override fun onPause() {
         super.onPause()
-        if(this::handLandmarkerHelper.isInitialized) {
+        if (this::handLandmarkerHelper.isInitialized) {
             viewModel.setMaxHands(handLandmarkerHelper.maxNumHands)
             viewModel.setMinHandDetectionConfidence(handLandmarkerHelper.minHandDetectionConfidence)
             viewModel.setMinHandTrackingConfidence(handLandmarkerHelper.minHandTrackingConfidence)
@@ -151,148 +166,77 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
             )
         }
 
-        // Attach listeners to UI control widgets
-        initBottomSheetControls()
+        // Find your TextView
+        val countdownTextView: TextView = fragmentCameraBinding.countdownText
+
+        // Create a CountdownTimer
+        object : CountDownTimer(3000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                // Update TextView
+                countdownTextView.text = ceil(millisUntilFinished / 1000.0).toInt().toString()
+
+                // Create a scale animation
+                val scaleAnimation = ScaleAnimation(
+                    1f, 1.2f, 1f, 1.2f,
+                    Animation.RELATIVE_TO_SELF, 0.5f,
+                    Animation.RELATIVE_TO_SELF, 0.5f
+                )
+                scaleAnimation.duration = 1000
+                // Start the animation
+                countdownTextView.startAnimation(scaleAnimation)
+            }
+
+            override fun onFinish() {
+                // Create a fade out animation
+                val fadeOutAnimation = AlphaAnimation(1f, 0f)
+                fadeOutAnimation.duration = 500
+
+                // Start the animation
+                countdownTextView.startAnimation(fadeOutAnimation)
+
+                // Set visibility to GONE after the animation
+                countdownTextView.postDelayed({
+                    countdownTextView.visibility = View.GONE
+                    startSavingData()
+                }, 500)
+
+                // Set visibility to GONE after the animation and start saving data
+                countdownTextView.postDelayed({
+                    countdownTextView.visibility = View.GONE
+                    startSavingData()
+                    // Schedule stop saving data for 20 seconds later
+                    countdownTextView.postDelayed({ stopSavingData() }, 5_000)
+                }, 500)
+            }
+        }.start()
+
+
     }
 
-    private fun initBottomSheetControls() {
-        // init bottom sheet settings
-        fragmentCameraBinding.bottomSheetLayout.maxHandsValue.text =
-            viewModel.currentMaxHands.toString()
-        fragmentCameraBinding.bottomSheetLayout.detectionThresholdValue.text =
-            String.format(
-                Locale.US, "%.2f", viewModel.currentMinHandDetectionConfidence
-            )
-        fragmentCameraBinding.bottomSheetLayout.trackingThresholdValue.text =
-            String.format(
-                Locale.US, "%.2f", viewModel.currentMinHandTrackingConfidence
-            )
-        fragmentCameraBinding.bottomSheetLayout.presenceThresholdValue.text =
-            String.format(
-                Locale.US, "%.2f", viewModel.currentMinHandPresenceConfidence
-            )
-
-        // When clicked, lower hand detection score threshold floor
-        fragmentCameraBinding.bottomSheetLayout.detectionThresholdMinus.setOnClickListener {
-            if (handLandmarkerHelper.minHandDetectionConfidence >= 0.2) {
-                handLandmarkerHelper.minHandDetectionConfidence -= 0.1f
-                updateControlsUi()
-            }
-        }
-
-        // When clicked, raise hand detection score threshold floor
-        fragmentCameraBinding.bottomSheetLayout.detectionThresholdPlus.setOnClickListener {
-            if (handLandmarkerHelper.minHandDetectionConfidence <= 0.8) {
-                handLandmarkerHelper.minHandDetectionConfidence += 0.1f
-                updateControlsUi()
-            }
-        }
-
-        // When clicked, lower hand tracking score threshold floor
-        fragmentCameraBinding.bottomSheetLayout.trackingThresholdMinus.setOnClickListener {
-            if (handLandmarkerHelper.minHandTrackingConfidence >= 0.2) {
-                handLandmarkerHelper.minHandTrackingConfidence -= 0.1f
-                updateControlsUi()
-            }
-        }
-
-        // When clicked, raise hand tracking score threshold floor
-        fragmentCameraBinding.bottomSheetLayout.trackingThresholdPlus.setOnClickListener {
-            if (handLandmarkerHelper.minHandTrackingConfidence <= 0.8) {
-                handLandmarkerHelper.minHandTrackingConfidence += 0.1f
-                updateControlsUi()
-            }
-        }
-
-        // When clicked, lower hand presence score threshold floor
-        fragmentCameraBinding.bottomSheetLayout.presenceThresholdMinus.setOnClickListener {
-            if (handLandmarkerHelper.minHandPresenceConfidence >= 0.2) {
-                handLandmarkerHelper.minHandPresenceConfidence -= 0.1f
-                updateControlsUi()
-            }
-        }
-
-        // When clicked, raise hand presence score threshold floor
-        fragmentCameraBinding.bottomSheetLayout.presenceThresholdPlus.setOnClickListener {
-            if (handLandmarkerHelper.minHandPresenceConfidence <= 0.8) {
-                handLandmarkerHelper.minHandPresenceConfidence += 0.1f
-                updateControlsUi()
-            }
-        }
-
-        // When clicked, reduce the number of hands that can be detected at a
-        // time
-        fragmentCameraBinding.bottomSheetLayout.maxHandsMinus.setOnClickListener {
-            if (handLandmarkerHelper.maxNumHands > 1) {
-                handLandmarkerHelper.maxNumHands--
-                updateControlsUi()
-            }
-        }
-
-        // When clicked, increase the number of hands that can be detected
-        // at a time
-        fragmentCameraBinding.bottomSheetLayout.maxHandsPlus.setOnClickListener {
-            if (handLandmarkerHelper.maxNumHands < 2) {
-                handLandmarkerHelper.maxNumHands++
-                updateControlsUi()
-            }
-        }
-
-        // When clicked, change the underlying hardware used for inference.
-        // Current options are CPU and GPU
-        fragmentCameraBinding.bottomSheetLayout.spinnerDelegate.setSelection(
-            viewModel.currentDelegate, false
-        )
-        fragmentCameraBinding.bottomSheetLayout.spinnerDelegate.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long
-                ) {
-                    try {
-                        handLandmarkerHelper.currentDelegate = p2
-                        updateControlsUi()
-                    } catch(e: UninitializedPropertyAccessException) {
-                        Log.e(TAG, "HandLandmarkerHelper has not been initialized yet.")
-                    }
-                }
-
-                override fun onNothingSelected(p0: AdapterView<*>?) {
-                    /* no op */
-                }
-            }
+    private fun startSavingData() {
+        sessionId = UUID.randomUUID().toString()
+        isSavingData = true
     }
 
-    // Update the values displayed in the bottom sheet. Reset Handlandmarker
-    // helper.
-    private fun updateControlsUi() {
-        fragmentCameraBinding.bottomSheetLayout.maxHandsValue.text =
-            handLandmarkerHelper.maxNumHands.toString()
-        fragmentCameraBinding.bottomSheetLayout.detectionThresholdValue.text =
-            String.format(
-                Locale.US,
-                "%.2f",
-                handLandmarkerHelper.minHandDetectionConfidence
-            )
-        fragmentCameraBinding.bottomSheetLayout.trackingThresholdValue.text =
-            String.format(
-                Locale.US,
-                "%.2f",
-                handLandmarkerHelper.minHandTrackingConfidence
-            )
-        fragmentCameraBinding.bottomSheetLayout.presenceThresholdValue.text =
-            String.format(
-                Locale.US,
-                "%.2f",
-                handLandmarkerHelper.minHandPresenceConfidence
-            )
-
-        // Needs to be cleared instead of reinitialized because the GPU
-        // delegate needs to be initialized on the thread using it when applicable
-        backgroundExecutor.execute {
-            handLandmarkerHelper.clearHandLandmarker()
-            handLandmarkerHelper.setupHandLandmarker()
+    private fun stopSavingData() {
+        isSavingData = false
+        val oldSessionId = sessionId
+        GlobalScope.launch(Dispatchers.IO) {
+            var ballTests = BallTestOperations.loadData(requireContext(), oldSessionId!!)
+            if (ballTests.isNotEmpty()) {
+                // print ballTests.random()
+                val ballTest = ballTests.random()
+                Log.d(TAG, "thumbAngle1: ${ballTest.thumbAngle1}")
+            }
+            withContext(Dispatchers.Main) {
+                Toast.makeText(
+                    requireContext(),
+                    "Saved ${ballTests.size} ball tests",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
-        fragmentCameraBinding.overlay.clear()
+        sessionId = null
     }
 
     // Initialize CameraX, and prepare to bind the camera use cases
@@ -404,61 +348,78 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
     override fun onResults(
         resultBundle: HandLandmarkerHelper.ResultBundle
     ) {
-        activity?.runOnUiThread {
-            if (_fragmentCameraBinding != null) {
-                fragmentCameraBinding.bottomSheetLayout.inferenceTimeVal.text =
-                    String.format("%d ms", resultBundle.inferenceTime)
-                val result = resultBundle.results.first()
-                val hands = result.landmarks()
-                if (hands != null && hands.size > 0) {
-                    val hand = hands[0]
-                    val points = ArrayList<Point3D>()
-                    for (i in 0 until hand.size) {
-                        val normalizedLandmark = hand[i]
-                        val normalizedLandmarkX = normalizedLandmark.x().toDouble() * resultBundle.inputImageWidth
-                        val normalizedLandmarkY = normalizedLandmark.y().toDouble() * resultBundle.inputImageHeight
-                        val normalizedLandmarkZ = normalizedLandmark.z().toDouble() * resultBundle.inputImageWidth
-                        points.add(Point3D(normalizedLandmarkX, normalizedLandmarkY, normalizedLandmarkZ))
-                    }
-                    // thumb = 1, 2, 3, 4
-                    val thumbAngles0 = angle(points[0], points[1], points[2])
-                    val thumbAngles1 = angle(points[1], points[2], points[3])
-                    val thumbAngles2 = angle(points[2], points[3], points[4])
-                    // index = 5, 6, 7, 8
-                    val indexAngles0 = angle(points[0], points[5], points[6])
-                    val indexAngles1 = angle(points[5], points[6], points[7])
-                    val indexAngles2 = angle(points[6], points[7], points[8])
-                    // middle = 9, 10, 11, 12
-                    val middleAngles0 = angle(points[0], points[9], points[10])
-                    val middleAngles1 = angle(points[9], points[10], points[11])
-                    val middleAngles2 = angle(points[10], points[11], points[12])
-                    // ring = 13, 14, 15, 16
-                    val ringAngles0 = angle(points[0], points[13], points[14])
-                    val ringAngles1 = angle(points[13], points[14], points[15])
-                    val ringAngles2 = angle(points[14], points[15], points[16])
-                    // pinkie = 17, 18, 19, 20
-                    val pinkieAngles0 = angle(points[0], points[17], points[18])
-                    val pinkieAngles1 = angle(points[17], points[18], points[19])
-                    val pinkieAngles2 = angle(points[18], points[19], points[20])
+        val result = resultBundle.results.first()
+        val hands = result.landmarks()
+        if (hands != null && hands.size > 0) {
+            val hand = hands[0]
+            val points = hand.map { normalizedLandmark ->
+                Point3D(
+                    normalizedLandmark.x().toDouble() * resultBundle.inputImageWidth,
+                    normalizedLandmark.y().toDouble() * resultBundle.inputImageHeight,
+                    normalizedLandmark.z().toDouble() * resultBundle.inputImageWidth
+                )
+            }
+            // thumb = 1, 2, 3, 4
+            val thumbAngle0 = angle(points[0], points[1], points[2])
+            val thumbAngle1 = angle(points[1], points[2], points[3])
+            val thumbAngle2 = angle(points[2], points[3], points[4])
+            // index = 5, 6, 7, 8
+            val indexAngle0 = angle(points[0], points[5], points[6])
+            val indexAngle1 = angle(points[5], points[6], points[7])
+            val indexAngle2 = angle(points[6], points[7], points[8])
+            // middle = 9, 10, 11, 12
+            val middleAngle0 = angle(points[0], points[9], points[10])
+            val middleAngle1 = angle(points[9], points[10], points[11])
+            val middleAngle2 = angle(points[10], points[11], points[12])
+            // ring = 13, 14, 15, 16
+            val ringAngle0 = angle(points[0], points[13], points[14])
+            val ringAngle1 = angle(points[13], points[14], points[15])
+            val ringAngle2 = angle(points[14], points[15], points[16])
+            // pinkie = 17, 18, 19, 20
+            val pinkieAngle0 = angle(points[0], points[17], points[18])
+            val pinkieAngle1 = angle(points[17], points[18], points[19])
+            val pinkieAngle2 = angle(points[18], points[19], points[20])
 
-                    val thumbAverage = (thumbAngles0 + thumbAngles1 + thumbAngles2) / 3
-                    val indexAverage = (indexAngles0 + indexAngles1 + indexAngles2) / 3
-                    val middleAverage = (middleAngles0 + middleAngles1 + middleAngles2) / 3
-                    val ringAverage = (ringAngles0 + ringAngles1 + ringAngles2) / 3
-                    val pinkieAverage = (pinkieAngles0 + pinkieAngles1 + pinkieAngles2) / 3
+            val thumbAverage = (thumbAngle0 + thumbAngle1 + thumbAngle2) / 3
+            val indexAverage = (indexAngle0 + indexAngle1 + indexAngle2) / 3
+            val middleAverage = (middleAngle0 + middleAngle1 + middleAngle2) / 3
+            val ringAverage = (ringAngle0 + ringAngle1 + ringAngle2) / 3
+            val pinkieAverage = (pinkieAngle0 + pinkieAngle1 + pinkieAngle2) / 3
 
-                    val average = (thumbAverage + indexAverage + middleAverage + ringAverage + pinkieAverage) / 5
+            val average =
+                (thumbAverage + indexAverage + middleAverage + ringAverage + pinkieAverage) / 5
 
-                    val strength = ((180 - average) / 90 * 100).toInt()
+            val strength = ((180 - average) / 90 * 100).toInt()
 
-                    fragmentCameraBinding.strengthText.text = "Thumb extension: ${thumbAverage.toInt()}\n" +
+            if (isSavingData) {
+                val ballTest = BallTest(
+                    requireNotNull(sessionId),
+                    thumbAngle0, thumbAngle1, thumbAngle2,
+                    indexAngle0, indexAngle1, indexAngle2,
+                    middleAngle0, middleAngle1, middleAngle2,
+                    ringAngle0, ringAngle1, ringAngle2,
+                    pinkieAngle0, pinkieAngle1, pinkieAngle2,
+                )
+
+                GlobalScope.launch(Dispatchers.IO) {
+                    BallTestOperations.insertData(requireActivity().applicationContext, ballTest)
+                }
+            }
+
+            activity?.runOnUiThread {
+                fragmentCameraBinding.strengthText.text =
+                    "Thumb extension: ${thumbAverage.toInt()}\n" +
                             "Index extension: ${indexAverage.toInt()}\n" +
                             "Middle extension: ${middleAverage.toInt()}\n" +
                             "Ring extension: ${ringAverage.toInt()}\n" +
                             "Pinkie extension: ${pinkieAverage.toInt()}\n" +
                             "Average: ${average.toInt()}\n" +
                             "Strength: $strength%"
-                }
+            }
+        }
+
+        activity?.runOnUiThread {
+            if (_fragmentCameraBinding != null) {
                 // Pass necessary information to HandLandmarkerOverlayView for drawing on the canvas
                 fragmentCameraBinding.overlay.setResults(
                     resultBundle.results.first(),

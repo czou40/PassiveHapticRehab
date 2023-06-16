@@ -34,7 +34,7 @@
             android:background="@android:color/transparent"
             android:keepScreenOn="true"
             app:defaultNavHost="true"
-            app:navGraph="@navigation/nav_graph_mediapipe"
+            app:navGraph="@navigation/nav_graph_ball"
             tools:context=".MainActivity" />
 
         <View

@@ -29,13 +29,26 @@
     <com.example.phl.views.HandLandmarkerOverlayView
         android:id="@+id/overlay"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        />
+
+    <TextView
+        android:text="3"
+        android:id="@+id/countdown_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textSize="64sp"
+        android:textColor="@android:color/white"
+        android:background="#80000000"
+        />
+
 
     <TextView
         android:id="@+id/strength_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="dasdasdsadsfsd"/>
+        android:text=""/>
 
     <include
         android:id="@+id/bottom_sheet_layout"
