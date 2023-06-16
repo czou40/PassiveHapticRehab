@@ -77,7 +77,7 @@ public class RemoteControlService extends Service {
     private void broadcastCommand(String command) {
         Intent intent = new Intent(ACTION);
         intent.putExtra(COMMAND, command);
-        sendBroadcast(intent);
+        sendOrderedBroadcast(intent, null);
     }
 
     @Override

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.phl.activities.mediapipe
+package com.example.phl.activities.ball
 
 import android.Manifest
 import android.content.Context

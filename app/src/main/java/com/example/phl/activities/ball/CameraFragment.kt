@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.phl.activities.mediapipe
+package com.example.phl.activities.ball
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
@@ -45,8 +45,6 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.math.acos
-import kotlin.math.max
-import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
@@ -372,30 +370,32 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
             fragmentCameraBinding.viewFinder.display.rotation
     }
 
-    data class Point(val x: Double, val y: Double)
-
     data class Point3D(val x: Double, val y: Double, val z: Double)
 
-    private fun distance(p1: Point, p2: Point): Double {
-        return sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y))
+    fun vector(point1: Point3D, point2: Point3D): Point3D {
+        return Point3D(point2.x - point1.x, point2.y - point1.y, point2.z - point1.z)
     }
 
-    private fun distance(p1: Point3D, p2: Point3D): Double {
-        return sqrt(
-            (p1.x - p2.x) * (p1.x - p2.x) +
-                    (p1.y - p2.y) * (p1.y - p2.y) +
-                    (p1.z - p2.z) * (p1.z - p2.z)
-        )
+    fun dotProduct(vector1: Point3D, vector2: Point3D): Double {
+        return vector1.x * vector2.x + vector1.y * vector2.y + vector1.z * vector2.z
     }
 
-    private fun angle(a: Point, b: Point, c: Point): Double {
-        val ba = distance(b, a)
-        val bc = distance(b, c)
-        val ac = distance(a, c)
+    fun magnitude(vector: Point3D): Double {
+        return sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z)
+    }
 
-        val cosAngle = (ba*ba + bc*bc - ac*ac) / (2 * ba * bc)
+    fun angle(pointA: Point3D, pointB: Point3D, pointC: Point3D): Double {
+        val vectorBA = vector(pointB, pointA)
+        val vectorBC = vector(pointB, pointC)
 
-        return Math.toDegrees(acos(cosAngle))
+        val dotProduct = dotProduct(vectorBA, vectorBC)
+
+        val magnitudeProduct = magnitude(vectorBA) * magnitude(vectorBC)
+
+        val angleInRad = acos(dotProduct / magnitudeProduct)
+
+        // Convert to degrees
+        return Math.toDegrees(angleInRad)
     }
 
     // Update UI after hand have been detected. Extracts original
@@ -412,19 +412,13 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
                 val hands = result.landmarks()
                 if (hands != null && hands.size > 0) {
                     val hand = hands[0]
-                    val points = ArrayList<Point>()
+                    val points = ArrayList<Point3D>()
                     for (i in 0 until hand.size) {
                         val normalizedLandmark = hand[i]
-                        val normalizedlandmarkX = normalizedLandmark.x().toDouble() * resultBundle.inputImageWidth
-                        val normalizedlandmarkY = normalizedLandmark.y().toDouble() * resultBundle.inputImageHeight
-                        points.add(Point(normalizedlandmarkX, normalizedlandmarkY))
-//                        Log.d(
-//                            TAG,
-//                            String.format(
-//                                "Landmark %d: (%f, %f)",
-//                                i, normalizedlandmarkX, normalizedlandmarkY
-//                            )
-//                        )
+                        val normalizedLandmarkX = normalizedLandmark.x().toDouble() * resultBundle.inputImageWidth
+                        val normalizedLandmarkY = normalizedLandmark.y().toDouble() * resultBundle.inputImageHeight
+                        val normalizedLandmarkZ = normalizedLandmark.z().toDouble() * resultBundle.inputImageWidth
+                        points.add(Point3D(normalizedLandmarkX, normalizedLandmarkY, normalizedLandmarkZ))
                     }
                     // thumb = 1, 2, 3, 4
                     val thumbAngles0 = angle(points[0], points[1], points[2])

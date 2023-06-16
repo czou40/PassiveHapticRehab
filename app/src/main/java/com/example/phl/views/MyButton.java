@@ -48,6 +48,7 @@ public class MyButton extends MaterialButton {
                             }
                         } else {
                             performClick();
+                            abortBroadcast();
                         }
                     }
                 } else if (commandGroup != Group.OTHER && commandGroup == group) {
@@ -58,6 +59,7 @@ public class MyButton extends MaterialButton {
                             }
                         } else {
                             performClick();
+                            abortBroadcast();
                         }
                     }
                 }

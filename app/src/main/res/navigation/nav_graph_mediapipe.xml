@@ -21,7 +21,7 @@
 
     <fragment
         android:id="@+id/permissions_fragment"
-        android:name="com.example.phl.activities.mediapipe.PermissionsFragment"
+        android:name="com.example.phl.activities.ball.PermissionsFragment"
         android:label="PermissionsFragment">
 
         <action
@@ -34,7 +34,7 @@
 
     <fragment
         android:id="@+id/camera_fragment"
-        android:name="com.example.phl.activities.mediapipe.CameraFragment"
+        android:name="com.example.phl.activities.ball.CameraFragment"
         android:label="CameraFragment">
 
         <action
