@@ -1,12 +1,18 @@
 package com.example.phl.services;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.IBinder;
 import android.util.Log;
 
 import java.net.URISyntaxException;
+import java.util.HashSet;
+import java.util.Set;
 
+import io.socket.client.Ack;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -16,7 +22,15 @@ public class RemoteControlService extends Service {
     private static Socket socket;
 
     public static final String MESSAGE = "message";
-    public static final String COMMAND = "command";
+    public static final String COMMAND = "client/command";
+
+    public static final String CLIENT_UP = "client";
+
+    public static final String ADD = "client/add";
+    public static final String REMOVE = "client/remove";
+
+    public static final String NOTIFY_ACTION = "com.example.phl.services.RemoteControlService.NOTIFY";
+
     public static final String ID = "id";
     public static final String ACTION = "com.example.phl.services.RemoteControlService";
 
@@ -27,6 +41,51 @@ public class RemoteControlService extends Service {
     public static final String API_SERVER = "https://phl.api.czou.me";
 
     private static boolean isSocketConnected = false;
+
+    private static Set<String> addCommandBuffer = new HashSet<>();
+
+    private static Set<String> removeCommandBuffer = new HashSet<>();
+
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String command = intent.getStringExtra(ADD);
+            String remove = intent.getStringExtra(REMOVE);
+            Log.d("RemoteControlService", "Found command: " + command);
+            if (command != null) {
+                if (isSocketConnected) {
+                    socket.emit(ADD, command, (Ack) args -> {
+                        addCommandBuffer.remove(command);
+                    });
+                } else {
+                    Log.e("RemoteControlService", "Socket not connected");
+                }
+            }
+            if (remove != null) {
+                if (isSocketConnected) {
+                    socket.emit(REMOVE, remove, (Ack) args -> {
+                        removeCommandBuffer.remove(remove);
+                    });
+                } else {
+                    Log.e("RemoteControlService", "Socket not connected");
+                }
+            }
+        }
+    };
+
+    public static void notifyCommand(Context context, String command) {
+        Intent intent = new Intent(NOTIFY_ACTION);
+        intent.putExtra(ADD, command);
+        addCommandBuffer.add(command);
+        context.sendBroadcast(intent);
+    }
+
+    public static void notifyCommandRemoval(Context context, String command) {
+        Intent intent = new Intent(NOTIFY_ACTION);
+        intent.putExtra(REMOVE, command);
+        removeCommandBuffer.add(command);
+        context.sendBroadcast(intent);
+    }
 
     public RemoteControlService() {
         try {
@@ -56,10 +115,21 @@ public class RemoteControlService extends Service {
         // Handle connection
         Log.i("RemoteControlService", "Connected to server");
         Log.d("RemoteControlService", "Socket ID: " + socket.id());
+        socket.emit(CLIENT_UP);
         isSocketConnected = true;
         Intent intent = new Intent(SOCKET_CONNECTED_ACTION);
         intent.putExtra(ID, socket.id());
         sendBroadcast(intent);
+        for (String command : addCommandBuffer) {
+            socket.emit(ADD, command, (Ack) args1 -> {
+                addCommandBuffer.remove(command);
+            });
+        }
+        for (String command : removeCommandBuffer) {
+            socket.emit(REMOVE, command, (Ack) args1 -> {
+                removeCommandBuffer.remove(command);
+            });
+        }
     };
 
     private Emitter.Listener onDisconnect = args -> {
@@ -88,8 +158,10 @@ public class RemoteControlService extends Service {
             socket.off(Socket.EVENT_CONNECT, onConnect);
             socket.off(Socket.EVENT_DISCONNECT, onDisconnect);
             socket.off(COMMAND, onCommand);
+            socket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
             isSocketConnected = false;
         }
+        unregisterReceiver(broadcastReceiver);
     }
 
     @Override
@@ -105,5 +177,15 @@ public class RemoteControlService extends Service {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        registerReceiver(broadcastReceiver, new IntentFilter(NOTIFY_ACTION));
+    }
+
+    public interface CommandHandler {
+        void handle();
     }
 }

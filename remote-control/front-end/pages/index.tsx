@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios, { AxiosError } from 'axios';
+import { Socket, io } from "socket.io-client";
 import { useZxing } from "react-zxing";
 import { useRouter } from 'next/router';
-import { time } from 'console';
+import Head from 'next/head'
 const API_SERVER = process.env.NEXT_PUBLIC_API_SERVER;
 console.info(`API_SERVER: ${API_SERVER}`);
 
@@ -12,7 +13,37 @@ const App: React.FC = () => {
     const router = useRouter();
     const [id, setId] = useState("");
     const [sendCommandTrigger, setSendCommandTrigger] = useState(false);
+    const [isConnected, setIsConnected] = useState(false);
+    const [commands, setCommands] = useState<string[]>([]);
+    const [socket, setSocket] = useState<Socket | null>(null);
 
+    useEffect(() => {
+        if (id) {
+            console.info(`id: ${id}`)
+            const socketTemp = io(API_SERVER as string);
+            const onConnect = () => {
+                setIsConnected(true);
+                socketTemp.emit('remote', id);
+            }
+            const onDisconnect = () => {
+                setIsConnected(false);
+            }
+            const onUpdateEvent = (data: string) => {
+                const jsonData = JSON.parse(data);
+                setCommands(jsonData);
+            }
+            socketTemp.on('connect', onConnect);
+            socketTemp.on('disconnect', onDisconnect);
+            socketTemp.on('remote', onUpdateEvent);
+            setSocket(socketTemp);
+            return () => {
+                socketTemp.off('connect', onConnect);
+                socketTemp.off('disconnect', onDisconnect);
+                socketTemp.off('remote', onUpdateEvent);
+                socketTemp.disconnect();
+            };
+        }
+    }, [id]);
 
     const { ref } = useZxing({
         onResult(result) {
@@ -27,8 +58,6 @@ const App: React.FC = () => {
             setId(router.query.id as string);
         }
     }, [router.query.id, router]);
-
-    console.log(id);
 
     useEffect(() => {
         if (id && id !== router.query.id) {
@@ -81,30 +110,34 @@ const App: React.FC = () => {
         });
     };
 
-    const commonCommands = ['Forward', 'Backward', 'Yes', 'No', 'Uncertain', 'Start', 'Stop', 'Exit', 'Start Spasticity Test', 'Start Tactile Sensation Test', 'View My Progress'];
+    // const commonCommands = ['Forward', 'Backward', 'Yes', 'No', 'Uncertain', 'Start', 'Stop', 'Exit', 'Start Spasticity Test', 'Start Tactile Sensation Test', 'View My Progress'];
 
     return (
-        <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
-            <div className="relative py-3 sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto">
-                <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
-                <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-10 md:p-16 lg:p-20 xl:p-24">
-                    <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">PHL Remote Control</h1>
-                    {!id && (
-                        <>
-                            <p className="mb-4">Scan QR Code</p>
-                        </>
-                    )}
-                    <video ref={ref} style={{ display: id ? 'none' : 'revert' }} />
-                    {id && (
-                        <>
-                            <p className="mb-4">ID: {id}</p>
-                            <button
-                                className="bg-blue-500 text-white font-bold py-2 px-4 rounded mr-2 mb-2 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50"
-                                onClick={rescan}
-                            >
-                                Rescan
-                            </button>
-                            <input
+        <>
+            <Head>
+                <title>Passive Haptic Learning Remote Control</title>
+            </Head>
+            <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
+                <div className="relative py-3 sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto">
+                    <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
+                    <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-10 md:p-16 lg:p-20 xl:p-24">
+                        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">PHL Remote Control</h1>
+                        {!id && (
+                            <>
+                                <p className="mb-4">Scan QR Code</p>
+                            </>
+                        )}
+                        <video ref={ref} style={{ display: id ? 'none' : 'revert' }} />
+                        {id && (
+                            <>
+                                <p className="mb-4">ID: {id}</p>
+                                <button
+                                    className="bg-blue-500 text-white font-bold py-2 px-4 rounded mr-2 mb-2 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50"
+                                    onClick={rescan}
+                                >
+                                    Rescan
+                                </button>
+                                {/* <input
                                 value={command}
                                 onChange={(e) => setCommand(e.target.value)}
                                 placeholder="Command"
@@ -115,19 +148,20 @@ const App: React.FC = () => {
                                 onClick={sendCommand}
                             >
                                 Send Command
-                            </button>
-                            <h4 className="text-lg font-semibold mt-4 mb-2">Common Commands:</h4>
-                            {commonCommands.map((c) => (<button
-                                className="bg-green-500 text-white font-bold py-2 px-4 rounded mr-2 mb-2 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-opacity-50"
-                                value={c} key={c} onClick={setAndSendCommand}>
-                                {c}
-                            </button>))}
-                            {message && <p className="mt-4 text-red-500">{message}</p>}
-                        </>
-                    )}
+                            </button> */}
+                                <h4 className="text-lg font-semibold mt-4 mb-2">Detected Commands:</h4>
+                                {commands.length > 0 ? commands.map((c) => (<button
+                                    className="bg-green-500 text-white font-bold py-2 px-4 rounded mr-2 mb-2 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-opacity-50"
+                                    value={c} key={c} onClick={setAndSendCommand}>
+                                    {c}
+                                </button>)) : <p className="mt-4 text-red-500">No commands detected</p>}
+                                {message && <p className="mt-4 text-red-500">{message}</p>}
+                            </>
+                        )}
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

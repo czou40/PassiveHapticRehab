@@ -80,14 +80,10 @@ public class MainActivity extends MyBaseActivity {
         Button button4 = findViewById(R.id.button4);
         Button button5= findViewById(R.id.button5);
         Button button6 = findViewById(R.id.button6);
-        MyButton myButton = findViewById(R.id.my_button);
         noInternetConnection = findViewById(R.id.no_internet);
         connecting = findViewById(R.id.connecting);
         qrCodeImageView = findViewById(R.id.qr_code_image_view);
         qrCodeTextView = findViewById(R.id.qr_code_text_view);
-        myButton.setOnClickListener(v -> {
-            Toast.makeText(this, "MyButton clicked", Toast.LENGTH_SHORT).show();
-        });
         button1.setOnClickListener(v -> {
             // navigate to spasticity diagnosis
             Intent intent = new Intent(this, SpasticityDiagnosisActivity.class);

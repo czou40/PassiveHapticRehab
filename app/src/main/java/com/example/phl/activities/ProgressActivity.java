@@ -1,7 +1,5 @@
 package com.example.phl.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 
 import com.example.phl.R;
@@ -13,6 +11,7 @@ import com.example.phl.data.sensation.TactileSensation;
 import com.example.phl.data.sensation.TactileSensationOperations;
 import com.example.phl.data.spasticity.Spasticity;
 import com.example.phl.data.spasticity.SpasticityOperations;
+import com.example.phl.services.RemoteControlService;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -63,7 +62,12 @@ public class ProgressActivity extends MyBaseActivity {
                 // Handle tab reselection
             }
         });
-
+        registerCommand("Exit", new RemoteControlService.CommandHandler() {
+            @Override
+            public void handle() {
+                finish();
+            }
+        });
     }
 
     private void loadTactileSensationData() {

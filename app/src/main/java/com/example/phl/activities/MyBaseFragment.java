@@ -5,20 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
-import android.view.View;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.example.phl.services.RemoteControlService;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class MyBaseActivity  extends AppCompatActivity {
-
+public class MyBaseFragment extends Fragment {
     private boolean isReceiverRegistered = false;
 
-    public static final String TAG = "MyBaseActivity";
+    public static final String TAG = "MyBaseFragment";
 
     private Map<String, RemoteControlService.CommandHandler> commandMap = new HashMap<>();
 
@@ -45,19 +43,19 @@ public class MyBaseActivity  extends AppCompatActivity {
 
     private void registerAllCommands() {
         for (String command : commandMap.keySet()) {
-            RemoteControlService.notifyCommand(this, command);
+            RemoteControlService.notifyCommand(requireContext(), command);
         }
     }
     private void unregisterAllCommands() {
         for (String command : commandMap.keySet()) {
-            RemoteControlService.notifyCommandRemoval(this, command);
+            RemoteControlService.notifyCommandRemoval(requireContext(), command);
         }
     }
 
     private void registerReceiverIfNotRegistered() {
         if (!isReceiverRegistered) {
             IntentFilter filter = new IntentFilter(RemoteControlService.ACTION);
-            this.registerReceiver(remoteControlReceiver, filter);
+            requireContext().registerReceiver(remoteControlReceiver, filter);
             isReceiverRegistered = true;
         }
         registerAllCommands();
@@ -66,33 +64,20 @@ public class MyBaseActivity  extends AppCompatActivity {
     private void unregisterReceiverIfRegistered() {
         unregisterAllCommands();
         if (isReceiverRegistered) {
-            this.unregisterReceiver(remoteControlReceiver);
+            requireContext().unregisterReceiver(remoteControlReceiver);
             isReceiverRegistered = false;
         }
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
-        hideSystemUI();
         registerReceiverIfNotRegistered();
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         unregisterReceiverIfRegistered();
     }
-
-    private void hideSystemUI() {
-        View decorView = getWindow().getDecorView();
-        decorView.setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN);
-    }
-
 }

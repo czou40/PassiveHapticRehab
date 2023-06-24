@@ -33,11 +33,12 @@ public class MyButton extends MaterialButton {
 
     private static final int DEFAULT_LONG_CLICK_DURATION = 0;
 
+    private String command;
+
     private BroadcastReceiver remoteControlReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String command = intent.getStringExtra("command");
-            Log.d("MyButton", "Received command: " + command);
+            String command = intent.getStringExtra(RemoteControlService.COMMAND);
             if (command != null) {
                 Group commandGroup = Group.fromString(command);
                 if (command.trim().equalsIgnoreCase(MyButton.this.getText().toString().trim())) {
@@ -228,6 +229,10 @@ public class MyButton extends MaterialButton {
             IntentFilter filter = new IntentFilter(RemoteControlService.ACTION);
             getContext().registerReceiver(remoteControlReceiver, filter);
             isReceiverRegistered = true;
+            if (getText() != null && !getText().toString().trim().isEmpty()) {
+                command = getText().toString().trim();
+                RemoteControlService.notifyCommand(getContext(), command);
+            }
             Log.d("MyButton", "Registered receiver");
         }
     }
@@ -236,6 +241,9 @@ public class MyButton extends MaterialButton {
         if (isReceiverRegistered) {
             getContext().unregisterReceiver(remoteControlReceiver);
             isReceiverRegistered = false;
+            if (command != null) {
+                RemoteControlService.notifyCommandRemoval(getContext(), command);
+            }
             Log.d("MyButton", "Unregistered receiver");
         }
     }

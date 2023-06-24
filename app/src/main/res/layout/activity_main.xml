@@ -89,16 +89,6 @@
             android:text="@string/view_my_progress"
             android:layout_marginTop="16dp" />
 
-        <com.example.phl.views.MyButton
-            android:id="@+id/my_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="My Button"
-            app:group="forward"
-            app:allow_remote_control_when_not_shown="true"
-            android:visibility="gone"
-            />
-
 <!--        <LinearLayout-->
 <!--            android:layout_width="match_parent"-->
 <!--            android:layout_height="wrap_content"-->

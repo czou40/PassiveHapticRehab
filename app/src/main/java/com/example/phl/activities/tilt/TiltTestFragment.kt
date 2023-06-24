@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.example.phl.R
+import com.example.phl.activities.MyBaseFragment
 import com.example.phl.databinding.FragmentTiltTestBinding
 import kotlin.math.acos
 import kotlin.math.atan2
@@ -20,7 +21,7 @@ import kotlin.math.sqrt
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
-class TiltTestFragment : Fragment(), SensorEventListener {
+class TiltTestFragment : MyBaseFragment(), SensorEventListener {
 
     private var _binding: FragmentTiltTestBinding? = null
 
@@ -40,6 +41,10 @@ class TiltTestFragment : Fragment(), SensorEventListener {
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
 
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL)
+
+        registerCommand("Exit") {
+            activity?.finish()
+        }
     }
 
     override fun onCreateView(
