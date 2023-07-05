@@ -25,4 +25,36 @@ data class BallTest(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val time: LocalDateTime = LocalDateTime.now()
-    )
+    ) {
+    fun getStrength(): Double {
+        val thumbAverage = (thumbAngle0 + thumbAngle1 + thumbAngle2) / 3
+        val indexAverage = (indexAngle0 + indexAngle1 + indexAngle2) / 3
+        val middleAverage = (middleAngle0 + middleAngle1 + middleAngle2) / 3
+        val ringAverage = (ringAngle0 + ringAngle1 + ringAngle2) / 3
+        val pinkieAverage = (pinkieAngle0 + pinkieAngle1 + pinkieAngle2) / 3
+
+        val average =
+            (thumbAverage + indexAverage + middleAverage + ringAverage + pinkieAverage) / 5
+
+        return ((180 - average) / 90 * 100)
+    }
+    fun getDescription(): String {
+        val thumbAverage = (thumbAngle0 + thumbAngle1 + thumbAngle2) / 3
+        val indexAverage = (indexAngle0 + indexAngle1 + indexAngle2) / 3
+        val middleAverage = (middleAngle0 + middleAngle1 + middleAngle2) / 3
+        val ringAverage = (ringAngle0 + ringAngle1 + ringAngle2) / 3
+        val pinkieAverage = (pinkieAngle0 + pinkieAngle1 + pinkieAngle2) / 3
+
+        val average =
+            (thumbAverage + indexAverage + middleAverage + ringAverage + pinkieAverage) / 5
+
+        val strength = ((180 - average) / 90 * 100)
+        return "Thumb extension: ${thumbAverage.toInt()}\n" +
+                "Index extension: ${indexAverage.toInt()}\n" +
+                "Middle extension: ${middleAverage.toInt()}\n" +
+                "Ring extension: ${ringAverage.toInt()}\n" +
+                "Pinkie extension: ${pinkieAverage.toInt()}\n" +
+                "Average: ${average.toInt()}\n" +
+                "Strength: $strength%"
+    }
+}

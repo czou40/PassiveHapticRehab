@@ -43,6 +43,9 @@
             app:destination="@id/permissions_fragment"
             app:popUpTo="@id/camera_fragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_camera_fragment_to_ballTestResultsFragment3"
+            app:destination="@id/ballTestResultsFragment3" />
     </fragment>
     <fragment
         android:id="@+id/ballTestInstructionFragment"
@@ -53,5 +56,10 @@
             android:id="@+id/action_ballTestInstructionFragment_to_permissions_fragment"
             app:destination="@id/permissions_fragment" />
     </fragment>
+    <fragment
+        android:id="@+id/ballTestResultsFragment3"
+        android:name="com.example.phl.activities.ball.BallTestResultsFragment"
+        android:label="fragment_ball_test_results"
+        tools:layout="@layout/fragment_ball_test_results" />
 
 </navigation>

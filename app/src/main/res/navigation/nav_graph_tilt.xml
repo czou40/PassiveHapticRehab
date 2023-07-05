@@ -3,12 +3,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph2"
-    app:startDestination="@id/First2Fragment">
+    app:startDestination="@id/tiltTestInstructionFragment">
 
     <fragment
-        android:id="@+id/First2Fragment"
+        android:id="@+id/tiltTestFragment"
         android:name="com.example.phl.activities.tilt.TiltTestFragment"
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_tilt_test" >
+        <action
+            android:id="@+id/action_tiltTestFragment_to_tiltTestResultsFragment"
+            app:destination="@id/tiltTestResultsFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/tiltTestInstructionFragment"
+        android:name="com.example.phl.activities.tilt.TiltTestInstructionFragment"
+        android:label="fragment_tilt_test_instruction"
+        tools:layout="@layout/fragment_tilt_test_instruction" >
+        <action
+            android:id="@+id/action_tiltTestInstructionFragment_to_tiltTestFragment"
+            app:destination="@id/tiltTestFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/tiltTestResultsFragment"
+        android:name="com.example.phl.activities.tilt.TiltTestResultsFragment"
+        android:label="fragment_tilt_test_results"
+        tools:layout="@layout/fragment_tilt_test_results" />
 </navigation>

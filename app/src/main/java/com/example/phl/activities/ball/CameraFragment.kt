@@ -50,13 +50,18 @@ import kotlin.math.sqrt
 import android.view.animation.ScaleAnimation
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
+import androidx.core.os.bundleOf
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.phl.data.ball.BallTest
 import com.example.phl.data.ball.BallTestOperations
+import com.example.phl.data.ball.BallTestResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.UUID
+import kotlin.math.round
 
 class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
 
@@ -80,6 +85,8 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
     private var isSavingData = false
 
     private var sessionId: String? = null
+
+    private var data: MutableList<BallTest> = ArrayList()
 
     /** Blocking ML operations are performed using this executor */
     private lateinit var backgroundExecutor: ExecutorService
@@ -215,14 +222,20 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
 
     private fun startSavingData() {
         sessionId = UUID.randomUUID().toString()
+        data = ArrayList()
         isSavingData = true
     }
 
     private fun stopSavingData() {
         isSavingData = false
+        val rawScores = data.map { it.getStrength() }
+        val averageScore = round(rawScores.average()).toInt()
+        val result = BallTestResult(sessionId!!, averageScore)
         val oldSessionId = sessionId
-        GlobalScope.launch(Dispatchers.IO) {
-            var ballTests = BallTestOperations.loadData(requireContext(), oldSessionId!!)
+        lifecycleScope.launch(Dispatchers.IO) {
+            // save average score
+            BallTestOperations.insertResultData(requireContext(), result)
+            var ballTests = BallTestOperations.loadRawData(requireContext(), oldSessionId!!)
             if (ballTests.isNotEmpty()) {
                 // print ballTests.random()
                 val ballTest = ballTests.random()
@@ -234,6 +247,8 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
                     "Saved ${ballTests.size} ball tests",
                     Toast.LENGTH_SHORT
                 ).show()
+                val bundle = bundleOf("sessionId" to oldSessionId, "averageScore" to averageScore)
+                findNavController().navigate(R.id.action_camera_fragment_to_ballTestResultsFragment3, bundle)
             }
         }
         sessionId = null
@@ -380,16 +395,6 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
             val pinkieAngle1 = angle(points[17], points[18], points[19])
             val pinkieAngle2 = angle(points[18], points[19], points[20])
 
-            val thumbAverage = (thumbAngle0 + thumbAngle1 + thumbAngle2) / 3
-            val indexAverage = (indexAngle0 + indexAngle1 + indexAngle2) / 3
-            val middleAverage = (middleAngle0 + middleAngle1 + middleAngle2) / 3
-            val ringAverage = (ringAngle0 + ringAngle1 + ringAngle2) / 3
-            val pinkieAverage = (pinkieAngle0 + pinkieAngle1 + pinkieAngle2) / 3
-
-            val average =
-                (thumbAverage + indexAverage + middleAverage + ringAverage + pinkieAverage) / 5
-
-            val strength = ((180 - average) / 90 * 100).toInt()
 
             if (isSavingData) {
                 val ballTest = BallTest(
@@ -400,21 +405,14 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
                     ringAngle0, ringAngle1, ringAngle2,
                     pinkieAngle0, pinkieAngle1, pinkieAngle2,
                 )
-
-                GlobalScope.launch(Dispatchers.IO) {
-                    BallTestOperations.insertData(requireActivity().applicationContext, ballTest)
+                val strength = ballTest.getStrength().toInt()
+                data.add(ballTest)
+                lifecycleScope.launch(Dispatchers.IO) {
+                    BallTestOperations.insertRawData(requireActivity().applicationContext, ballTest)
                 }
-            }
-
-            activity?.runOnUiThread {
-                fragmentCameraBinding.strengthText.text =
-                    "Thumb extension: ${thumbAverage.toInt()}\n" +
-                            "Index extension: ${indexAverage.toInt()}\n" +
-                            "Middle extension: ${middleAverage.toInt()}\n" +
-                            "Ring extension: ${ringAverage.toInt()}\n" +
-                            "Pinkie extension: ${pinkieAverage.toInt()}\n" +
-                            "Average: ${average.toInt()}\n" +
-                            "Strength: $strength%"
+                activity?.runOnUiThread {
+                    fragmentCameraBinding.strengthText.text = ballTest.getDescription()
+                }
             }
         }
 

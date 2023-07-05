@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.ball.BallTestResultsFragment">
+
+    <LinearLayout
+        android:id="@+id/linearlayout_measurement_result"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+    <TextView
+        android:id="@+id/score_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="32sp"
+        android:text="Score (Lower is better):"
+        android:layout_gravity="center"
+        />
+
+    <TextView
+        android:id="@+id/score_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="32sp"
+        android:text=""
+        android:layout_gravity="center"
+        />
+        <com.example.phl.views.MyButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/exit"
+            android:id="@+id/exit_button"
+            />
+    </LinearLayout>
+
+</FrameLayout>

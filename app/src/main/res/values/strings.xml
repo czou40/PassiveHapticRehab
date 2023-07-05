@@ -128,4 +128,7 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string name="ball_test">Ball Test</string>
+    <string name="tilt_test">Tilt Test</string>
+    <string name="modified_ashworth_scale_test">Modified Ashworth Scale Test</string>
 </resources>
