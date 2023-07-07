@@ -9,12 +9,12 @@ import com.example.phl.R
 import kotlin.properties.Delegates
 
 class BallTestResultsFragment : Fragment() {
-    private var averageScore by Delegates.notNull<Int>()
+    private var averageScore by Delegates.notNull<Double>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            averageScore = it.getInt("averageScore")
+            averageScore = it.getDouble("averageScore")
         }
     }
 

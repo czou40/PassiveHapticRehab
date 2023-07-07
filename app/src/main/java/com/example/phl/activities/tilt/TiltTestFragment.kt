@@ -16,13 +16,15 @@ import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
 import android.widget.TextView
 import androidx.core.os.bundleOf
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.phl.R
 import com.example.phl.activities.MyBaseFragment
-import com.example.phl.data.ball.BallTest
-import com.example.phl.data.ball.BallTestResult
+import com.example.phl.data.AppDatabase
 import com.example.phl.data.tilt.TiltTestResult
 import com.example.phl.databinding.FragmentTiltTestBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.UUID
 import kotlin.math.acos
 import kotlin.math.atan2
@@ -186,7 +188,15 @@ class TiltTestFragment : MyBaseFragment(), SensorEventListener {
 
     private fun stopSavingData() {
         isSavingData = false
-        val averageScore = round(data.average()).toInt()
+        val averageScore = data.average()
+        lifecycleScope.launch(Dispatchers.IO) {
+            val tiltTest = TiltTestResult(
+                sessionId = sessionId!!,
+                score = averageScore,
+            )
+            val db = AppDatabase.getInstance(requireContext())
+            db.tiltTestResultDao().insert(tiltTest)
+        }
         val bundle = bundleOf("sessionId" to sessionId, "averageScore" to averageScore)
         findNavController().navigate(R.id.action_tiltTestFragment_to_tiltTestResultsFragment, bundle)
     }

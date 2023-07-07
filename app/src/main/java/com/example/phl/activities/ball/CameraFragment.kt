@@ -53,11 +53,10 @@ import android.view.animation.Animation
 import androidx.core.os.bundleOf
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.example.phl.data.ball.BallTest
-import com.example.phl.data.ball.BallTestOperations
+import com.example.phl.data.AppDatabase
+import com.example.phl.data.ball.BallTestRaw
 import com.example.phl.data.ball.BallTestResult
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.UUID
@@ -86,7 +85,7 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
 
     private var sessionId: String? = null
 
-    private var data: MutableList<BallTest> = ArrayList()
+    private var data: MutableList<BallTestRaw> = ArrayList()
 
     /** Blocking ML operations are performed using this executor */
     private lateinit var backgroundExecutor: ExecutorService
@@ -229,13 +228,14 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
     private fun stopSavingData() {
         isSavingData = false
         val rawScores = data.map { it.getStrength() }
-        val averageScore = round(rawScores.average()).toInt()
+        val averageScore = rawScores.average()
         val result = BallTestResult(sessionId!!, averageScore)
         val oldSessionId = sessionId
         lifecycleScope.launch(Dispatchers.IO) {
             // save average score
-            BallTestOperations.insertResultData(requireContext(), result)
-            var ballTests = BallTestOperations.loadRawData(requireContext(), oldSessionId!!)
+            val db = AppDatabase.getInstance(requireContext())
+            db.ballTestResultDao().insert(result)
+            val ballTests = db.ballTestRawDao().getBySessionId(oldSessionId!!)
             if (ballTests.isNotEmpty()) {
                 // print ballTests.random()
                 val ballTest = ballTests.random()
@@ -397,7 +397,7 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
 
 
             if (isSavingData) {
-                val ballTest = BallTest(
+                val ballTestRaw = BallTestRaw(
                     requireNotNull(sessionId),
                     thumbAngle0, thumbAngle1, thumbAngle2,
                     indexAngle0, indexAngle1, indexAngle2,
@@ -405,13 +405,14 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
                     ringAngle0, ringAngle1, ringAngle2,
                     pinkieAngle0, pinkieAngle1, pinkieAngle2,
                 )
-                val strength = ballTest.getStrength().toInt()
-                data.add(ballTest)
+                val strength = ballTestRaw.getStrength().toInt()
+                data.add(ballTestRaw)
                 lifecycleScope.launch(Dispatchers.IO) {
-                    BallTestOperations.insertRawData(requireActivity().applicationContext, ballTest)
+                    val db = AppDatabase.getInstance(requireActivity().applicationContext)
+                    db.ballTestRawDao().insert(ballTestRaw)
                 }
                 activity?.runOnUiThread {
-                    fragmentCameraBinding.strengthText.text = ballTest.getDescription()
+                    fragmentCameraBinding.strengthText.text = ballTestRaw.getDescription()
                 }
             }
         }

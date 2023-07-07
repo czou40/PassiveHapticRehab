@@ -2,11 +2,13 @@ package com.example.phl.data.ball
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.phl.data.AbstractData
 import java.time.LocalDateTime
+import java.util.UUID
 
 @Entity(tableName = "ball_test")
-data class BallTest(
-    val sessionId: String,
+data class BallTestRaw  (
+    override val sessionId: String,
     val thumbAngle0: Double,
     val thumbAngle1: Double,
     val thumbAngle2: Double,
@@ -22,10 +24,10 @@ data class BallTest(
     val pinkieAngle0: Double,
     val pinkieAngle1: Double,
     val pinkieAngle2: Double,
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
-    val time: LocalDateTime = LocalDateTime.now()
-    ) {
+    override val time: LocalDateTime = LocalDateTime.now(),
+    @PrimaryKey
+    val id: String = UUID.randomUUID().toString()
+    ) : AbstractData {
     fun getStrength(): Double {
         val thumbAverage = (thumbAngle0 + thumbAngle1 + thumbAngle2) / 3
         val indexAverage = (indexAngle0 + indexAngle1 + indexAngle2) / 3

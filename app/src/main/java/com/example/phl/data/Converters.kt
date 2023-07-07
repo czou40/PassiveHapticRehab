@@ -7,17 +7,6 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 object Converters {
-
-    @TypeConverter
-    fun timestampToDate(value: Long?): Date? {
-        return if (value == null) null else Date(value)
-    }
-
-    @TypeConverter
-    fun dateToTimestamp(date: Date?): Long? {
-        return date?.time
-    }
-
     private val formatterDateTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")
     private val formatterDate = DateTimeFormatter.ISO_LOCAL_DATE
 

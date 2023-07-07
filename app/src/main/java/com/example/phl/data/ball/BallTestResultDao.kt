@@ -1,29 +1,30 @@
 package com.example.phl.data.ball
 
 import androidx.room.*
+import com.example.phl.data.AbstractDao
 import java.time.LocalDate
 
 @Dao
-interface BallTestResultDao {
+interface BallTestResultDao: AbstractDao<BallTestResult> {
 
     @Query("SELECT * FROM ball_test_result")
-    suspend fun getAll(): List<BallTestResult>
+    override fun getAll(): List<BallTestResult>
+
+    @Query("SELECT * FROM ball_test_result WHERE sessionId = :id")
+    override fun getById(id: String): BallTestResult
 
     @Query("SELECT * FROM ball_test_result WHERE sessionId = :sessionId")
-    suspend fun findBySessionId(sessionId: String): BallTestResult
+    override fun getBySessionId(sessionId: String): List<BallTestResult>
 
     @Query("SELECT * FROM ball_test_result WHERE strftime('%Y-%m-%d', time) = :day")
-    suspend fun findByDay(day: LocalDate): List<BallTestResult>
+    override fun getByDay(day: LocalDate): List<BallTestResult>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(ballTestResult: BallTestResult)
+    override fun insert(data: BallTestResult)
 
-    @Update
-    suspend fun update(ballTestResult: BallTestResult)
-
-    @Delete
-    suspend fun delete(ballTestResult: BallTestResult)
+    @Query("DELETE FROM ball_test_result WHERE sessionId = :id")
+    override fun deleteById(id: String)
 
     @Query("DELETE FROM ball_test_result WHERE sessionId = :sessionId")
-    suspend fun deleteBySessionId(sessionId: String)
+    override fun deleteBySessionId(sessionId: String)
 }

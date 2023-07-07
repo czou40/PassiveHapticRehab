@@ -14,12 +14,12 @@ import kotlin.properties.Delegates
  * create an instance of this fragment.
  */
 class TiltTestResultsFragment : Fragment() {
-    private var averageScore by Delegates.notNull<Int>()
+    private var averageScore by Delegates.notNull<Double>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            averageScore = it.getInt("averageScore")
+            averageScore = it.getDouble("averageScore")
         }
     }
     override fun onCreateView(
