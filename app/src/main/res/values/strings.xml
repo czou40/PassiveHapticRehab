@@ -131,4 +131,7 @@
     <string name="ball_test">Ball Test</string>
     <string name="tilt_test">Tilt Test</string>
     <string name="modified_ashworth_scale_test">Modified Ashworth Scale Test</string>
+    <string name="title_activity_mas">MasActivity</string>
+    <string name="angular_acceleration">Angular Acceleration</string>
+    <string name="angular_velocity">Angular Velocity</string>
 </resources>

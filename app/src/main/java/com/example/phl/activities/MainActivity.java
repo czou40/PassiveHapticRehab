@@ -109,6 +109,11 @@ public class MainActivity extends MyBaseActivity {
             Intent intent = new Intent(this, TiltTestActivity.class);
             startActivity(intent);
         });
+        button6.setOnClickListener(v -> {
+            // navigate to remote control
+            Intent intent = new Intent(this, MasActivity.class);
+            startActivity(intent);
+        });
         if (RemoteControlService.getSocketId() != null) {
             displayQRCode(RemoteControlService.getSocketId());
         } else {

@@ -22,7 +22,7 @@
     <style name="Theme.PHL.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.PHL.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-  <!-- Base application theme. -->
+    <!-- Base application theme. -->
     <style name="Base.Theme.PHL" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
