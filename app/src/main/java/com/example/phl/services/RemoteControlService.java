@@ -40,6 +40,8 @@ public class RemoteControlService extends Service {
 
     public static final String API_SERVER = "https://phl.api.czou.me";
 
+    public static final String WEB_SERVER = "https://phl.czou.me";
+
     private static boolean isSocketConnected = false;
 
     private static Set<String> addCommandBuffer = new HashSet<>();

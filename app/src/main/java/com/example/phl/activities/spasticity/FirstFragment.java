@@ -45,18 +45,22 @@ public class FirstFragment extends Fragment implements SensorEventListener {
     List<Float> gyroscopeX = new LinkedList<>();
     List<Float> gyroscopeY = new LinkedList<>();
     List<Float> gyroscopeZ = new LinkedList<>();
+    List<Float> gyroscopeMagnitude = new LinkedList<>();
     List<Float> accelerometerX = new LinkedList<>();
     List<Float> accelerometerY = new LinkedList<>();
     List<Float> accelerometerZ = new LinkedList<>();
+    List<Float> accelerometerMagnitude = new LinkedList<>();
 
     boolean isVibrating = false;
     LineGraphSeries<DataPoint> screenSensorDataSeries;
     LineGraphSeries<DataPoint> gyroscopeXDataSeries;
     LineGraphSeries<DataPoint> gyroscopeYDataSeries;
     LineGraphSeries<DataPoint> gyroscopeZDataSeries;
+    LineGraphSeries<DataPoint> gyroscopeMagnitudeDataSeries;
     LineGraphSeries<DataPoint> accelerometerXDataSeries;
     LineGraphSeries<DataPoint> accelerometerYDataSeries;
     LineGraphSeries<DataPoint> accelerometerZDataSeries;
+    LineGraphSeries<DataPoint> accelerometerMagnitudeDataSeries;
 
 
     private SensorManager sensorManager;
@@ -82,9 +86,11 @@ public class FirstFragment extends Fragment implements SensorEventListener {
         gyroscopeXDataSeries = new LineGraphSeries<>();
         gyroscopeYDataSeries = new LineGraphSeries<>();
         gyroscopeZDataSeries = new LineGraphSeries<>();
+        gyroscopeMagnitudeDataSeries = new LineGraphSeries<>();
         accelerometerXDataSeries = new LineGraphSeries<>();
         accelerometerYDataSeries = new LineGraphSeries<>();
         accelerometerZDataSeries = new LineGraphSeries<>();
+        accelerometerMagnitudeDataSeries = new LineGraphSeries<>();
         gyroscopeXDataSeries.setColor(Color.RED);
         gyroscopeYDataSeries.setColor(Color.GREEN);
         gyroscopeZDataSeries.setColor(Color.BLUE);
@@ -103,12 +109,14 @@ public class FirstFragment extends Fragment implements SensorEventListener {
         graphView2.getViewport().setXAxisBoundsManual(true);
 //        graphView2.addSeries(gyroscopeXDataSeries);
 //        graphView2.addSeries(gyroscopeYDataSeries);
-        graphView2.addSeries(gyroscopeZDataSeries);
+//        graphView2.addSeries(gyroscopeZDataSeries);
+        graphView2.addSeries(gyroscopeMagnitudeDataSeries);
 
         graphView3.getViewport().setXAxisBoundsManual(true);
 //        graphView3.addSeries(accelerometerXDataSeries);
 //        graphView3.addSeries(accelerometerYDataSeries);
         graphView3.addSeries(accelerometerZDataSeries);
+//        graphView3.addSeries(accelerometerMagnitudeDataSeries);
 
 
         return binding.getRoot();
@@ -206,10 +214,12 @@ public class FirstFragment extends Fragment implements SensorEventListener {
                     gyroscopeXDataSeries.resetData(empty);
                     gyroscopeYDataSeries.resetData(empty);
                     gyroscopeZDataSeries.resetData(empty);
+                    gyroscopeMagnitudeDataSeries.resetData(empty);
 
                     accelerometerXDataSeries.resetData(empty);
                     accelerometerYDataSeries.resetData(empty);
                     accelerometerZDataSeries.resetData(empty);
+                    accelerometerMagnitudeDataSeries.resetData(empty);
                 }
             }
         });
@@ -242,9 +252,11 @@ public class FirstFragment extends Fragment implements SensorEventListener {
             gyroscopeX.add(x);
             gyroscopeY.add(y);
             gyroscopeZ.add(z);
+            gyroscopeMagnitude.add((float) Math.sqrt(x * x + y * y + z * z));
             gyroscopeXDataSeries.appendData(new DataPoint(gyroscopeX.size(), x), false, 500);
             gyroscopeYDataSeries.appendData(new DataPoint(gyroscopeY.size(), y), false, 500);
             gyroscopeZDataSeries.appendData(new DataPoint(gyroscopeZ.size(), z), false, 500);
+            gyroscopeMagnitudeDataSeries.appendData(new DataPoint(gyroscopeMagnitude.size(), gyroscopeMagnitude.get(gyroscopeMagnitude.size() - 1)), false, 500);
             graphView2.getViewport().setMinX(Math.max(0, gyroscopeX.size() - 500));
             graphView2.getViewport().setMaxX(gyroscopeX.size());
         } else if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
@@ -258,9 +270,11 @@ public class FirstFragment extends Fragment implements SensorEventListener {
             accelerometerX.add(x);
             accelerometerY.add(y);
             accelerometerZ.add(z);
+            accelerometerMagnitude.add((float) Math.sqrt(x * x + y * y + z * z));
             accelerometerXDataSeries.appendData(new DataPoint(accelerometerX.size(), x), false, 500);
             accelerometerYDataSeries.appendData(new DataPoint(accelerometerY.size(), y), false, 500);
             accelerometerZDataSeries.appendData(new DataPoint(accelerometerZ.size(), z), false, 500);
+            accelerometerMagnitudeDataSeries.appendData(new DataPoint(accelerometerMagnitude.size(), accelerometerMagnitude.get(accelerometerMagnitude.size() - 1)), false, 500);
             graphView3.getViewport().setMinX(Math.max(0, accelerometerX.size() - 500));
             graphView3.getViewport().setMaxX(accelerometerX.size());
         }

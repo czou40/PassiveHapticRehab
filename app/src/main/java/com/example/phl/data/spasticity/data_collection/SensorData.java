@@ -19,9 +19,13 @@ public class SensorData  implements SensorEventListener  {
     private List<Double> gyroscopeX = new LinkedList<>();
     private List<Double> gyroscopeY = new LinkedList<>();
     private List<Double> gyroscopeZ = new LinkedList<>();
+
+    private List<Double> gyroscopeMagnitude = new LinkedList<>();
     private List<Double> accelerometerX = new LinkedList<>();
     private List<Double> accelerometerY = new LinkedList<>();
     private List<Double> accelerometerZ = new LinkedList<>();
+
+    private List<Double> accelerometerMagnitude = new LinkedList<>();
 
     private HashMap<String, List<Double>> map = new HashMap<>();
 
@@ -39,6 +43,8 @@ public class SensorData  implements SensorEventListener  {
         map.put("accelerometerX", accelerometerX);
         map.put("accelerometerY", accelerometerY);
         map.put("accelerometerZ", accelerometerZ);
+        map.put("gyroscopeMagnitude", gyroscopeMagnitude);
+        map.put("accelerometerMagnitude", accelerometerMagnitude);
         this.sensorManager = sensorManager;
     }
 
@@ -55,6 +61,7 @@ public class SensorData  implements SensorEventListener  {
             gyroscopeX.add((double) x);
             gyroscopeY.add((double) y);
             gyroscopeZ.add((double) z);
+            gyroscopeMagnitude.add(Math.sqrt(x * x + y * y + z * z));
         } else if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             // Get the accelerometer data
             float x = sensorEvent.values[0];
@@ -66,6 +73,7 @@ public class SensorData  implements SensorEventListener  {
             accelerometerX.add((double) x);
             accelerometerY.add((double) y);
             accelerometerZ.add((double) z);
+            accelerometerMagnitude.add(Math.sqrt(x * x + y * y + z * z));
         }
     }
 

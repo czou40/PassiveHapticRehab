@@ -31,7 +31,7 @@ public class MyButton extends MaterialButton {
 
     private OnClickListener onClickListener;
 
-    private static final int DEFAULT_LONG_CLICK_DURATION = 0;
+    private static final int DEFAULT_LONG_CLICK_DURATION = 3000;
 
     private String command;
 

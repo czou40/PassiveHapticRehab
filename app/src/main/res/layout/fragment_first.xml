@@ -64,14 +64,14 @@
             android:id="@+id/button_workflow_legacy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/start_workflow_legacy" />
+            android:text="Start Workflow 1 (Press Test)" />
 
         <com.example.phl.views.MyButton
             android:id="@+id/button_workflow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:group="start"
-            android:text="@string/start_workflow_v2" />
+            android:text="Start Workflow 2 (Grip Test)" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

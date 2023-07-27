@@ -47,8 +47,7 @@ public class MainActivity extends MyBaseActivity {
     private void displayQRCode(String id) {
         int width = 500;
         int height = 500;
-        Log.d("MainActivity", "Displaying QR code for id: " + id);
-        Bitmap qrCodeBitmap = QRCodeGenerator.generateQRCode(id, width, height);
+        Bitmap qrCodeBitmap = QRCodeGenerator.generateQRCode(RemoteControlService.WEB_SERVER + "?id=" + id, width, height);
         qrCodeImageView.setImageBitmap(qrCodeBitmap);
         noInternetConnection.setVisibility(View.GONE);
         connecting.setVisibility(View.GONE);

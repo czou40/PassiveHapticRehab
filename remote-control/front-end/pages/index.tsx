@@ -11,13 +11,18 @@ const App: React.FC = () => {
     const [command, setCommand] = useState('');
     const [message, setMessage] = useState('');
     const router = useRouter();
-    const [id, setId] = useState("");
+    // const [id, setId] = useState("");
+    const id = router.query.id as string;
+    console.warn(`id: ${id}`)
     const [sendCommandTrigger, setSendCommandTrigger] = useState(false);
     const [isConnected, setIsConnected] = useState(false);
     const [commands, setCommands] = useState<string[]>([]);
     const [socket, setSocket] = useState<Socket | null>(null);
 
     useEffect(() => {
+        if (!router.isReady) {
+            return;
+        }
         if (id) {
             console.info(`id: ${id}`)
             const socketTemp = io(API_SERVER as string);
@@ -42,29 +47,8 @@ const App: React.FC = () => {
                 socketTemp.off('remote', onUpdateEvent);
                 socketTemp.disconnect();
             };
-        }
-    }, [id]);
-
-    const { ref } = useZxing({
-        onResult(result) {
-            setId(result.getText());
-        }, onError(error) {
-            console.error(error);
-        }
-    });
-
-    useEffect(() => {
-        if (router.query.id) {
-            setId(router.query.id as string);
-        }
-    }, [router.query.id, router]);
-
-    useEffect(() => {
-        if (id && id !== router.query.id) {
-            router.push({
-                pathname: router.pathname,
-                query: { ...router.query, id: id }
-            });
+        } else {
+            router.push('/scan');
         }
     }, [id]);
 
@@ -103,15 +87,8 @@ const App: React.FC = () => {
     };
 
     const rescan = () => {
-        setId("");
-        router.push({
-            pathname: router.pathname,
-            query: { ...router.query, id: undefined }
-        });
+        router.push('/scan');
     };
-
-    // const commonCommands = ['Forward', 'Backward', 'Yes', 'No', 'Uncertain', 'Start', 'Stop', 'Exit', 'Start Spasticity Test', 'Start Tactile Sensation Test', 'View My Progress'];
-
     return (
         <>
             <Head>
@@ -122,12 +99,6 @@ const App: React.FC = () => {
                     <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
                     <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-10 md:p-16 lg:p-20 xl:p-24">
                         <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">PHL Remote Control</h1>
-                        {!id && (
-                            <>
-                                <p className="mb-4">Scan QR Code</p>
-                            </>
-                        )}
-                        <video ref={ref} style={{ display: id ? 'none' : 'revert' }} />
                         {id && (
                             <>
                                 <p className="mb-4">ID: {id}</p>
@@ -137,18 +108,6 @@ const App: React.FC = () => {
                                 >
                                     Rescan
                                 </button>
-                                {/* <input
-                                value={command}
-                                onChange={(e) => setCommand(e.target.value)}
-                                placeholder="Command"
-                                className="border-2 border-gray-300 rounded w-full p-2 mb-4"
-                            />
-                            <button
-                                className="bg-green-500 text-white font-bold py-2 px-4 rounded mr-2 mb-2 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-opacity-50"
-                                onClick={sendCommand}
-                            >
-                                Send Command
-                            </button> */}
                                 <h4 className="text-lg font-semibold mt-4 mb-2">Detected Commands:</h4>
                                 {commands.length > 0 ? commands.map((c) => (<button
                                     className="bg-green-500 text-white font-bold py-2 px-4 rounded mr-2 mb-2 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-opacity-50"
