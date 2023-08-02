@@ -46,6 +46,9 @@
         <action
             android:id="@+id/action_camera_fragment_to_ballTestResultsFragment3"
             app:destination="@id/ballTestResultsFragment3" />
+        <action
+            android:id="@+id/action_camera_fragment_to_openHandInstructionFragment"
+            app:destination="@id/openHandInstructionFragment" />
     </fragment>
     <fragment
         android:id="@+id/ballTestInstructionFragment"
@@ -53,13 +56,31 @@
         android:label="fragment_ball_test_instruction"
         tools:layout="@layout/fragment_ball_test_instruction" >
         <action
-            android:id="@+id/action_ballTestInstructionFragment_to_permissions_fragment"
-            app:destination="@id/permissions_fragment" />
+            android:id="@+id/action_ballTestInstructionFragment_to_closeHandInstructionFragment"
+            app:destination="@id/closeHandInstructionFragment" />
     </fragment>
     <fragment
         android:id="@+id/ballTestResultsFragment3"
         android:name="com.example.phl.activities.ball.BallTestResultsFragment"
         android:label="fragment_ball_test_results"
         tools:layout="@layout/fragment_ball_test_results" />
+    <fragment
+        android:id="@+id/openHandInstructionFragment"
+        android:name="com.example.phl.activities.ball.OpenHandInstructionFragment"
+        android:label="fragment_open_hand_instruction"
+        tools:layout="@layout/fragment_open_hand_instruction" >
+        <action
+            android:id="@+id/action_openHandInstructionFragment_to_camera_fragment"
+            app:destination="@id/camera_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/closeHandInstructionFragment"
+        android:name="com.example.phl.activities.ball.CloseHandInstructionFragment"
+        android:label="fragment_close_hand_instruction"
+        tools:layout="@layout/fragment_close_hand_instruction" >
+        <action
+            android:id="@+id/action_closeHandInstructionFragment_to_camera_fragment"
+            app:destination="@id/camera_fragment" />
+    </fragment>
 
 </navigation>

@@ -44,7 +44,7 @@ class BallTestInstructionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val startButton: Button = view.findViewById(R.id.start)
         startButton.setOnClickListener {
-            findNavController().navigate(R.id.action_ballTestInstructionFragment_to_permissions_fragment)
+            findNavController().navigate(R.id.action_ballTestInstructionFragment_to_closeHandInstructionFragment)
         }
     }
 

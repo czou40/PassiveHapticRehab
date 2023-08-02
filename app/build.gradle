@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.phl"
-        minSdk 26
+        minSdk 28
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -109,4 +109,7 @@ dependencies {
 
     // CameraX View class
     implementation "androidx.camera:camera-view:$camerax_version"
+
+    // SceneView
+    implementation "io.github.sceneview:sceneview:1.0.10"
 }
