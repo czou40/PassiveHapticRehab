@@ -50,17 +50,20 @@ import kotlin.math.sqrt
 import android.view.animation.ScaleAnimation
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
+import androidx.core.math.MathUtils
 import androidx.core.os.bundleOf
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.phl.data.AppDatabase
 import com.example.phl.data.ball.BallTestRaw
 import com.example.phl.data.ball.BallTestResult
+import com.example.phl.utils.GestureCalculationUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.UUID
-import kotlin.math.round
+import org.apache.commons.math3.linear.MatrixUtils
+import org.apache.commons.math3.linear.RealMatrix
 
 class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
 
@@ -364,16 +367,25 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
         resultBundle: HandLandmarkerHelper.ResultBundle
     ) {
         val result = resultBundle.results.first()
-        val hands = result.landmarks()
+        val hands = result.worldLandmarks()
         if (hands != null && hands.size > 0) {
             val hand = hands[0]
-            val points = hand.map { normalizedLandmark ->
+            val points = hand.map { landmark ->
                 Point3D(
-                    normalizedLandmark.x().toDouble() * resultBundle.inputImageWidth,
-                    normalizedLandmark.y().toDouble() * resultBundle.inputImageHeight,
-                    normalizedLandmark.z().toDouble() * resultBundle.inputImageWidth
+                    landmark.x().toDouble(),
+                    landmark.y().toDouble(),
+                    landmark.z().toDouble()
                 )
             }
+            val pointsArray = (hand.map { landmark ->
+                doubleArrayOf(
+                        landmark.x().toDouble(),
+                        landmark.y().toDouble(),
+                        landmark.z().toDouble()
+                )
+            }).toTypedArray()
+            val pointsMatrix: RealMatrix = MatrixUtils.createRealMatrix(pointsArray)
+            Log.e(TAG, GestureCalculationUtils.gestureSimilarity(pointsMatrix, rotationInvariant = true).toString())
             // thumb = 1, 2, 3, 4
             val thumbAngle0 = angle(points[0], points[1], points[2])
             val thumbAngle1 = angle(points[1], points[2], points[3])
