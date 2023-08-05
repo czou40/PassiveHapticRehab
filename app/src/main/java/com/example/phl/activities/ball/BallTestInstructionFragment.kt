@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.navigation.fragment.findNavController
 import com.example.phl.R
+import java.util.UUID
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -44,7 +45,9 @@ class BallTestInstructionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val startButton: Button = view.findViewById(R.id.start)
         startButton.setOnClickListener {
-            findNavController().navigate(R.id.action_ballTestInstructionFragment_to_closeHandInstructionFragment)
+            val bundle = Bundle()
+            bundle.putString("sessionId", UUID.randomUUID().toString())
+            findNavController().navigate(R.id.action_ballTestInstructionFragment_to_closeHandInstructionFragment, bundle)
         }
     }
 

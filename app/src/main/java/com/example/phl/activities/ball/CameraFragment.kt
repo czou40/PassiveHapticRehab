@@ -35,7 +35,6 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.Navigation
 import com.example.phl.R
 import com.example.phl.data.HandLandmarkerViewModel
 import com.example.phl.databinding.FragmentCameraBinding
@@ -50,18 +49,14 @@ import kotlin.math.sqrt
 import android.view.animation.ScaleAnimation
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
-import androidx.core.math.MathUtils
 import androidx.core.os.bundleOf
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.example.phl.data.AppDatabase
 import com.example.phl.data.ball.BallTestRaw
-import com.example.phl.data.ball.BallTestResult
 import com.example.phl.utils.GestureCalculationUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.UUID
 import org.apache.commons.math3.linear.MatrixUtils
 import org.apache.commons.math3.linear.RealMatrix
 
@@ -69,6 +64,8 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
 
     companion object {
         private const val TAG = "Hand Landmarker"
+        private const val OPEN_HAND_TEST_TIME = 10000L
+        private const val CLOSE_HAND_TEST_TIME = 5000L
     }
 
     private var _fragmentCameraBinding: FragmentCameraBinding? = null
@@ -86,21 +83,26 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
 
     private var isSavingData = false
 
-    private var sessionId: String? = null
 
-    private var data: MutableList<BallTestRaw> = ArrayList()
+//    private var data: MutableList<BallTestRaw> = ArrayList()
+    private var currentTestData = ArrayList<BallTestRaw>()
 
     /** Blocking ML operations are performed using this executor */
     private lateinit var backgroundExecutor: ExecutorService
+
+    private lateinit var testType: String
+    private lateinit var sessionId: String
+
 
     override fun onResume() {
         super.onResume()
         // Make sure that all permissions are still present, since the
         // user could have removed them while the app was in paused state.
         if (!PermissionsFragment.hasPermissions(requireContext())) {
-            Navigation.findNavController(
-                requireActivity(), R.id.fragment_container
-            ).navigate(R.id.action_camera_to_permissions)
+            findNavController().navigate(R.id.permissions_fragment)
+//            Navigation.findNavController(
+//                requireActivity(), R.id.fragment_container
+//            ).navigate(R.id.permissions_fragment)
         }
 
         // Start the HandLandmarkerHelper again when users come back
@@ -145,6 +147,12 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
         _fragmentCameraBinding =
             FragmentCameraBinding.inflate(inflater, container, false)
 
+        // "testType" must be passed from the previous fragment and must be either "OpenHand" or "CloseHand"
+        testType = requireArguments().getString("testType")!!
+        assert(testType == "OpenHand" || testType == "CloseHand")
+
+        sessionId = requireArguments().getString("sessionId")!!
+
         return fragmentCameraBinding.root
     }
 
@@ -175,11 +183,22 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
             )
         }
 
+        startSavingData()
+        // Schedule stop saving data for 20 seconds later
+        val duration = if (testType == "OpenHand") OPEN_HAND_TEST_TIME else CLOSE_HAND_TEST_TIME
+        startCountDown(duration, false){
+            stopSavingData()
+        }
+
+    }
+
+
+    private fun startCountDown(milliseconds:Long, visible:Boolean, callback:()->Unit){
         // Find your TextView
         val countdownTextView: TextView = fragmentCameraBinding.countdownText
 
         // Create a CountdownTimer
-        object : CountDownTimer(3000, 1000) {
+        object : CountDownTimer(milliseconds, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 // Update TextView
                 countdownTextView.text = ceil(millisUntilFinished / 1000.0).toInt().toString()
@@ -203,58 +222,45 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
                 // Start the animation
                 countdownTextView.startAnimation(fadeOutAnimation)
 
-                // Set visibility to GONE after the animation
-                countdownTextView.postDelayed({
-                    countdownTextView.visibility = View.GONE
-                    startSavingData()
-                }, 500)
-
                 // Set visibility to GONE after the animation and start saving data
                 countdownTextView.postDelayed({
                     countdownTextView.visibility = View.GONE
-                    startSavingData()
-                    // Schedule stop saving data for 20 seconds later
-                    countdownTextView.postDelayed({ stopSavingData() }, 5_000)
+                    callback()
                 }, 500)
             }
         }.start()
-
-
     }
 
     private fun startSavingData() {
-        sessionId = UUID.randomUUID().toString()
-        data = ArrayList()
+        currentTestData.clear()
         isSavingData = true
     }
 
     private fun stopSavingData() {
         isSavingData = false
-        val rawScores = data.map { it.getStrength() }
+        val rawScores = currentTestData.map { it.getStrength() }
         val averageScore = rawScores.average()
-        val result = BallTestResult(sessionId!!, averageScore)
-        val oldSessionId = sessionId
+        Log.d(TAG, "Average score: $averageScore")
+        //print concurrentTestData
+//        val result = BallTestResult(sessionId, averageScore)
         lifecycleScope.launch(Dispatchers.IO) {
-            // save average score
-            val db = AppDatabase.getInstance(requireContext())
-            db.ballTestResultDao().insert(result)
-            val ballTests = db.ballTestRawDao().getBySessionId(oldSessionId!!)
-            if (ballTests.isNotEmpty()) {
-                // print ballTests.random()
-                val ballTest = ballTests.random()
-                Log.d(TAG, "thumbAngle1: ${ballTest.thumbAngle1}")
-            }
+//            // save average score
+//            val db = AppDatabase.getInstance(requireContext())
+//            db.ballTestResultDao().insert(result)
             withContext(Dispatchers.Main) {
-                Toast.makeText(
-                    requireContext(),
-                    "Saved ${ballTests.size} ball tests",
-                    Toast.LENGTH_SHORT
-                ).show()
-                val bundle = bundleOf("sessionId" to oldSessionId, "averageScore" to averageScore)
-                findNavController().navigate(R.id.action_camera_fragment_to_ballTestResultsFragment3, bundle)
+                val bundle = bundleOf("sessionId" to sessionId)
+                if (testType == "CloseHand") {
+                    bundle.putDouble("closeHandTestResult", averageScore)
+                    findNavController().navigate(R.id.action_camera_fragment_to_openHandInstructionFragment, bundle)
+                }
+                else if (testType == "OpenHand") {
+                    bundle.putDouble("closeHandTestResult", arguments?.getDouble("closeHandTestResult")!!)
+                    bundle.putDouble("openHandTestResult", averageScore)
+                    findNavController().navigate(R.id.action_camera_fragment_to_ballTestResultsFragment3, bundle)
+                }
+
             }
         }
-        sessionId = null
     }
 
     // Initialize CameraX, and prepare to bind the camera use cases
@@ -385,7 +391,6 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
                 )
             }).toTypedArray()
             val pointsMatrix: RealMatrix = MatrixUtils.createRealMatrix(pointsArray)
-            Log.e(TAG, GestureCalculationUtils.gestureSimilarity(pointsMatrix, rotationInvariant = true).toString())
             // thumb = 1, 2, 3, 4
             val thumbAngle0 = angle(points[0], points[1], points[2])
             val thumbAngle1 = angle(points[1], points[2], points[3])
@@ -410,7 +415,7 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
 
             if (isSavingData) {
                 val ballTestRaw = BallTestRaw(
-                    requireNotNull(sessionId),
+                    sessionId,
                     thumbAngle0, thumbAngle1, thumbAngle2,
                     indexAngle0, indexAngle1, indexAngle2,
                     middleAngle0, middleAngle1, middleAngle2,
@@ -418,12 +423,13 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
                     pinkieAngle0, pinkieAngle1, pinkieAngle2,
                 )
                 val strength = ballTestRaw.getStrength().toInt()
-                data.add(ballTestRaw)
-                lifecycleScope.launch(Dispatchers.IO) {
-                    val db = AppDatabase.getInstance(requireActivity().applicationContext)
-                    db.ballTestRawDao().insert(ballTestRaw)
-                }
-                activity?.runOnUiThread {
+                currentTestData.add(ballTestRaw)
+                Log.d(TAG, "Strength: $strength")
+//                lifecycleScope.launch(Dispatchers.IO) {
+//                    val db = AppDatabase.getInstance(requireActivity().applicationContext)
+//                    db.ballTestRawDao().insert(ballTestRaw)
+//                }
+                lifecycleScope.launch {
                     fragmentCameraBinding.strengthText.text = ballTestRaw.getDescription()
                 }
             }

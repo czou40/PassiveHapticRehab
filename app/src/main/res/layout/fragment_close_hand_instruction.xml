@@ -5,15 +5,9 @@
     android:layout_height="match_parent"
     tools:context=".activities.ball.CloseHandInstructionFragment">
 
-    <io.github.sceneview.SceneView
-        android:id="@+id/sceneView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/transparent" />
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="top"
         android:orientation="vertical">
 
@@ -32,5 +26,22 @@
             android:background="@android:color/black"
             android:text=""
             android:textColor="@android:color/white" />
+
+        <TextView
+            android:text="3"
+            android:id="@+id/countdown_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/black"
+            android:textColor="@android:color/white"
+            />
+
+        <io.github.sceneview.SceneView
+            android:id="@+id/sceneView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent" />
     </LinearLayout>
+
+
 </FrameLayout>

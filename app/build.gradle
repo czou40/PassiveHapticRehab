@@ -111,5 +111,5 @@ dependencies {
     implementation "androidx.camera:camera-view:$camerax_version"
 
     // SceneView
-    implementation "io.github.sceneview:sceneview:1.0.10"
+    implementation "io.github.sceneview:sceneview:1.0.11"
 }

@@ -40,7 +40,6 @@
         android:gravity="center"
         android:textSize="64sp"
         android:textColor="@android:color/white"
-        android:background="#80000000"
         />
 
 

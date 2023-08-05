@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="32sp"
-        android:text="Score (Lower is better):"
+        android:text="Result"
         android:layout_gravity="center"
         />
 
