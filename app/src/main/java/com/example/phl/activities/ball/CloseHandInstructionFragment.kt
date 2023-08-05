@@ -12,6 +12,7 @@ import android.view.animation.ScaleAnimation
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.lifecycle.lifecycleScope
 import com.example.phl.R
 import com.gorisse.thomas.lifecycle.lifecycle
 import io.github.sceneview.SceneView
@@ -23,6 +24,7 @@ import io.github.sceneview.math.Rotation
 import io.github.sceneview.model.Model
 import kotlinx.coroutines.launch
 import kotlin.math.ceil
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -74,7 +76,7 @@ class CloseHandInstructionFragment : Fragment() {
 //            sceneView.loadHdrSkybox(hdrFile) {
 //                intensity(50_000f)
 //            }
-            
+
             model = sceneView.modelLoader.loadModel("hand.glb")!!
             val modelNode = ModelNode(sceneView, model).apply {
                 transform(
@@ -85,7 +87,6 @@ class CloseHandInstructionFragment : Fragment() {
                 playAnimation(0)
             }
             sceneView.addChildNode(modelNode)
-
             startCountDown(view, 2000, false) {
                 val bundle = Bundle()
                 bundle.putString("testType", "CloseHand")
@@ -134,6 +135,7 @@ class CloseHandInstructionFragment : Fragment() {
             }
         }.start()
     }
+
 
     companion object {
         /**

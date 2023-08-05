@@ -49,14 +49,17 @@ import kotlin.math.sqrt
 import android.view.animation.ScaleAnimation
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
+import androidx.core.math.MathUtils
 import androidx.core.os.bundleOf
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.phl.data.ball.BallTestRaw
+import com.example.phl.data.ball.BallTestResult
 import com.example.phl.utils.GestureCalculationUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.UUID
 import org.apache.commons.math3.linear.MatrixUtils
 import org.apache.commons.math3.linear.RealMatrix
 

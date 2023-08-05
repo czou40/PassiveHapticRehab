@@ -12,6 +12,8 @@ import android.view.animation.ScaleAnimation
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.core.view.isGone
+import androidx.lifecycle.lifecycleScope
 import com.example.phl.R
 import com.gorisse.thomas.lifecycle.lifecycle
 import io.github.sceneview.SceneView
