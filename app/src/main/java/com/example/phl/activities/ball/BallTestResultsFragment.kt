@@ -6,18 +6,37 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import com.example.phl.R
+import com.example.phl.data.AppDatabase
+import com.example.phl.data.ball.BallTestResult
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 
 class BallTestResultsFragment : Fragment() {
     private var closeHandTestResult by Delegates.notNull<Double>()
     private var openHandTestResult by Delegates.notNull<Double>()
+    private var sessionId by Delegates.notNull<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             closeHandTestResult = it.getDouble("closeHandTestResult")
             openHandTestResult = it.getDouble("openHandTestResult")
+            sessionId = it.getString("sessionId")!!
+        }
+
+        // save average score
+        lifecycleScope.launch(Dispatchers.IO) {
+            val result = BallTestResult(
+                sessionId,
+                closeHandTestResult,
+                openHandTestResult,
+                closeHandTestResult - openHandTestResult
+            )
+            val db = AppDatabase.getInstance(requireContext())
+            db.ballTestResultDao().insert(result)
         }
     }
 

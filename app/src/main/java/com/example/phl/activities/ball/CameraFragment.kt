@@ -49,17 +49,16 @@ import kotlin.math.sqrt
 import android.view.animation.ScaleAnimation
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
-import androidx.core.math.MathUtils
 import androidx.core.os.bundleOf
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.phl.data.AppDatabase
 import com.example.phl.data.ball.BallTestRaw
 import com.example.phl.data.ball.BallTestResult
-import com.example.phl.utils.GestureCalculationUtils
+import com.google.mediapipe.tasks.components.containers.Category
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.UUID
 import org.apache.commons.math3.linear.MatrixUtils
 import org.apache.commons.math3.linear.RealMatrix
 
@@ -89,7 +88,7 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
     private var isSavingData = false
 
 
-//    private var data: MutableList<BallTestRaw> = ArrayList()
+    //    private var data: MutableList<BallTestRaw> = ArrayList()
     private var currentTestData = ArrayList<BallTestRaw>()
 
     /** Blocking ML operations are performed using this executor */
@@ -105,11 +104,7 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
         // user could have removed them while the app was in paused state.
         if (!PermissionsFragment.hasPermissions(requireContext())) {
             findNavController().navigate(R.id.permissions_fragment)
-//            Navigation.findNavController(
-//                requireActivity(), R.id.fragment_container
-//            ).navigate(R.id.permissions_fragment)
         }
-
         // Start the HandLandmarkerHelper again when users come back
         // to the foreground.
         backgroundExecutor.execute {
@@ -171,7 +166,13 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
         // Wait for the views to be properly laid out
         fragmentCameraBinding.viewFinder.post {
             // Set up the camera and its use cases
-            setUpCamera()
+            // Make sure that all permissions are still present, since the
+            // user could have removed them while the app was in paused state.
+            if (!PermissionsFragment.hasPermissions(requireContext())) {
+                findNavController().navigate(R.id.permissions_fragment)
+            } else {
+                setUpCamera()
+            }
         }
 
         // Create the HandLandmarkerHelper that will handle the inference
@@ -192,16 +193,22 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
         val duration = if (testType == "OpenHand") OPEN_HAND_TEST_TIME else CLOSE_HAND_TEST_TIME
         startCountDown(PREPARE_TIME, true) {
             startSavingData()
-            startCountDown(duration-SHOW_FINAL_COUNTDOWN_TIME, false){
-                startCountDown(SHOW_FINAL_COUNTDOWN_TIME, true, "Data Collection Ending"){
+            startCountDown(duration - SHOW_FINAL_COUNTDOWN_TIME, false) {
+                startCountDown(SHOW_FINAL_COUNTDOWN_TIME, true, "Data Collection Ending") {
                     stopSavingData()
+                    navigateToNextStep()
                 }
             }
         }
     }
 
 
-    private fun startCountDown(milliseconds:Long, visible:Boolean, message:String? = null, callback:()->Unit){
+    private fun startCountDown(
+        milliseconds: Long,
+        visible: Boolean,
+        message: String? = null,
+        callback: () -> Unit
+    ) {
         // Find your TextView
         val countdownTextView: TextView = fragmentCameraBinding.countdownText
         if (visible) {
@@ -226,7 +233,9 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
                 }
                 // Update TextView
                 if (message != null) {
-                    countdownTextView.text = message.trim() + "\n" + ceil(millisUntilFinished / 1000.0).toInt().toString()
+                    countdownTextView.text =
+                        message.trim() + "\n" + ceil(millisUntilFinished / 1000.0).toInt()
+                            .toString()
                 } else {
                     countdownTextView.text = ceil(millisUntilFinished / 1000.0).toInt().toString()
                 }
@@ -269,28 +278,28 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
 
     private fun stopSavingData() {
         isSavingData = false
+    }
+
+    private fun navigateToNextStep() {
         val rawScores = currentTestData.map { it.getStrength() }
         val averageScore = rawScores.average()
-        Log.d(TAG, "Average score: $averageScore")
-        //print concurrentTestData
-//        val result = BallTestResult(sessionId, averageScore)
-        lifecycleScope.launch(Dispatchers.IO) {
-//            // save average score
-//            val db = AppDatabase.getInstance(requireContext())
-//            db.ballTestResultDao().insert(result)
-            withContext(Dispatchers.Main) {
-                val bundle = bundleOf("sessionId" to sessionId)
-                if (testType == "CloseHand") {
-                    bundle.putDouble("closeHandTestResult", averageScore)
-                    findNavController().navigate(R.id.action_camera_fragment_to_openHandInstructionFragment, bundle)
-                }
-                else if (testType == "OpenHand") {
-                    bundle.putDouble("closeHandTestResult", arguments?.getDouble("closeHandTestResult")!!)
-                    bundle.putDouble("openHandTestResult", averageScore)
-                    findNavController().navigate(R.id.action_camera_fragment_to_ballTestResultsFragment3, bundle)
-                }
-
-            }
+        val bundle = bundleOf("sessionId" to sessionId)
+        if (testType == "CloseHand") {
+            bundle.putDouble("closeHandTestResult", averageScore)
+            findNavController().navigate(
+                R.id.action_camera_fragment_to_openHandInstructionFragment,
+                bundle
+            )
+        } else if (testType == "OpenHand") {
+            bundle.putDouble(
+                "closeHandTestResult",
+                arguments?.getDouble("closeHandTestResult")!!
+            )
+            bundle.putDouble("openHandTestResult", averageScore)
+            findNavController().navigate(
+                R.id.action_camera_fragment_to_ballTestResultsFragment3,
+                bundle
+            )
         }
     }
 
@@ -369,34 +378,6 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
             fragmentCameraBinding.viewFinder.display.rotation
     }
 
-    data class Point3D(val x: Double, val y: Double, val z: Double)
-
-    fun vector(point1: Point3D, point2: Point3D): Point3D {
-        return Point3D(point2.x - point1.x, point2.y - point1.y, point2.z - point1.z)
-    }
-
-    fun dotProduct(vector1: Point3D, vector2: Point3D): Double {
-        return vector1.x * vector2.x + vector1.y * vector2.y + vector1.z * vector2.z
-    }
-
-    fun magnitude(vector: Point3D): Double {
-        return sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z)
-    }
-
-    fun angle(pointA: Point3D, pointB: Point3D, pointC: Point3D): Double {
-        val vectorBA = vector(pointB, pointA)
-        val vectorBC = vector(pointB, pointC)
-
-        val dotProduct = dotProduct(vectorBA, vectorBC)
-
-        val magnitudeProduct = magnitude(vectorBA) * magnitude(vectorBC)
-
-        val angleInRad = acos(dotProduct / magnitudeProduct)
-
-        // Convert to degrees
-        return Math.toDegrees(angleInRad)
-    }
-
     // Update UI after hand have been detected. Extracts original
     // image height/width to scale and place the landmarks properly through
     // HandLandmarkerOverlayView
@@ -404,64 +385,49 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
         resultBundle: HandLandmarkerHelper.ResultBundle
     ) {
         val result = resultBundle.results.first()
-        val hands = result.worldLandmarks()
-        if (hands != null && hands.size > 0) {
-            val hand = hands[0]
-            val points = hand.map { landmark ->
-                Point3D(
+        val handDetected = result.worldLandmarks() != null && result.worldLandmarks().size > 0
+
+        if (handDetected) {
+            val worldLandmarks = result.worldLandmarks()[0]
+            val handedness = result.handednesses()[0][0]!!.categoryName()!!
+            val landmarks = result.landmarks()[0]
+//            val points = hand.map { landmark ->
+//                Point3D(
+//                    landmark.x().toDouble(),
+//                    landmark.y().toDouble(),
+//                    landmark.z().toDouble()
+//                )
+//            }
+
+            val worldLandmarksArray = (worldLandmarks.map { landmark ->
+                doubleArrayOf(
                     landmark.x().toDouble(),
                     landmark.y().toDouble(),
                     landmark.z().toDouble()
                 )
-            }
-            val pointsArray = (hand.map { landmark ->
+            }).toTypedArray()
+
+            val landmarksArray = (landmarks.map { landmark ->
                 doubleArrayOf(
-                        landmark.x().toDouble(),
-                        landmark.y().toDouble(),
-                        landmark.z().toDouble()
+                    landmark.x().toDouble() * resultBundle.inputImageWidth,
+                    landmark.y().toDouble() * resultBundle.inputImageHeight
                 )
             }).toTypedArray()
-            val pointsMatrix: RealMatrix = MatrixUtils.createRealMatrix(pointsArray)
-            // thumb = 1, 2, 3, 4
-            val thumbAngle0 = angle(points[0], points[1], points[2])
-            val thumbAngle1 = angle(points[1], points[2], points[3])
-            val thumbAngle2 = angle(points[2], points[3], points[4])
-            // index = 5, 6, 7, 8
-            val indexAngle0 = angle(points[0], points[5], points[6])
-            val indexAngle1 = angle(points[5], points[6], points[7])
-            val indexAngle2 = angle(points[6], points[7], points[8])
-            // middle = 9, 10, 11, 12
-            val middleAngle0 = angle(points[0], points[9], points[10])
-            val middleAngle1 = angle(points[9], points[10], points[11])
-            val middleAngle2 = angle(points[10], points[11], points[12])
-            // ring = 13, 14, 15, 16
-            val ringAngle0 = angle(points[0], points[13], points[14])
-            val ringAngle1 = angle(points[13], points[14], points[15])
-            val ringAngle2 = angle(points[14], points[15], points[16])
-            // pinkie = 17, 18, 19, 20
-            val pinkieAngle0 = angle(points[0], points[17], points[18])
-            val pinkieAngle1 = angle(points[17], points[18], points[19])
-            val pinkieAngle2 = angle(points[18], points[19], points[20])
 
+            val ballTestRaw =
+                BallTestRaw(sessionId, worldLandmarksArray, landmarksArray, handedness)
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                fragmentCameraBinding.strengthText.text = ballTestRaw.getDescription()
+            }
 
             if (isSavingData) {
-                val ballTestRaw = BallTestRaw(
-                    sessionId,
-                    thumbAngle0, thumbAngle1, thumbAngle2,
-                    indexAngle0, indexAngle1, indexAngle2,
-                    middleAngle0, middleAngle1, middleAngle2,
-                    ringAngle0, ringAngle1, ringAngle2,
-                    pinkieAngle0, pinkieAngle1, pinkieAngle2,
-                )
                 val strength = ballTestRaw.getStrength().toInt()
                 currentTestData.add(ballTestRaw)
                 Log.d(TAG, "Strength: $strength")
-//                lifecycleScope.launch(Dispatchers.IO) {
-//                    val db = AppDatabase.getInstance(requireActivity().applicationContext)
-//                    db.ballTestRawDao().insert(ballTestRaw)
-//                }
-                lifecycleScope.launch {
-                    fragmentCameraBinding.strengthText.text = ballTestRaw.getDescription()
+                lifecycleScope.launch(Dispatchers.IO) {
+                    val db = AppDatabase.getInstance(requireActivity().applicationContext)
+                    db.ballTestRawDao().insert(ballTestRaw)
                 }
             }
         }

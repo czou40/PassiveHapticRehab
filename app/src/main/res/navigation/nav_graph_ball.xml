@@ -23,7 +23,11 @@
     <fragment
         android:id="@+id/permissions_fragment"
         android:name="com.example.phl.activities.ball.PermissionsFragment"
-        android:label="PermissionsFragment"/>
+        android:label="PermissionsFragment">
+        <action
+            android:id="@+id/action_permissions_fragment_to_ballTestInstructionFragment"
+            app:destination="@id/ballTestInstructionFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/camera_fragment"

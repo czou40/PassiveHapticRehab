@@ -9,6 +9,8 @@ import java.time.LocalDateTime
 data class BallTestResult (
     @PrimaryKey
     override val sessionId: String,
+    val closeHandTestResult: Double,
+    val openHandTestResult: Double,
     override val score: Double,
     override val time: LocalDateTime = LocalDateTime.now()
 ) : AbstractResultData {

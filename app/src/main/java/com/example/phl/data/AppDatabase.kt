@@ -18,7 +18,7 @@ import com.example.phl.data.tilt.TiltTestResultDao
 
 @Database(
     entities = [TactileSensation::class, Spasticity::class, BallTestRaw::class, BallTestResult::class, TiltTestResult::class],
-    version = 7
+    version = 8
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {

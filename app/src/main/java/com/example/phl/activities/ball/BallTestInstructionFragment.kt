@@ -51,6 +51,11 @@ class BallTestInstructionFragment : Fragment() {
 //            findNavController().navigate(R.id.openHandInstructionFragment, bundle)
 
         }
+        // Make sure that all permissions are still present, since the
+        // user could have removed them while the app was in paused state.
+        if (!PermissionsFragment.hasPermissions(requireContext())) {
+            findNavController().navigate(R.id.permissions_fragment)
+        }
     }
 
 
