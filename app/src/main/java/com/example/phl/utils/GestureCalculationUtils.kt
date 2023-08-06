@@ -5,11 +5,10 @@ import org.apache.commons.math3.linear.RealMatrix
 import org.apache.commons.math3.linear.SingularValueDecomposition
 import kotlin.math.pow
 import kotlin.math.sqrt
+import kotlin.math.acos
 
 class GestureCalculationUtils {
     companion object {
-
-        val PALM_POINTS = listOf(0, 5, 17)
 
         val targetGesture3dData = arrayOf(
                 doubleArrayOf(0.07425961, -0.02521384, -0.0193575),
@@ -182,6 +181,33 @@ class GestureCalculationUtils {
 
             return normalVector
         }
+
+        fun degrees(radians: Double): Double {
+            return radians * 180 / Math.PI
+        }
+
+        fun computeAnglesWithAxes(normal: DoubleArray): Triple<Double, Double, Double> {
+            val (a, b, c) = normal
+            val magnitude = sqrt(a * a + b * b + c * c)
+
+            val alphaRad = acos(a / magnitude)
+            val betaRad = acos(b / magnitude)
+            val gammaRad = acos(c / magnitude)
+
+            // Convert radians to degrees
+            var alphaDeg = degrees(alphaRad)
+            var betaDeg = degrees(betaRad)
+            var gammaDeg = degrees(gammaRad)
+
+            // if angle is larger than 90 degrees, subtract from 180
+            if (alphaDeg > 90) alphaDeg = 180 - alphaDeg
+            if (betaDeg > 90) betaDeg = 180 - betaDeg
+            if (gammaDeg > 90) gammaDeg = 180 - gammaDeg
+
+            return Triple(alphaDeg, betaDeg, gammaDeg)
+        }
+
+
     }
 }
 

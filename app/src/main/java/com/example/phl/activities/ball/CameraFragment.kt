@@ -422,9 +422,8 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
             }
 
             if (isSavingData) {
-                val strength = ballTestRaw.getStrength().toInt()
+
                 currentTestData.add(ballTestRaw)
-                Log.d(TAG, "Strength: $strength")
                 lifecycleScope.launch(Dispatchers.IO) {
                     val db = AppDatabase.getInstance(requireActivity().applicationContext)
                     db.ballTestRawDao().insert(ballTestRaw)

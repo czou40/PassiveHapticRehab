@@ -3,9 +3,14 @@ package com.example.phl.data.ball
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.phl.data.AbstractData
+import com.example.phl.utils.GestureCalculationUtils
+import com.google.mediapipe.tasks.components.containers.Category
+import org.apache.commons.math3.linear.MatrixUtils
+import org.apache.commons.math3.linear.RealMatrix
 import java.time.LocalDateTime
 import java.util.UUID
 import kotlin.math.acos
+import kotlin.math.sign
 import kotlin.math.sqrt
 
 @Entity(tableName = "ball_test")
@@ -85,13 +90,20 @@ data class BallTestRaw  (
             (thumbAverage + indexAverage + middleAverage + ringAverage + pinkieAverage) / 5
 
         val strength = ((180 - average) / 90 * 100)
+
+        val (alpha, beta, gamma) = getAngles()
+
+        val palmFacing = isPalmFacingCamera()
+
         return "Thumb extension: ${thumbAverage.toInt()}\n" +
                 "Index extension: ${indexAverage.toInt()}\n" +
                 "Middle extension: ${middleAverage.toInt()}\n" +
                 "Ring extension: ${ringAverage.toInt()}\n" +
                 "Pinkie extension: ${pinkieAverage.toInt()}\n" +
                 "Average: ${average.toInt()}\n" +
-                "Strength: $strength%"
+                "Strength: $strength%\n" +
+                "Palm Angle:  ${String.format("%.2f", alpha)}°, ${String.format("%.2f", beta)}°, ${String.format("%.2f", gamma)}°\n" +
+                "Palm Facing Camera: $palmFacing"
     }
 
     data class Point3D(val x: Double, val y: Double, val z: Double)
@@ -122,6 +134,40 @@ data class BallTestRaw  (
         return Math.toDegrees(angleInRad)
     }
 
+    fun getSimilarity(other: BallTestRaw?):Double {
+        val thisMatrix: RealMatrix = MatrixUtils.createRealMatrix(this.worldLandMarks)
+        if (other == null) {
+            return GestureCalculationUtils.gestureSimilarity(thisMatrix)
+        }
+        val otherMatrix: RealMatrix = MatrixUtils.createRealMatrix(other.worldLandMarks)
+        return GestureCalculationUtils.gestureSimilarity(thisMatrix, otherMatrix)
+    }
+
+    fun getAngles():Triple<Double, Double, Double> {
+        val palmLandmarks = MatrixUtils.createRealMatrix(ANGLE_CALCULATION_POINTS.map { worldLandMarks[it] }.toTypedArray())
+        val normalVector = GestureCalculationUtils.normalVector(palmLandmarks)
+        return GestureCalculationUtils.computeAnglesWithAxes(normalVector)
+    }
+
+    fun isPalmFacingCamera(): Boolean {
+
+        val palmLandmarks = PALM_POINTS.map { landMarks[it] }
+
+
+        val (x1, y1) = palmLandmarks[0]
+        val (x2, y2) = palmLandmarks[1]
+        val (x3, y3) = palmLandmarks[2]
+        val z = (x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1)
+
+        assert(handedness == "Left" || handedness == "Right")
+
+        return if (handedness == "Left") {
+            z < 0
+        } else {
+            z > 0
+        }
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -149,21 +195,54 @@ data class BallTestRaw  (
     }
 
     companion object {
-        data class Point3D(val x: Double, val y: Double, val z: Double)
 
-        fun vector(point1: Point3D, point2: Point3D): Point3D {
+        val PALM_POINTS = listOf(0, 5, 17)
+
+        val ANGLE_CALCULATION_POINTS = listOf(0, 6, 18)
+
+        private data class Point3D(val x: Double, val y: Double, val z: Double)
+
+        private data class Point2D(val x: Double, val y: Double)
+
+        private fun vector(point1: Point3D, point2: Point3D): Point3D {
             return Point3D(point2.x - point1.x, point2.y - point1.y, point2.z - point1.z)
         }
 
-        fun dotProduct(vector1: Point3D, vector2: Point3D): Double {
+        private fun vector(point1: Point2D, point2: Point2D): Point2D {
+            return Point2D(point2.x - point1.x, point2.y - point1.y)
+        }
+
+        private fun dotProduct(vector1: Point3D, vector2: Point3D): Double {
             return vector1.x * vector2.x + vector1.y * vector2.y + vector1.z * vector2.z
         }
 
-        fun magnitude(vector: Point3D): Double {
+        private fun dotProduct(vector1: Point2D, vector2: Point2D): Double {
+            return vector1.x * vector2.x + vector1.y * vector2.y
+        }
+
+        private fun magnitude(vector: Point3D): Double {
             return sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z)
         }
 
-        fun angle(pointA: Point3D, pointB: Point3D, pointC: Point3D): Double {
+        private fun magnitude(vector: Point2D): Double {
+            return sqrt(vector.x * vector.x + vector.y * vector.y)
+        }
+
+        private fun angle(pointA: Point3D, pointB: Point3D, pointC: Point3D): Double {
+            val vectorBA = vector(pointB, pointA)
+            val vectorBC = vector(pointB, pointC)
+
+            val dotProduct = dotProduct(vectorBA, vectorBC)
+
+            val magnitudeProduct = magnitude(vectorBA) * magnitude(vectorBC)
+
+            val angleInRad = acos(dotProduct / magnitudeProduct)
+
+            // Convert to degrees
+            return Math.toDegrees(angleInRad)
+        }
+
+        private fun angle(pointA: Point2D, pointB: Point2D, pointC: Point2D): Double {
             val vectorBA = vector(pointB, pointA)
             val vectorBC = vector(pointB, pointC)
 
