@@ -48,6 +48,8 @@ class BallTestInstructionFragment : Fragment() {
             val bundle = Bundle()
             bundle.putString("sessionId", UUID.randomUUID().toString())
             findNavController().navigate(R.id.action_ballTestInstructionFragment_to_closeHandInstructionFragment, bundle)
+//            findNavController().navigate(R.id.openHandInstructionFragment, bundle)
+
         }
     }
 

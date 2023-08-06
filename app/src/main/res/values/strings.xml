@@ -135,6 +135,6 @@
     <string name="angular_acceleration">Angular Acceleration</string>
     <string name="angular_velocity">Angular Velocity</string>
     <string name="camera_test_instruction_1">In this test, you will hold your phone with the unaffected hand and point the camera at the affected hand. You will be asked to clench and then unfurl your affected hand multiple times. Your hand dexterity will be measured.</string>
-    <string name="clench_hand">Please clench your affected hand, making sure your fingers are as tightly clenched as possible. Make sure the camera is facing the hand."</string>
+    <string name="clench_hand">Please clench your affected hand, making sure your fingers are as tightly clenched as possible. Make sure the camera is facing the hand. We will record your hand movement for 10 seconds."</string>
     <string name="open_hand">Please open your hand by extending your fingers. Try your best to keep your hand open. We will record your hand movement for 10 seconds.</string>
 </resources>

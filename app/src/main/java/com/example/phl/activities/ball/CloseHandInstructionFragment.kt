@@ -4,25 +4,16 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.SurfaceView
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
 import android.widget.TextView
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.lifecycle.lifecycleScope
 import com.example.phl.R
-import com.gorisse.thomas.lifecycle.lifecycle
-import io.github.sceneview.SceneView
-import io.github.sceneview.loaders.loadHdrIndirectLight
-import io.github.sceneview.loaders.loadHdrSkybox
-import io.github.sceneview.nodes.ModelNode
-import io.github.sceneview.math.Position
-import io.github.sceneview.math.Rotation
-import io.github.sceneview.model.Model
-import kotlinx.coroutines.launch
+import com.example.phl.views.MyModelView
 import kotlin.math.ceil
 
 
@@ -40,7 +31,8 @@ class CloseHandInstructionFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    lateinit var sceneView: SceneView
+    lateinit var surfaceView: SurfaceView
+    val modelView: MyModelView = MyModelView()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,82 +52,37 @@ class CloseHandInstructionFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        sceneView = view.findViewById<SceneView>(R.id.sceneView)
-//            .apply {
-//            setLifecycle(lifecycle)
-//        }
+        surfaceView = view.findViewById<View>(R.id.surfaceView) as SurfaceView
+        modelView.run {
+            loadEntity()
+            setSurfaceView(surfaceView)
+            loadGlb(requireContext(), "hand.glb",0)
+            loadIndirectLight(requireContext(), "light.ktx")
+        }
 
-
-        lateinit var model: Model
-
-        lifecycleScope.launchWhenCreated  {
-//            val hdrFile = "background.hdr"
-//            sceneView.loadHdrIndirectLight(hdrFile, specularFilter = true) {
-//                intensity(30_000f)
-//            }
-//            sceneView.loadHdrSkybox(hdrFile) {
-//                intensity(50_000f)
-//            }
-
-            model = sceneView.modelLoader.loadModel("hand.glb")!!
-            val modelNode = ModelNode(sceneView, model).apply {
-                transform(
-                        position = Position(x=-0.2f, y=-1f, z=-3f),
-                        rotation = Rotation(y=10f)
-                )
-                scaleToUnitsCube(20.0f)
-                playAnimation(0)
-            }
-            sceneView.addChildNode(modelNode)
-            startCountDown(view, 2000, false) {
-                val bundle = Bundle()
-                bundle.putString("testType", "CloseHand")
-                bundle.putString("sessionId", arguments?.getString("sessionId")!!)
-                findNavController().navigate(R.id.action_closeHandInstructionFragment_to_camera_fragment, bundle)
-            }
+        val button = view.findViewById<TextView>(R.id.button)
+        button.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("testType", "CloseHand")
+            bundle.putString("sessionId", arguments?.getString("sessionId")!!)
+            findNavController().navigate(R.id.action_closeHandInstructionFragment_to_camera_fragment, bundle)
         }
     }
 
-    private fun startCountDown(view: View, milliSeconds: Long, visible:Boolean, callback:()->Unit){
-        // Find your TextView
-        val countdownTextView: TextView = view.findViewById(R.id.countdown_text)
-
-        countdownTextView.visibility = if (visible) View.VISIBLE else View.GONE
-
-        // Create a CountdownTimer
-        object : CountDownTimer(milliSeconds, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-                // Update TextView
-                countdownTextView.text = ceil(millisUntilFinished / 1000.0).toInt().toString()
-
-                // Create a scale animation
-                val scaleAnimation = ScaleAnimation(
-                    1f, 1.2f, 1f, 1.2f,
-                    Animation.RELATIVE_TO_SELF, 0.5f,
-                    Animation.RELATIVE_TO_SELF, 0.5f
-                )
-                scaleAnimation.duration = 1000
-                // Start the animation
-                countdownTextView.startAnimation(scaleAnimation)
-            }
-
-            override fun onFinish() {
-                // Create a fade out animation
-                val fadeOutAnimation = AlphaAnimation(1f, 0f)
-                fadeOutAnimation.duration = 500
-
-                // Start the animation
-                countdownTextView.startAnimation(fadeOutAnimation)
-
-                // Set visibility to GONE
-                countdownTextView.postDelayed({
-                    countdownTextView.visibility = View.GONE
-                    callback()
-                }, 500)
-            }
-        }.start()
+    override fun onResume() {
+        super.onResume()
+        modelView.onResume()
     }
 
+    override fun onPause() {
+        super.onPause()
+        modelView.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        modelView.onDestroy()
+    }
 
     companion object {
         /**

@@ -15,9 +15,10 @@
             android:id="@+id/instruction"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/black"
             android:text="@string/clench_hand"
-            android:textColor="@android:color/white" />
+            android:padding="16dp"
+            android:textSize="18sp"
+            android:textColor="@color/mp_color_primary_dark"/>
 
         <TextView
             android:id="@+id/feedback"
@@ -25,24 +26,25 @@
             android:layout_height="wrap_content"
             android:background="@android:color/black"
             android:text=""
-            android:textColor="@android:color/white" />
-
-        <TextView
-            android:text="3"
-            android:id="@+id/countdown_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/black"
             android:textColor="@android:color/white"
-            />
+            android:visibility="gone"/>
 
-        <io.github.sceneview.SceneView
-            android:id="@+id/sceneView"
+        <SurfaceView
+            android:id="@+id/surfaceView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/transparent" />
+            />
+
     </LinearLayout>
 
+    <com.example.phl.views.MyButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/continue_to_next"
+        android:id="@+id/button"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="24dp"
+        />
 
 </FrameLayout>
 

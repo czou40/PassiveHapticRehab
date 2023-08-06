@@ -68,7 +68,9 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
     companion object {
         private const val TAG = "Hand Landmarker"
         private const val OPEN_HAND_TEST_TIME = 10000L
-        private const val CLOSE_HAND_TEST_TIME = 5000L
+        private const val CLOSE_HAND_TEST_TIME = 10000L
+        private const val PREPARE_TIME = 5000L
+        private const val SHOW_FINAL_COUNTDOWN_TIME = 3000L
     }
 
     private var _fragmentCameraBinding: FragmentCameraBinding? = null
@@ -186,26 +188,48 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
             )
         }
 
-        startSavingData()
         // Schedule stop saving data for 20 seconds later
         val duration = if (testType == "OpenHand") OPEN_HAND_TEST_TIME else CLOSE_HAND_TEST_TIME
-        startCountDown(duration, false){
-            stopSavingData()
+        startCountDown(PREPARE_TIME, true) {
+            startSavingData()
+            startCountDown(duration-SHOW_FINAL_COUNTDOWN_TIME, false){
+                startCountDown(SHOW_FINAL_COUNTDOWN_TIME, true, "Data Collection Ending"){
+                    stopSavingData()
+                }
+            }
         }
-
     }
 
 
-    private fun startCountDown(milliseconds:Long, visible:Boolean, callback:()->Unit){
+    private fun startCountDown(milliseconds:Long, visible:Boolean, message:String? = null, callback:()->Unit){
         // Find your TextView
         val countdownTextView: TextView = fragmentCameraBinding.countdownText
+        if (visible) {
+            if (countdownTextView.visibility == View.GONE) {
+                countdownTextView.visibility = View.VISIBLE
+                // Create a fade in animation
+                val fadeInAnimation = AlphaAnimation(0f, 1f)
+                fadeInAnimation.duration = 500
 
+                // Start the animation
+                countdownTextView.startAnimation(fadeInAnimation)
+            }
+        } else {
+            countdownTextView.visibility = View.GONE
+        }
         // Create a CountdownTimer
         object : CountDownTimer(milliseconds, 1000) {
+            @SuppressLint("SetTextI18n")
             override fun onTick(millisUntilFinished: Long) {
+                if (!visible) {
+                    return
+                }
                 // Update TextView
-                countdownTextView.text = ceil(millisUntilFinished / 1000.0).toInt().toString()
-
+                if (message != null) {
+                    countdownTextView.text = message.trim() + "\n" + ceil(millisUntilFinished / 1000.0).toInt().toString()
+                } else {
+                    countdownTextView.text = ceil(millisUntilFinished / 1000.0).toInt().toString()
+                }
                 // Create a scale animation
                 val scaleAnimation = ScaleAnimation(
                     1f, 1.2f, 1f, 1.2f,
@@ -218,18 +242,22 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
             }
 
             override fun onFinish() {
-                // Create a fade out animation
-                val fadeOutAnimation = AlphaAnimation(1f, 0f)
-                fadeOutAnimation.duration = 500
+                if (visible) {
+                    // Create a fade out animation
+                    val fadeOutAnimation = AlphaAnimation(1f, 0f)
+                    fadeOutAnimation.duration = 500
 
-                // Start the animation
-                countdownTextView.startAnimation(fadeOutAnimation)
+                    // Start the animation
+                    countdownTextView.startAnimation(fadeOutAnimation)
 
-                // Set visibility to GONE after the animation and start saving data
-                countdownTextView.postDelayed({
-                    countdownTextView.visibility = View.GONE
+                    // Set visibility to GONE after the animation and start saving data
+                    countdownTextView.postDelayed({
+                        countdownTextView.visibility = View.GONE
+                        callback()
+                    }, 500)
+                } else {
                     callback()
-                }, 500)
+                }
             }
         }.start()
     }

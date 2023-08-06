@@ -110,6 +110,8 @@ dependencies {
     // CameraX View class
     implementation "androidx.camera:camera-view:$camerax_version"
 
-    // SceneView
-    implementation "io.github.sceneview:sceneview:1.0.11"
+    // Filament: Do not upgrade to 1.4x because of a bug
+    implementation 'com.google.android.filament:filament-android:1.30.0'
+    implementation 'com.google.android.filament:filament-utils-android:1.30.0'
+    implementation 'com.google.android.filament:gltfio-android:1.30.0'
 }
