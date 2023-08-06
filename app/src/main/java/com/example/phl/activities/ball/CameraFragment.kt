@@ -16,10 +16,12 @@
 package com.example.phl.activities.ball
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -56,6 +58,7 @@ import com.example.phl.data.AppDatabase
 import com.example.phl.data.ball.BallTestRaw
 import com.example.phl.data.ball.BallTestResult
 import com.google.mediapipe.tasks.components.containers.Category
+import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -68,8 +71,9 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
         private const val TAG = "Hand Landmarker"
         private const val OPEN_HAND_TEST_TIME = 10000L
         private const val CLOSE_HAND_TEST_TIME = 10000L
-        private const val PREPARE_TIME = 5000L
+        private const val PREPARE_TIME = 3000L
         private const val SHOW_FINAL_COUNTDOWN_TIME = 3000L
+        private const val MINIMUM_DATA_COUNT = 30
     }
 
     private var _fragmentCameraBinding: FragmentCameraBinding? = null
@@ -97,6 +101,7 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
     private lateinit var testType: String
     private lateinit var sessionId: String
 
+    private var warningToast: Toast? = null
 
     override fun onResume() {
         super.onResume()
@@ -281,25 +286,42 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
     }
 
     private fun navigateToNextStep() {
-        val rawScores = currentTestData.map { it.getStrength() }
-        val averageScore = rawScores.average()
-        val bundle = bundleOf("sessionId" to sessionId)
-        if (testType == "CloseHand") {
-            bundle.putDouble("closeHandTestResult", averageScore)
-            findNavController().navigate(
-                R.id.action_camera_fragment_to_openHandInstructionFragment,
-                bundle
-            )
-        } else if (testType == "OpenHand") {
-            bundle.putDouble(
-                "closeHandTestResult",
-                arguments?.getDouble("closeHandTestResult")!!
-            )
-            bundle.putDouble("openHandTestResult", averageScore)
-            findNavController().navigate(
-                R.id.action_camera_fragment_to_ballTestResultsFragment3,
-                bundle
-            )
+        if (currentTestData.size < MINIMUM_DATA_COUNT) {
+            // Alert Dialog
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setTitle("Warning")
+            builder.setMessage("Not enough data collected. Please make sure your hand is facing the camera and having the correct gesture.")
+            builder.setPositiveButton("OK") { _, _ ->
+                findNavController().popBackStack()
+            }
+            builder.setCancelable(false)
+            builder.show()
+        } else {
+            // Save the data to the database
+            lifecycleScope.launch(Dispatchers.IO) {
+                val db = AppDatabase.getInstance(requireActivity().applicationContext)
+                db.ballTestRawDao().insertAll(currentTestData)
+            }
+            val rawScores = currentTestData.map { it.getStrength() }
+            val averageScore = rawScores.average()
+            val bundle = bundleOf("sessionId" to sessionId)
+            if (testType == "CloseHand") {
+                bundle.putDouble("closeHandTestResult", averageScore)
+                findNavController().navigate(
+                    R.id.action_camera_fragment_to_openHandInstructionFragment,
+                    bundle
+                )
+            } else if (testType == "OpenHand") {
+                bundle.putDouble(
+                    "closeHandTestResult",
+                    arguments?.getDouble("closeHandTestResult")!!
+                )
+                bundle.putDouble("openHandTestResult", averageScore)
+                findNavController().navigate(
+                    R.id.action_camera_fragment_to_ballTestResultsFragment3,
+                    bundle
+                )
+            }
         }
     }
 
@@ -389,7 +411,18 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
 
         if (handDetected) {
             val worldLandmarks = result.worldLandmarks()[0]
-            val handedness = result.handednesses()[0][0]!!.categoryName()!!
+            val handedness = if (result.handednesses()[0][0]!!.categoryName()!! == "Left") {
+                BallTestRaw.Companion.Handedness.LEFT
+            } else {
+                BallTestRaw.Companion.Handedness.RIGHT
+            }
+            val currentTask = if (testType == "CloseHand") {
+                BallTestRaw.Companion.CurrentTask.CLOSE_HAND
+            } else if (testType == "OpenHand" ){
+                BallTestRaw.Companion.CurrentTask.OPEN_HAND
+            } else {
+                BallTestRaw.Companion.CurrentTask.NONE
+            }
             val landmarks = result.landmarks()[0]
 //            val points = hand.map { landmark ->
 //                Point3D(
@@ -415,18 +448,45 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
             }).toTypedArray()
 
             val ballTestRaw =
-                BallTestRaw(sessionId, worldLandmarksArray, landmarksArray, handedness)
+                BallTestRaw(sessionId, worldLandmarksArray, landmarksArray, handedness, currentTask)
 
             viewLifecycleOwner.lifecycleScope.launch {
                 fragmentCameraBinding.strengthText.text = ballTestRaw.getDescription()
             }
 
             if (isSavingData) {
-
-                currentTestData.add(ballTestRaw)
-                lifecycleScope.launch(Dispatchers.IO) {
-                    val db = AppDatabase.getInstance(requireActivity().applicationContext)
-                    db.ballTestRawDao().insert(ballTestRaw)
+                val (isValid, reason) = ballTestRaw.isValidData()
+                if (!isValid) {
+                    activity?.runOnUiThread {
+                        warningToast?.cancel()
+                        warningToast = FancyToast.makeText(
+                            requireContext(),
+                            reason,
+                            FancyToast.LENGTH_SHORT,
+                            FancyToast.WARNING,
+                            false
+                        )
+                        warningToast?.setGravity(Gravity.TOP, 0, 0);
+                        warningToast?.show()
+                    }
+                } else {
+                    warningToast?.cancel()
+                    currentTestData.add(ballTestRaw)
+                }
+            }
+        } else {
+            if (isSavingData) {
+                activity?.runOnUiThread {
+                    warningToast?.cancel()
+                    warningToast = FancyToast.makeText(
+                        requireContext(),
+                        "No hand detected!",
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.ERROR,
+                        false
+                    )
+                    warningToast?.setGravity(Gravity.TOP, 0, 0);
+                    warningToast?.show()
                 }
             }
         }

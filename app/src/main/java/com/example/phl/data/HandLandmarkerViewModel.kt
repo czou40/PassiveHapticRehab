@@ -24,7 +24,7 @@ import com.example.phl.utils.HandLandmarkerHelper
  */
 class HandLandmarkerViewModel : ViewModel() {
 
-    private var _delegate: Int = HandLandmarkerHelper.DELEGATE_CPU
+    private var _delegate: Int = HandLandmarkerHelper.DELEGATE_GPU
     private var _minHandDetectionConfidence: Float =
         HandLandmarkerHelper.DEFAULT_HAND_DETECTION_CONFIDENCE
     private var _minHandTrackingConfidence: Float = HandLandmarkerHelper

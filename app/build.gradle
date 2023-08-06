@@ -117,4 +117,6 @@ dependencies {
 
     implementation 'com.google.code.gson:gson:2.10.1'
 
+    implementation 'io.github.shashank02051997:FancyToast:2.0.2'
+
 }

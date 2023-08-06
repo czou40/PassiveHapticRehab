@@ -38,7 +38,7 @@ class HandLandmarkerHelper(
     var minHandTrackingConfidence: Float = DEFAULT_HAND_TRACKING_CONFIDENCE,
     var minHandPresenceConfidence: Float = DEFAULT_HAND_PRESENCE_CONFIDENCE,
     var maxNumHands: Int = DEFAULT_NUM_HANDS,
-    var currentDelegate: Int = DELEGATE_CPU,
+    var currentDelegate: Int = DELEGATE_GPU,
     var runningMode: RunningMode = RunningMode.IMAGE,
     val context: Context,
     // this listener is only used when running in RunningMode.LIVE_STREAM

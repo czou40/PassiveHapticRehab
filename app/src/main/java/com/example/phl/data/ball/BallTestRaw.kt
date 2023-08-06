@@ -18,7 +18,8 @@ data class BallTestRaw  (
     override val sessionId: String,
     val worldLandMarks : Array<DoubleArray>,
     val landMarks:  Array<DoubleArray>,
-    val handedness: String,
+    val handedness: Handedness,
+    val currentTask: CurrentTask,
     override val time: LocalDateTime = LocalDateTime.now(),
     @PrimaryKey
     val id: String = UUID.randomUUID().toString()
@@ -53,7 +54,7 @@ data class BallTestRaw  (
         val pinkieAverage = (pinkieAngle0 + pinkieAngle1 + pinkieAngle2) / 3
 
         val average =
-            (thumbAverage + indexAverage + middleAverage + ringAverage + pinkieAverage) / 5
+            (indexAverage + middleAverage + ringAverage + pinkieAverage) / 4
 
         return ((180 - average) / 90 * 100)
     }
@@ -87,7 +88,7 @@ data class BallTestRaw  (
         val pinkieAverage = (pinkieAngle0 + pinkieAngle1 + pinkieAngle2) / 3
 
         val average =
-            (thumbAverage + indexAverage + middleAverage + ringAverage + pinkieAverage) / 5
+            (indexAverage + middleAverage + ringAverage + pinkieAverage) / 4
 
         val strength = ((180 - average) / 90 * 100)
 
@@ -159,13 +160,38 @@ data class BallTestRaw  (
         val (x3, y3) = palmLandmarks[2]
         val z = (x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1)
 
-        assert(handedness == "Left" || handedness == "Right")
 
-        return if (handedness == "Left") {
+        return if (handedness == Handedness.LEFT) {
             z < 0
         } else {
             z > 0
         }
+    }
+
+    fun isHandAtRequiredPosition(): Boolean {
+        val (alpha, beta, gamma) = getAngles()
+        return gamma <= PALM_Y_ANGLE_THRESHOLD && isPalmFacingCamera()
+    }
+
+    fun isHandClosed(): Boolean {
+        return getStrength() >= CLOSED_HAND_THRESHOLD
+    }
+
+    fun isValidData(): Pair<Boolean, String> {
+        if (currentTask == CurrentTask.CLOSE_HAND) {
+            if (!isHandAtRequiredPosition()) {
+                return Pair(false, "Your palm and fingers must face the camera!")
+            } else if (!isHandClosed()) {
+                return Pair(false, "Your hand must be closed!")
+            }
+        } else if (currentTask == CurrentTask.OPEN_HAND) {
+            if (!isHandAtRequiredPosition()) {
+                return Pair(false, "Your palm and fingers must face the camera!")
+            }
+        } else {
+            return Pair(false, "Unknown")
+        }
+        return Pair(true, "")
     }
 
     override fun equals(other: Any?): Boolean {
@@ -196,9 +222,21 @@ data class BallTestRaw  (
 
     companion object {
 
+        enum class Handedness {
+            LEFT, RIGHT
+        }
+
+        enum class CurrentTask {
+            NONE, CLOSE_HAND, OPEN_HAND
+        }
+
         val PALM_POINTS = listOf(0, 5, 17)
 
         val ANGLE_CALCULATION_POINTS = listOf(0, 6, 18)
+
+        val CLOSED_HAND_THRESHOLD = 85
+
+        val PALM_Y_ANGLE_THRESHOLD = 35
 
         private data class Point3D(val x: Double, val y: Double, val z: Double)
 

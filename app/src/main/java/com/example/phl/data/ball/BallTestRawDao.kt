@@ -13,6 +13,9 @@ interface BallTestRawDao : AbstractDao<BallTestRaw> {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     override fun insert(data: BallTestRaw)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(data: List<BallTestRaw>)
+
     @Query("SELECT * FROM ball_test")
     override fun getAll(): List<BallTestRaw>
 
@@ -30,4 +33,7 @@ interface BallTestRawDao : AbstractDao<BallTestRaw> {
 
     @Query("DELETE FROM ball_test WHERE sessionId = :sessionId")
     override fun deleteBySessionId(sessionId: String)
+
+    @Query("DELETE FROM ball_test WHERE sessionId = :sessionId AND currentTask = :currentTask")
+    fun deleteBySessionIdAndCurrentTask(sessionId: String, currentTask: BallTestRaw.Companion.CurrentTask)
 }

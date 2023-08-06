@@ -1,6 +1,7 @@
 package com.example.phl.data
 
 import androidx.room.TypeConverter
+import com.example.phl.data.ball.BallTestRaw
 import java.time.LocalDate
 import java.util.Date
 import java.time.LocalDateTime
@@ -43,4 +44,26 @@ object Converters {
     fun twoDimensionalDoubleArrayToString(array: Array<DoubleArray>): String {
         return Gson().toJson(array)
     }
+
+    @TypeConverter
+    fun stringToHandedness(value: String): BallTestRaw.Companion.Handedness {
+        return BallTestRaw.Companion.Handedness.valueOf(value)
+    }
+
+    @TypeConverter
+    fun handednessToString(handedness: BallTestRaw.Companion.Handedness): String {
+        return handedness.name
+    }
+
+    @TypeConverter
+    fun stringToCurrentTask(value: String): BallTestRaw.Companion.CurrentTask {
+        return BallTestRaw.Companion.CurrentTask.valueOf(value)
+    }
+
+    @TypeConverter
+    fun currentTaskToString(currentTask: BallTestRaw.Companion.CurrentTask): String {
+        return currentTask.name
+    }
+
+
 }
