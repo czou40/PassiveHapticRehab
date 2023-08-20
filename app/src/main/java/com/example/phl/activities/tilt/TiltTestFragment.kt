@@ -7,7 +7,6 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
 import android.os.CountDownTimer
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +15,7 @@ import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
 import android.widget.TextView
 import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.phl.R
@@ -29,7 +29,6 @@ import java.util.UUID
 import kotlin.math.acos
 import kotlin.math.atan2
 import kotlin.math.ceil
-import kotlin.math.round
 import kotlin.math.sqrt
 
 /**
@@ -40,7 +39,8 @@ class TiltTestFragment : MyBaseFragment(), SensorEventListener {
     private var _binding: FragmentTiltTestBinding? = null
 
     private lateinit var sensorManager: SensorManager
-    private var accelerometer: Sensor? = null
+    private lateinit var accelerometer: Sensor
+    private lateinit var rotationSensor: Sensor
     private var tiltTextView: TextView? = null
 
     private var isSavingData = false
@@ -53,14 +53,12 @@ class TiltTestFragment : MyBaseFragment(), SensorEventListener {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    companion object {
+        const val TEST_DURATION = 100000L
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        sensorManager = requireContext().getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-
-        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL)
-
         registerCommand("Exit") {
             activity?.finish()
         }
@@ -83,11 +81,12 @@ class TiltTestFragment : MyBaseFragment(), SensorEventListener {
 
         sensorManager = requireActivity().getSystemService(Context.SENSOR_SERVICE) as SensorManager
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-
+        rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL)
+        sensorManager.registerListener(this, rotationSensor, SensorManager.SENSOR_DELAY_NORMAL)
 
         // Create a CountdownTimer
-        object : CountDownTimer(3000, 1000) {
+        object : CountDownTimer(TEST_DURATION, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 // Update TextView
                 countdownTextView.text = ceil(millisUntilFinished / 1000.0).toInt().toString()
@@ -143,23 +142,43 @@ class TiltTestFragment : MyBaseFragment(), SensorEventListener {
 
     override fun onSensorChanged(event: SensorEvent?) {
         event?.let {
-            val x = it.values[0]
-            val y = it.values[1]
-            val z = it.values[2]
+            if (it.sensor.type == Sensor.TYPE_ROTATION_VECTOR) {
+                val rotationVector = it.values
+                val accuracy1 = it.accuracy
+                val accuracy2 = rotationVector[4]
+                val rotationMatrix = FloatArray(9)
+                SensorManager.getRotationMatrixFromVector(rotationMatrix, rotationVector)
+                val zComponent = rotationMatrix[8]
+                val theta = acos(zComponent)
+                val angleInDegrees = Math.toDegrees(theta.toDouble())
 
-            val angle = angleWithGravity(x, y, z)
+                val orientation = FloatArray(3)
+                SensorManager.getOrientation(rotationMatrix, orientation)
+                val azimuth = orientation[0] * (180.0 / Math.PI) // not used
+                val pitch = orientation[1] * (180.0 / Math.PI)
+                val roll = orientation[2] * (180.0 / Math.PI)
+                activity?.runOnUiThread {
+                    tiltTextView?.text = "Pitch: %.2f, Roll: %.2f\nangleInDegrees:%.2f\nRotation Vector:\n%.2f\t%.2f\t%.2f\nAccuracy1:%d\nAccuracy2:%.2f".format(pitch, roll, angleInDegrees, rotationVector[0], rotationVector[1], rotationVector[2], accuracy1, accuracy2)
+                }
+                return
+            } else {
+                val x = it.values[0]
+                val y = it.values[1]
+                val z = it.values[2]
+
+                val angle = angleWithGravity(x, y, z)
 
 
-            val pitch = atan2(x.toDouble(), sqrt(y*y + z*z).toDouble()) * (180.0 / Math.PI)
-            val roll = atan2(y.toDouble(), sqrt(x*x + z*z).toDouble()) * (180.0 / Math.PI)
+                val pitch = atan2(x.toDouble(), sqrt(y * y + z * z).toDouble()) * (180.0 / Math.PI)
+                val roll = atan2(y.toDouble(), sqrt(x * x + z * z).toDouble()) * (180.0 / Math.PI)
 
-            if (isSavingData) {
-                data.add(angle)
-            }
-
-            // Update UI with the calculated tilt angles
-            activity?.runOnUiThread {
-                tiltTextView?.text = "Pitch: %.2f, Roll: %.2f\nAngle with gravity: %.2f".format(pitch, roll, angle)
+//                if (isSavingData) {
+//                    data.add(angle)
+//                }
+//                // Update UI with the calculated tilt angles
+//                activity?.runOnUiThread {
+//                    tiltTextView?.text = "Pitch: %.2f, Roll: %.2f\nAngle with gravity: %.2f".format(pitch, roll, angle)
+//                }
             }
         }
     }
@@ -175,7 +194,10 @@ class TiltTestFragment : MyBaseFragment(), SensorEventListener {
 
     override fun onResume() {
         super.onResume()
-        accelerometer?.also { sensor ->
+        accelerometer.also { sensor ->
+            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
+        }
+        rotationSensor.also { sensor ->
             sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
         }
     }
@@ -189,15 +211,15 @@ class TiltTestFragment : MyBaseFragment(), SensorEventListener {
     private fun stopSavingData() {
         isSavingData = false
         val averageScore = data.average()
-        lifecycleScope.launch(Dispatchers.IO) {
-            val tiltTest = TiltTestResult(
-                sessionId = sessionId!!,
-                score = averageScore,
-            )
-            val db = AppDatabase.getInstance(requireContext())
-            db.tiltTestResultDao().insert(tiltTest)
-        }
-        val bundle = bundleOf("sessionId" to sessionId, "averageScore" to averageScore)
+//        lifecycleScope.launch(Dispatchers.IO) {
+//            val tiltTest = TiltTestResult(
+//                sessionId = sessionId!!,
+//                score = averageScore,
+//            )
+//            val db = AppDatabase.getInstance(requireContext())
+//            db.tiltTestResultDao().insert(tiltTest)
+//        }
+        val bundle = bundleOf("sessionId" to sessionId, "averageScore" to 0.0)
         findNavController().navigate(R.id.action_tiltTestFragment_to_tiltTestResultsFragment, bundle)
     }
 }

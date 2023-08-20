@@ -45,7 +45,8 @@
             android:name=".activities.TiltTestActivity"
             android:exported="false"
             android:label="@string/title_activity_tilt_test"
-            android:theme="@style/Theme.PHL" />
+            android:theme="@style/Theme.PHL"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.BallTestActivity"
             android:exported="false"

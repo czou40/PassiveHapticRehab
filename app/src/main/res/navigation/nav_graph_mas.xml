@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_mas"
+    app:startDestination="@id/masVisualizationFragment">
+
+    <fragment
+        android:id="@+id/masVisualizationFragment"
+        android:name="com.example.phl.activities.mas.MasVisualizationFragment"
+        android:label="fragment_mas_visualization"
+        tools:layout="@layout/fragment_mas_visualization" >
+        <action
+            android:id="@+id/action_masVisualizationFragment_to_masInstructionFragment"
+            app:destination="@id/masInstructionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/masInstructionFragment"
+        android:name="com.example.phl.activities.mas.MasInstructionFragment"
+        android:label="fragment_mas_instruction"
+        tools:layout="@layout/fragment_mas_instruction" >
+        <action
+            android:id="@+id/action_masInstructionFragment_to_masCollectionFragment"
+            app:destination="@id/masCollectionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/masCollectionFragment"
+        android:name="com.example.phl.activities.mas.MasCollectionFragment"
+        android:label="fragment_mas_collection"
+        tools:layout="@layout/fragment_mas_collection" >
+        <action
+            android:id="@+id/action_masCollectionFragment_to_masResultFragment"
+            app:destination="@id/masResultFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/masResultFragment"
+        android:name="com.example.phl.activities.mas.MasResultFragment"
+        android:label="fragment_mas_result"
+        tools:layout="@layout/fragment_mas_result" />
+</navigation>

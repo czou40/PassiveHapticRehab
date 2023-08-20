@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.phl.data.AbstractResultData
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 @Entity(tableName = "ball_test_result")
 data class BallTestResult (

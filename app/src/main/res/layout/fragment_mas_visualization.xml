@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+android:gravity="center"
+tools:context=".activities.mas.MasVisualizationFragment">
+
+<com.jjoe64.graphview.GraphView
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:id="@+id/graph_angular_velocity"
+    />
+
+<com.jjoe64.graphview.GraphView
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:id="@+id/graph_angular_acceleration"
+    />
+
+<com.jjoe64.graphview.GraphView
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:id="@+id/graph_radius"
+    />
+
+
+<TextView
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/angular_acceleration_text"
+    android:text="@string/angular_acceleration"
+    android:textSize="32sp"
+    android:visibility="gone"
+    />
+
+<TextView
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/angular_acceleration_value"
+    android:text=""
+    android:textSize="32sp"
+    android:visibility="gone"
+    />
+
+<TextView
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/angular_velocity_text"
+    android:text="@string/angular_velocity"
+    android:textSize="32sp"
+    android:visibility="gone"
+    />
+
+<TextView
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/angular_velocity_value"
+    android:text=""
+    android:textSize="32sp"
+    android:visibility="gone"
+    />
+
+<com.example.phl.views.MyButton
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/start"
+    android:text="@string/start" />
+
+<com.example.phl.views.MyButton
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/start_workflow"
+    android:text="@string/start_workflow" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

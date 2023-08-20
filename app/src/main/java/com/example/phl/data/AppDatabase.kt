@@ -9,6 +9,8 @@ import com.example.phl.data.ball.BallTestRaw
 import com.example.phl.data.ball.BallTestRawDao
 import com.example.phl.data.ball.BallTestResult
 import com.example.phl.data.ball.BallTestResultDao
+import com.example.phl.data.mas.MasTestRaw
+import com.example.phl.data.mas.MasTestRawDao
 import com.example.phl.data.sensation.TactileSensation
 import com.example.phl.data.sensation.TactileSensationDao
 import com.example.phl.data.spasticity.Spasticity
@@ -17,8 +19,8 @@ import com.example.phl.data.tilt.TiltTestResult
 import com.example.phl.data.tilt.TiltTestResultDao
 
 @Database(
-    entities = [TactileSensation::class, Spasticity::class, BallTestRaw::class, BallTestResult::class, TiltTestResult::class],
-    version = 9
+    entities = [TactileSensation::class, Spasticity::class, BallTestRaw::class, BallTestResult::class, TiltTestResult::class, MasTestRaw::class],
+    version = 10
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -27,6 +29,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun ballTestRawDao(): BallTestRawDao
     abstract fun ballTestResultDao(): BallTestResultDao
     abstract fun tiltTestResultDao(): TiltTestResultDao
+    abstract fun masTestRawDao(): MasTestRawDao
 
     companion object {
         private var db: AppDatabase?= null
