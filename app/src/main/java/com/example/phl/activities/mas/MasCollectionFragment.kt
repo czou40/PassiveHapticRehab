@@ -1,5 +1,6 @@
 package com.example.phl.activities.mas
 
+import android.app.AlertDialog
 import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -55,9 +56,10 @@ class MasCollectionFragment : Fragment(), SensorEventListener {
     }
 
     private var dataBuffer = ArrayList<MasTestRaw>() // The buffer of data to be saved. We copy the data to dataToSave when we move to the next stage.
-    private var dataBufferWindow = ArrayDeque<MasTestRaw>() // The window of data to be used for calculations of stage transitions.
-    private var dataBufferWindowAccelerationSum = 0.0 // The sum of the acceleration values in the dataBufferWindow. Used for calculating the average acceleration.
-    private var dataBufferWindowSizeMillis = 0L // The size of the dataBufferWindow in milliseconds.
+    private var accelerationDataBufferWindow = ArrayDeque<Pair<Long, Float>>() // The window of acceleration values to be used for calculations of stage transitions.
+    private var accelerationDataBufferWindowSum = 0.0 // The sum of the acceleration values in the dataBufferWindow. Used for calculating the average acceleration.
+    private var accelerationDataBufferWindowSizeMillis = 0L // The size of the dataBufferWindow in milliseconds.
+    private var isAccelerationDataBufferWindowFull = false // Whether the accelerationDataBufferWindow is full.
     private lateinit var sensorManager: SensorManager
     private lateinit var accelerometer: Sensor
     private lateinit var rotationSensor: Sensor
@@ -101,26 +103,27 @@ class MasCollectionFragment : Fragment(), SensorEventListener {
 
     override fun onResume() {
         super.onResume()
-        startGatheringDataIfNeeded()
+        if (currentStage == Stage.NONE) {
+            currentStage = Stage.WARMUP
+        }
+        configureSensorsIfNeeded()
     }
 
     override fun onPause() {
         super.onPause()
-        stopCollectingDataIfNeeded()
+        configureSensorsIfNeeded()
     }
 
-    private fun startGatheringDataIfNeeded() {
+    private fun configureSensorsIfNeeded() {
         if (needToGatherCompleteData()) {
             sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST)
             sensorManager.registerListener(this, rotationSensor, SensorManager.SENSOR_DELAY_FASTEST)
             sensorManager.registerListener(this, gyroScope, SensorManager.SENSOR_DELAY_FASTEST)
         } else if (needToGatherPartialData()) {
             sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST)
+        } else {
+            sensorManager.unregisterListener(this)
         }
-    }
-
-    private fun stopCollectingDataIfNeeded() {
-        sensorManager.unregisterListener(this)
     }
 
     fun saveAllData() {
@@ -152,9 +155,10 @@ class MasCollectionFragment : Fragment(), SensorEventListener {
 
     private fun resetDataBuffer() {
         dataBuffer = ArrayList()
-        dataBufferWindow = ArrayDeque()
-        dataBufferWindowAccelerationSum = 0.0
-        dataBufferWindowSizeMillis = when (currentStage) {
+        accelerationDataBufferWindow = ArrayDeque()
+        accelerationDataBufferWindowSum = 0.0
+        isAccelerationDataBufferWindowFull = false
+        accelerationDataBufferWindowSizeMillis = when (currentStage) {
             Stage.WARMUP -> HAND_STILL_TIME_WARMUP
             Stage.INITIAL_1 -> HAND_STILL_TIME_INITIAL
             Stage.INITIAL_2 -> HAND_MOVING_TIME_INITIAL
@@ -163,6 +167,7 @@ class MasCollectionFragment : Fragment(), SensorEventListener {
             else -> 0L
         }
     }
+
     private fun updateBuffer(event: SensorEvent) : MasTestRaw? {
         val timestamp = event.timestamp
         when (event.sensor.type) {
@@ -177,14 +182,22 @@ class MasCollectionFragment : Fragment(), SensorEventListener {
             Sensor.TYPE_LINEAR_ACCELERATION -> {
                 accelerometerData = event.values
                 isAccelerometerDataAvailable = true
+                // We only need accelerometer data for the warmup stage
+                // No need to set isAccelerometerDataAvailable to false because the same data will be used to create masTestRaw
+                val accelerationMagnitude = sqrt(accelerometerData[0] * accelerometerData[0] + accelerometerData[1] * accelerometerData[1] + accelerometerData[2] * accelerometerData[2])
+                accelerationDataBufferWindow.add(Pair(timestamp, accelerationMagnitude))
+                accelerationDataBufferWindowSum += accelerationMagnitude
+                while (accelerationDataBufferWindow.isNotEmpty() && accelerationDataBufferWindow.first.first + accelerationDataBufferWindowSizeMillis < accelerationDataBufferWindow.last.first) {
+                    accelerationDataBufferWindow.removeFirst()
+                    accelerationDataBufferWindowSum -= accelerationDataBufferWindow.first.second
+                    isAccelerationDataBufferWindowFull = true
+                }
             }
         }
         if (isGyroScopeDataAvailable && isAccelerometerDataAvailable && isRotationSensorDataAvailable) {
             isGyroScopeDataAvailable = false
             isAccelerometerDataAvailable = false
             isRotationSensorDataAvailable = false
-
-            // Convert nanoseconds to seconds and remaining nanoseconds
 
             // Convert nanoseconds to seconds and remaining nanoseconds
             val seconds: Long = timestamp / 1000000000
@@ -209,24 +222,113 @@ class MasCollectionFragment : Fragment(), SensorEventListener {
                 rotationSensorData[4]
             )
             dataBuffer.add(masTestRaw) // The data currently does not contain stage information
-            dataBufferWindow.add(masTestRaw)
-            dataBufferWindowAccelerationSum += masTestRaw.getAccelerationMagnitude()
-            // Now, delete the old data if stale
-            while (dataBufferWindow.isNotEmpty() && dataBufferWindow.first.time.toInstant(ZoneOffset.UTC).toEpochMilli() + dataBufferWindowSizeMillis < dataBufferWindow.first.time.toInstant(ZoneOffset.UTC).toEpochMilli()) {
-                val data = dataBufferWindow.removeFirst()
-                dataBufferWindowAccelerationSum -= data.getAccelerationMagnitude()
-            }
             return masTestRaw
         }
         return null
     }
 
+    private fun getAverageAcceleration(): Double {
+        assert(isAccelerationDataBufferWindowFull)
+        return accelerationDataBufferWindowSum / accelerationDataBufferWindow.size
+    }
+
+    private fun copyBufferDataToDataToSave() {
+        // For all data in dataBuffer,
+        dataToSave.addAll(dataBuffer)
+    }
+
+    private fun moveToNextStage() {
+        when (currentStage) {
+            Stage.NONE -> {
+                // Should not happen. Raise RuntimeException
+                throw RuntimeException("Bug!")
+            }
+            Stage.WARMUP -> {
+                currentStage = Stage.INITIAL_1
+            }
+            Stage.INITIAL_1 -> {
+                currentStage = Stage.INITIAL_2
+            }
+            Stage.INITIAL_2 -> {
+                currentStage = Stage.MIDDLE
+            }
+            Stage.MIDDLE -> {
+                currentStage = Stage.FINAL
+            }
+            Stage.FINAL -> {
+                currentStage = Stage.WRAPUP
+            }
+            Stage.WRAPUP -> {
+                // Should not happen
+                throw RuntimeException("Bug!")
+            }
+            Stage.INVALID -> {
+                // Should not happen
+                throw RuntimeException("Bug!")
+            }
+        }
+        configureSensorsIfNeeded()
+
+        resetDataBuffer()
+    }
+
+    private fun moveToInvalidStage(reason : String) {
+        currentStage = Stage.INVALID
+        configureSensorsIfNeeded()
+        resetDataBuffer()
+        // TODO: If there is a timer, cancel it
+        // Alert Dialog
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Warning")
+        builder.setMessage(reason)
+        builder.setPositiveButton("OK") { _, _ ->
+            // Restart current fragment
+            val fragmentId = findNavController().currentDestination?.id
+            findNavController().popBackStack(fragmentId!!,true)
+            findNavController().navigate(fragmentId)
+        }
+        builder.setCancelable(false)
+        builder.show()
+    }
+
+    private fun handleWarmupStage(SensorEvent: SensorEvent, masTestRaw: MasTestRaw?) {
+        assert (currentStage == Stage.WARMUP)
+        assert (masTestRaw == null) // In this stage, only accelerometer data is collected. masTestRaw should be null
+        assert(SensorEvent.sensor.type == Sensor.TYPE_LINEAR_ACCELERATION)
+        if (isAccelerationDataBufferWindowFull) {
+            if (getAverageAcceleration() < MIN_MOVEMENT_THRESHOLD) {
+                moveToNextStage()
+            }
+        }
+    }
+
+    private fun handleInitial1Stage(SensorEvent: SensorEvent, masTestRaw: MasTestRaw?) {
+        assert (currentStage == Stage.INITIAL_1)
+        if (masTestRaw != null) {
+            if (isAccelerationDataBufferWindowFull) {
+                if (getAverageAcceleration() >= MIN_MOVEMENT_THRESHOLD) {
+                    // The hand moves unexpectedly. Move to invalid stage
+                    moveToInvalidStage("Please keep your hand still. Move the hand only when the app asks you to do so.")
+                } else {
+                    // The hand is still. Move to next stage
+                    moveToNextStage()
+                }
+            }
+        }
+    }
+
     override fun onSensorChanged(event: SensorEvent?) {
         event?.let {
             val masTestRaw = updateBuffer(it) // might be null
-            // if all data is available, save it
-            if (masTestRaw != null) {
-                // TODO: Navigate to next step if needed given the current stage and the data
+            when (currentStage) {
+                Stage.NONE -> throw RuntimeException("Bug!")
+                Stage.WARMUP -> handleWarmupStage(it, masTestRaw)
+                Stage.INITIAL_1 -> handleInitial1Stage(it, masTestRaw)
+                Stage.INITIAL_2 -> TODO()
+                Stage.MIDDLE -> TODO()
+                Stage.FINAL -> TODO()
+                Stage.WRAPUP -> TODO()
+                Stage.INVALID -> TODO()
             }
         }
     }
