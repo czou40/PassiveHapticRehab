@@ -8,10 +8,13 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -22,7 +25,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.ZoneId
-import java.time.ZoneOffset
 import java.util.ArrayDeque
 import java.util.UUID
 import kotlin.math.sqrt
@@ -32,12 +34,14 @@ class MasCollectionFragment : Fragment(), SensorEventListener {
 
     companion object {
         const val MAXIMUM_TEST_DURATION = 20000L // The maximum duration of the test in milliseconds. If time limit exceeded, the test is invalid.
-        const val MIN_MOVEMENT_THRESHOLD = 0.2 // The minimum acceleration value to be considered movement.
-        const val HAND_STILL_TIME_WARMUP = 1000L // The amount of time the hand must be still during the WARMUP stage to move to the next stage.
+        const val AVERAGE_ACCELERATION_CUTOFF_THRESHOLD = 0.8 // The minimum average acceleration value to be considered movement or maximum average acceleration value to be considered still.
+        const val INSTANT_ACCELERATION_CUTOFF_THRESHOLD = 1.0 // The minimum instant acceleration value to be considered movement or maximum instant acceleration value to be considered still.
+        const val INSTANT_ACCELERATION_CUTOFF_THRESHOLD_TOLERANCE = 0.5 // The tolerance of the instant acceleration cutoff threshold.
+        const val HAND_STILL_TIME_WARMUP = 500L // The amount of time the hand must be still during the WARMUP stage to move to the next stage.
         const val HAND_STILL_TIME_INITIAL = 1000L // The amount of time the hand must be still during the INITIAL_1 stage for the test to be valid.
         const val HAND_MOVING_TIME_INITIAL = 1000L // The amount of time the hand must be moving during the INITIAL_2 stage to move to the next stage.
-        const val HAND_MOVING_TIME_MIDDLE = 1000L // The amount of time the hand must be moving during the MIDDLE stage for the test to be valid.
-        const val HAND_STILL_TIME_FINAL = 2000L // The amount of time the hand must be still at the FINAL stage to move to the next stage.
+        const val HAND_MOVING_TIME_MIDDLE = 500L // The amount of time the hand must be moving during the MIDDLE stage for the test to be valid.
+        const val HAND_STILL_TIME_FINAL = 1000L // The amount of time the hand must be still at the FINAL stage to move to the next stage.
 
         enum class Stage {
             NONE,
@@ -73,6 +77,15 @@ class MasCollectionFragment : Fragment(), SensorEventListener {
     private var dataToSave = ArrayList<MasTestRaw>()
     private val sessionId = UUID.randomUUID().toString() // TODO: get from args
     private var currentStage = Stage.NONE
+    private lateinit var currentStageTextView : TextView
+    private lateinit var accelerationTextView: TextView
+
+    private lateinit var initialPositionData: MasTestRaw
+    private lateinit var finalPositionData: MasTestRaw
+
+    private lateinit var largestLinearAccelerationData: MasTestRaw
+    private lateinit var largestAngularVelocityData: MasTestRaw
+
     private fun needToSaveData(): Boolean {
         return currentStage == Stage.INITIAL_2 || currentStage == Stage.MIDDLE || currentStage == Stage.FINAL
     }
@@ -99,12 +112,14 @@ class MasCollectionFragment : Fragment(), SensorEventListener {
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
         rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
         gyroScope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
+        currentStageTextView = view.findViewById(R.id.current_stage)
+        accelerationTextView = view.findViewById(R.id.acceleration)
     }
 
     override fun onResume() {
         super.onResume()
         if (currentStage == Stage.NONE) {
-            currentStage = Stage.WARMUP
+            moveToNextStage()
         }
         configureSensorsIfNeeded()
     }
@@ -119,14 +134,17 @@ class MasCollectionFragment : Fragment(), SensorEventListener {
             sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST)
             sensorManager.registerListener(this, rotationSensor, SensorManager.SENSOR_DELAY_FASTEST)
             sensorManager.registerListener(this, gyroScope, SensorManager.SENSOR_DELAY_FASTEST)
+            Log.i("MAS", "Registered all sensors")
         } else if (needToGatherPartialData()) {
             sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST)
+            Log.i("MAS", "Registered accelerometer")
         } else {
             sensorManager.unregisterListener(this)
+            Log.i("MAS", "Unregistered all sensors")
         }
     }
 
-    fun saveAllData() {
+    private fun saveAllData() {
         Toast.makeText(requireContext(), "Saving ${dataToSave.size} data points", Toast.LENGTH_SHORT).show()
         lifecycleScope.launch(Dispatchers.IO) {
             val db = AppDatabase.getInstance(requireActivity().applicationContext)
@@ -134,12 +152,18 @@ class MasCollectionFragment : Fragment(), SensorEventListener {
         }
     }
 
-    fun navigateToNextStep() {
+    private fun navigateToResultFragment() {
         //TODO: Perform filtering and calculate higher level features: rotation radius, PROM, magnitude of catch, etc.
-        findNavController().navigate(R.id.action_masCollectionFragment_to_masResultFragment)
+        val prom = initialPositionData.angleWith(finalPositionData) // passive range of motion
+        Toast.makeText(requireContext(), "Passive range of motion: $prom", Toast.LENGTH_SHORT).show()
+        val bundle = bundleOf(
+            "sessionId" to sessionId,
+            "passiveRangeOfMotion" to prom,
+        )
+        findNavController().navigate(R.id.action_masCollectionFragment_to_masResultFragment, bundle)
     }
 
-    fun startCountdown() {
+    private fun startCountdown() {
         // Create a CountdownTimer
         object : CountDownTimer(MAXIMUM_TEST_DURATION, 1000) {
             override fun onTick(millisUntilFinished: Long) {
@@ -185,13 +209,16 @@ class MasCollectionFragment : Fragment(), SensorEventListener {
                 // We only need accelerometer data for the warmup stage
                 // No need to set isAccelerometerDataAvailable to false because the same data will be used to create masTestRaw
                 val accelerationMagnitude = sqrt(accelerometerData[0] * accelerometerData[0] + accelerometerData[1] * accelerometerData[1] + accelerometerData[2] * accelerometerData[2])
-                accelerationDataBufferWindow.add(Pair(timestamp, accelerationMagnitude))
+                Log.e("MAS", "Acceleration magnitude: $accelerationMagnitude; x: ${accelerometerData[0]}, y: ${accelerometerData[1]}, z: ${accelerometerData[2]}")
+                accelerationDataBufferWindow.addLast(Pair(timestamp, accelerationMagnitude))
                 accelerationDataBufferWindowSum += accelerationMagnitude
-                while (accelerationDataBufferWindow.isNotEmpty() && accelerationDataBufferWindow.first.first + accelerationDataBufferWindowSizeMillis < accelerationDataBufferWindow.last.first) {
+                while (accelerationDataBufferWindow.isNotEmpty() && accelerationDataBufferWindow.first.first + accelerationDataBufferWindowSizeMillis * 1e6 < accelerationDataBufferWindow.last.first) {
                     accelerationDataBufferWindow.removeFirst()
                     accelerationDataBufferWindowSum -= accelerationDataBufferWindow.first.second
                     isAccelerationDataBufferWindowFull = true
                 }
+                assert(getInstantAcceleration()!!.toFloat() == accelerationMagnitude)
+                accelerationTextView.text = getInstantAcceleration()!!.toString()
             }
         }
         if (isGyroScopeDataAvailable && isAccelerometerDataAvailable && isRotationSensorDataAvailable) {
@@ -227,24 +254,60 @@ class MasCollectionFragment : Fragment(), SensorEventListener {
         return null
     }
 
-    private fun getAverageAcceleration(): Double {
-        assert(isAccelerationDataBufferWindowFull)
-        return accelerationDataBufferWindowSum / accelerationDataBufferWindow.size
+    private fun getAverageAcceleration(): Double? {
+        if (isAccelerationDataBufferWindowFull) {
+            return accelerationDataBufferWindowSum / accelerationDataBufferWindow.size
+        }
+        return null
     }
 
-    private fun copyBufferDataToDataToSave() {
+    private fun getInstantAcceleration(): Double? {
+        if(accelerationDataBufferWindow.isNotEmpty()) {
+            return accelerationDataBufferWindow.last.second.toDouble()
+        }
+        return null
+    }
+
+    private fun processBufferData() {
+        when (currentStage) {
+            Stage.NONE -> {
+                // Do nothing
+            }
+            Stage.WARMUP -> {
+                // Do nothing since the data is not saved
+            }
+            Stage.INITIAL_1 -> {
+                throw RuntimeException("Deprecated!")
+            }
+            Stage.INITIAL_2 -> {
+                initialPositionData = dataBuffer.first()
+            }
+            Stage.MIDDLE -> {
+                // TODO: Find interesting data points
+            }
+            Stage.FINAL -> {
+                finalPositionData = dataBuffer.last()
+            }
+            Stage.WRAPUP -> {
+                // Do nothing
+            }
+            Stage.INVALID -> {
+                // Should not happen
+                throw RuntimeException("Bug!")
+            }
+        }
         // For all data in dataBuffer,
         dataToSave.addAll(dataBuffer)
     }
 
     private fun moveToNextStage() {
+        processBufferData()
         when (currentStage) {
             Stage.NONE -> {
-                // Should not happen. Raise RuntimeException
-                throw RuntimeException("Bug!")
+                currentStage = Stage.WARMUP
             }
             Stage.WARMUP -> {
-                currentStage = Stage.INITIAL_1
+                currentStage = Stage.INITIAL_2 // Initial 1 is deprecated
             }
             Stage.INITIAL_1 -> {
                 currentStage = Stage.INITIAL_2
@@ -257,6 +320,8 @@ class MasCollectionFragment : Fragment(), SensorEventListener {
             }
             Stage.FINAL -> {
                 currentStage = Stage.WRAPUP
+                // Manually call handleWrapupStage() because the sensor event listener is unregistered
+                handleWrapupStage()
             }
             Stage.WRAPUP -> {
                 // Should not happen
@@ -267,8 +332,8 @@ class MasCollectionFragment : Fragment(), SensorEventListener {
                 throw RuntimeException("Bug!")
             }
         }
+        currentStageTextView.text = currentStage.name
         configureSensorsIfNeeded()
-
         resetDataBuffer()
     }
 
@@ -295,26 +360,78 @@ class MasCollectionFragment : Fragment(), SensorEventListener {
         assert (currentStage == Stage.WARMUP)
         assert (masTestRaw == null) // In this stage, only accelerometer data is collected. masTestRaw should be null
         assert(SensorEvent.sensor.type == Sensor.TYPE_LINEAR_ACCELERATION)
-        if (isAccelerationDataBufferWindowFull) {
-            if (getAverageAcceleration() < MIN_MOVEMENT_THRESHOLD) {
+        val acceleration = getAverageAcceleration()
+        if (acceleration != null) {
+            if (acceleration < AVERAGE_ACCELERATION_CUTOFF_THRESHOLD) {
                 moveToNextStage()
             }
         }
     }
 
+    @Deprecated("This stage is not used anymore")
     private fun handleInitial1Stage(SensorEvent: SensorEvent, masTestRaw: MasTestRaw?) {
         assert (currentStage == Stage.INITIAL_1)
-        if (masTestRaw != null) {
-            if (isAccelerationDataBufferWindowFull) {
-                if (getAverageAcceleration() >= MIN_MOVEMENT_THRESHOLD) {
-                    // The hand moves unexpectedly. Move to invalid stage
-                    moveToInvalidStage("Please keep your hand still. Move the hand only when the app asks you to do so.")
-                } else {
-                    // The hand is still. Move to next stage
-                    moveToNextStage()
-                }
+        val acceleration = getAverageAcceleration()
+        if (acceleration != null) {
+            if (acceleration >= AVERAGE_ACCELERATION_CUTOFF_THRESHOLD) {
+                // The hand moves unexpectedly. Move to invalid stage
+                moveToInvalidStage("Please keep your hand still. Move the hand only when the app asks you to do so.")
+            } else {
+                // The hand is still. Move to next stage
+                moveToNextStage()
             }
         }
+    }
+
+    private fun handleInitial2Stage(SensorEvent: SensorEvent, masTestRaw: MasTestRaw?) {
+        assert (currentStage == Stage.INITIAL_2)
+        val acceleration = getInstantAcceleration()
+        if (acceleration != null) {
+            if (acceleration >= INSTANT_ACCELERATION_CUTOFF_THRESHOLD + INSTANT_ACCELERATION_CUTOFF_THRESHOLD_TOLERANCE) {
+                // The hand starts moving. Move to the next stage
+                moveToNextStage()
+            }
+        }
+    }
+
+    private fun handleMiddleStage(SensorEvent: SensorEvent, masTestRaw: MasTestRaw?) {
+        assert (currentStage == Stage.MIDDLE)
+        val instantAcceleration = getInstantAcceleration()
+        val averageAcceleration = getAverageAcceleration()
+        if (instantAcceleration != null) {
+            if (instantAcceleration < INSTANT_ACCELERATION_CUTOFF_THRESHOLD - INSTANT_ACCELERATION_CUTOFF_THRESHOLD_TOLERANCE) {
+                // The hand stops moving unexpectedly. Move to invalid stage
+                moveToInvalidStage("Please keep your hand moving. Move the hand only when the app asks you to do so.")
+            }
+        }
+        if (averageAcceleration != null && averageAcceleration >= AVERAGE_ACCELERATION_CUTOFF_THRESHOLD) {
+            // The hand moves for a long time without stopping. Move to next stage
+            moveToNextStage()
+        }
+    }
+
+    private fun handleFinalStage(SensorEvent: SensorEvent, masTestRaw: MasTestRaw?) {
+        assert(currentStage == Stage.FINAL)
+        val averageAcceleration = getAverageAcceleration()
+        val instantAcceleration = getInstantAcceleration()
+        if (averageAcceleration != null) {
+            if (averageAcceleration < AVERAGE_ACCELERATION_CUTOFF_THRESHOLD) {
+                // The hand stops moving. Move to next stage
+                moveToNextStage()
+            }
+        }
+        if (instantAcceleration != null) {
+            if (instantAcceleration < INSTANT_ACCELERATION_CUTOFF_THRESHOLD - INSTANT_ACCELERATION_CUTOFF_THRESHOLD_TOLERANCE) {
+                // The hand stops moving. Move to next stage
+                moveToNextStage()
+            }
+        }
+    }
+
+    private fun handleWrapupStage() {
+        assert(currentStage == Stage.WRAPUP)
+        saveAllData()
+        navigateToResultFragment()
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
@@ -323,12 +440,12 @@ class MasCollectionFragment : Fragment(), SensorEventListener {
             when (currentStage) {
                 Stage.NONE -> throw RuntimeException("Bug!")
                 Stage.WARMUP -> handleWarmupStage(it, masTestRaw)
-                Stage.INITIAL_1 -> handleInitial1Stage(it, masTestRaw)
-                Stage.INITIAL_2 -> TODO()
-                Stage.MIDDLE -> TODO()
-                Stage.FINAL -> TODO()
-                Stage.WRAPUP -> TODO()
-                Stage.INVALID -> TODO()
+                Stage.INITIAL_1 -> throw RuntimeException("Deprecated!")
+                Stage.INITIAL_2 -> handleInitial2Stage(it, masTestRaw)
+                Stage.MIDDLE -> handleMiddleStage(it, masTestRaw)
+                Stage.FINAL -> handleFinalStage(it, masTestRaw)
+                Stage.WRAPUP -> throw RuntimeException("Bug!")
+                Stage.INVALID -> throw RuntimeException("Bug!")
             }
         }
     }

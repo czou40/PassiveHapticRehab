@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.example.phl.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -36,6 +37,14 @@ class MasInstructionFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_mas_instruction, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val nextButton = view.findViewById<View>(R.id.next_button)
+        nextButton.setOnClickListener {
+            findNavController().navigate(R.id.action_masInstructionFragment_to_masCollectionFragment)
+        }
     }
 
     companion object {

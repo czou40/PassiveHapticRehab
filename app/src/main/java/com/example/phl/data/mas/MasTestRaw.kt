@@ -77,7 +77,7 @@ data class MasTestRaw  (
         val magnitude1 = sqrt(rotatedThisNormalVector[0].toDouble() * rotatedThisNormalVector[0] + rotatedThisNormalVector[1] * rotatedThisNormalVector[1] + rotatedThisNormalVector[2] * rotatedThisNormalVector[2])
         val magnitude2 = sqrt(rotatedOtherNormalVector[0].toDouble() * rotatedOtherNormalVector[0] + rotatedOtherNormalVector[1] * rotatedOtherNormalVector[1] + rotatedOtherNormalVector[2] * rotatedOtherNormalVector[2])
         val cosTheta = min(1.0, max(-1.0, dotProduct / (magnitude1 * magnitude2)))
-        val angle = acos(cosTheta)
+        val angle = acos(cosTheta) * 180 / Math.PI
         return angle.toFloat()
     }
 

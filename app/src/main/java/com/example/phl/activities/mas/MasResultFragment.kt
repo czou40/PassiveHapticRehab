@@ -6,27 +6,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.phl.R
+import kotlin.properties.Delegates
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [MasResultFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class MasResultFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private var passiveRangeOfMotion: Float? = null
+    private var maximumAngularDeceleration: Float? = null // Can approximate the resistance force when a catch, or  muscle tone, happens
+    private var maximumAngularDecelerationAngle : Float? = null // Angle with the initial position of the arm when the catch happens
+    private var angularDecelerationToAngularVelocityRatio : Float? = null // Can approximate the magnitude of catch, or muscle tone
+    private var maximumAngularVelocity: Float? = null
+    private var maximumAngularAcceleration: Float? = null // Maximum  angular velocity should be before the catch happens.
+    private var angularAccelerationToAngleSlope: Float? = null // Before the catch, what is the slope of the linear regression of the angular acceleration with respect to the joint angle?
+    private var angularDecelerationToAngleSlope: Float? = null // After the catch, what is the slope of the linear regression of the angular deceleration with respect to the joint angle?
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Get the arguments passed to this fragment. They may be null.
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            passiveRangeOfMotion = it.getFloat("passiveRangeOfMotion")
+            maximumAngularDeceleration = it.getFloat("maximumAngularDeceleration")
+            maximumAngularDecelerationAngle = it.getFloat("maximumAngularDecelerationAngle")
+            angularDecelerationToAngularVelocityRatio = it.getFloat("angularDecelerationToAngularVelocityRatio")
+            maximumAngularVelocity = it.getFloat("maximumAngularVelocity")
+            maximumAngularAcceleration = it.getFloat("maximumAngularAcceleration")
+            angularAccelerationToAngleSlope = it.getFloat("angularAccelerationToAngleSlope")
+            angularDecelerationToAngleSlope = it.getFloat("angularDecelerationToAngleSlope")
         }
     }
 
@@ -40,29 +44,19 @@ class MasResultFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val resultTextView = view.findViewById<android.widget.TextView>(R.id.result)
+        resultTextView.text = "Passive Range of Motion: $passiveRangeOfMotion\n" +
+                "Maximum Angular Deceleration: $maximumAngularDeceleration\n" +
+                "Maximum Angular Deceleration Angle: $maximumAngularDecelerationAngle\n" +
+                "Angular Deceleration to Angular Velocity Ratio: $angularDecelerationToAngularVelocityRatio\n" +
+                "Maximum Angular Velocity: $maximumAngularVelocity\n" +
+                "Maximum Angular Acceleration: $maximumAngularAcceleration\n" +
+                "Angular Acceleration to Angle Slope: $angularAccelerationToAngleSlope\n" +
+                "Angular Deceleration to Angle Slope: $angularDecelerationToAngleSlope"
+
         val exitButton = view.findViewById<View>(R.id.exit_button)
         exitButton.setOnClickListener {
             requireActivity().finish()
         }
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MasResultFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MasResultFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }

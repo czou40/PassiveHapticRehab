@@ -2,6 +2,7 @@ package com.example.phl.data
 
 import androidx.room.TypeConverter
 import com.example.phl.data.ball.BallTestRaw
+import com.example.phl.data.mas.MasTestRaw
 import java.time.LocalDate
 import java.util.Date
 import java.time.LocalDateTime
@@ -65,5 +66,14 @@ object Converters {
         return currentTask.name
     }
 
+    @TypeConverter
+    fun stageLabelToString(stageLabel: MasTestRaw.Companion.StageLabel): String {
+        return stageLabel.name
+    }
+
+    @TypeConverter
+    fun stringToStageLabel(value: String): MasTestRaw.Companion.StageLabel {
+        return MasTestRaw.Companion.StageLabel.valueOf(value)
+    }
 
 }
