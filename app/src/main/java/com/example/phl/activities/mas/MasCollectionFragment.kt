@@ -27,6 +27,7 @@ import java.time.Instant
 import java.time.ZoneId
 import java.util.ArrayDeque
 import java.util.UUID
+import kotlin.math.pow
 import kotlin.math.sqrt
 
 
@@ -145,7 +146,6 @@ class MasCollectionFragment : Fragment(), SensorEventListener {
     }
 
     private fun saveAllData() {
-        Toast.makeText(requireContext(), "Saving ${dataToSave.size} data points", Toast.LENGTH_SHORT).show()
         lifecycleScope.launch(Dispatchers.IO) {
             val db = AppDatabase.getInstance(requireActivity().applicationContext)
             db.masTestRawDao().insertAll(dataToSave)
@@ -155,10 +155,45 @@ class MasCollectionFragment : Fragment(), SensorEventListener {
     private fun navigateToResultFragment() {
         //TODO: Perform filtering and calculate higher level features: rotation radius, PROM, magnitude of catch, etc.
         val prom = initialPositionData.angleWith(finalPositionData) // passive range of motion
-        Toast.makeText(requireContext(), "Passive range of motion: $prom", Toast.LENGTH_SHORT).show()
+        val maximumAngularVelocityData = dataToSave.maxBy { it.getAngularVelocityMagnitude() } // we use this timestamp to seperating the data into "acceleration" and "deceleration" phases
+        val maximumAngularVelocityTimestamp = maximumAngularVelocityData.getTimeInSeconds()
+
+        val angularAccelerationMagnitudeData:ArrayList<Float> = ArrayList()
+
+        for (i in 0 until dataToSave.size) {
+            val zero = dataToSave[i]
+            val minus1 = dataToSave.getOrNull(i - 1)
+            val plus1 = dataToSave.getOrNull(i + 1)
+            val minus2 = dataToSave.getOrNull(i - 2)
+            val plus2 = dataToSave.getOrNull(i + 2)
+            var angularAccelerationMagnitude = zero.getAngularAccelerationMagnitude(minus2, minus1, plus1, plus2)
+            val time = dataToSave[i].getTimeInSeconds()
+            if (time < maximumAngularVelocityTimestamp) {
+                // acceleration phase
+                angularAccelerationMagnitudeData.add(angularAccelerationMagnitude)
+            } else {
+                // deceleration phase
+                angularAccelerationMagnitudeData.add(-angularAccelerationMagnitude)
+            }
+        }
+
+        val maximumAngularAccelerationIndex = angularAccelerationMagnitudeData.indexOf(angularAccelerationMagnitudeData.max())
+        val maximumAngularAccelerationData = dataToSave[maximumAngularAccelerationIndex]
+
+        val maximumAngularAccelerationAngle = initialPositionData.angleWith(maximumAngularAccelerationData)
+
+        val maximumAngularDecelerationIndex = angularAccelerationMagnitudeData.indexOf(angularAccelerationMagnitudeData.min())
+        val maximumAngularDecelerationData = dataToSave[maximumAngularDecelerationIndex]
+
+        val maximumAngularDecelerationAngle = maximumAngularDecelerationData.angleWith(finalPositionData)
+
         val bundle = bundleOf(
             "sessionId" to sessionId,
             "passiveRangeOfMotion" to prom,
+            "maximumAngularDeceleration" to -angularAccelerationMagnitudeData[maximumAngularDecelerationIndex],
+            "maximumAngularAcceleration" to angularAccelerationMagnitudeData[maximumAngularAccelerationIndex],
+            "maximumAngularDecelerationAngle" to maximumAngularDecelerationAngle,
+            "maximumAngularVelocity" to maximumAngularVelocityData.getAngularVelocityMagnitude(),
         )
         findNavController().navigate(R.id.action_masCollectionFragment_to_masResultFragment, bundle)
     }
@@ -386,7 +421,7 @@ class MasCollectionFragment : Fragment(), SensorEventListener {
     private fun handleInitial2Stage(SensorEvent: SensorEvent, masTestRaw: MasTestRaw?) {
         assert (currentStage == Stage.INITIAL_2)
         val acceleration = getInstantAcceleration()
-        if (acceleration != null) {
+        if (acceleration != null && dataBuffer.size> 1) { // We must collect some data
             if (acceleration >= INSTANT_ACCELERATION_CUTOFF_THRESHOLD + INSTANT_ACCELERATION_CUTOFF_THRESHOLD_TOLERANCE) {
                 // The hand starts moving. Move to the next stage
                 moveToNextStage()
@@ -414,16 +449,18 @@ class MasCollectionFragment : Fragment(), SensorEventListener {
         assert(currentStage == Stage.FINAL)
         val averageAcceleration = getAverageAcceleration()
         val instantAcceleration = getInstantAcceleration()
-        if (averageAcceleration != null) {
-            if (averageAcceleration < AVERAGE_ACCELERATION_CUTOFF_THRESHOLD) {
-                // The hand stops moving. Move to next stage
-                moveToNextStage()
+        if (dataBuffer.size> 1) { // We must collect some data)
+            if (averageAcceleration != null) {
+                if (averageAcceleration < AVERAGE_ACCELERATION_CUTOFF_THRESHOLD) {
+                    // The hand stops moving. Move to next stage
+                    moveToNextStage()
+                }
             }
-        }
-        if (instantAcceleration != null) {
-            if (instantAcceleration < INSTANT_ACCELERATION_CUTOFF_THRESHOLD - INSTANT_ACCELERATION_CUTOFF_THRESHOLD_TOLERANCE) {
-                // The hand stops moving. Move to next stage
-                moveToNextStage()
+            if (instantAcceleration != null) {
+                if (instantAcceleration < INSTANT_ACCELERATION_CUTOFF_THRESHOLD - INSTANT_ACCELERATION_CUTOFF_THRESHOLD_TOLERANCE) {
+                    // The hand stops moving. Move to next stage
+                    moveToNextStage()
+                }
             }
         }
     }
