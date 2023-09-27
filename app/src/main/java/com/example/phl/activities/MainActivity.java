@@ -21,6 +21,11 @@ import com.example.phl.services.RemoteControlService;
 import com.example.phl.utils.QRCodeGenerator;
 import com.example.phl.views.MyButton;
 
+import com.chaquo.python.Python;
+import com.chaquo.python.PyObject;
+import com.chaquo.python.android.AndroidPlatform;
+
+
 public class MainActivity extends MyBaseActivity {
 
     TextView noInternetConnection;
@@ -122,6 +127,17 @@ public class MainActivity extends MyBaseActivity {
         Intent intent = new Intent(this, RemoteControlService.class);
         startService(intent);
         Log.d("MainActivity", "Started service");
+
+        if (!Python.isStarted()) {
+            Python.start(new AndroidPlatform(this));
+        }
+        Python py = Python.getInstance();
+
+        PyObject pyModule = py.getModule("test_module");
+        PyObject pyClass = pyModule.callAttr("TestModule");
+        PyObject result = pyClass.callAttr("get_random_number");
+        int randomNumber = result.toInt();
+        Log.d("MainActivity", "Random number: " + randomNumber);
     }
 
     @Override

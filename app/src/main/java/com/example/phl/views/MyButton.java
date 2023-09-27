@@ -1,5 +1,6 @@
 package com.example.phl.views;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,16 +9,23 @@ import android.content.res.TypedArray;
 import android.os.CountDownTimer;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
 import android.widget.Toast;
+import com.shashank.sony.fancytoastlib.FancyToast;
 
 import androidx.annotation.Nullable;
 
 import com.example.phl.R;
 import com.example.phl.services.RemoteControlService;
 import com.google.android.material.button.MaterialButton;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class MyButton extends MaterialButton {
 
@@ -31,9 +39,20 @@ public class MyButton extends MaterialButton {
 
     private OnClickListener onClickListener;
 
-    private static final int DEFAULT_LONG_CLICK_DURATION = 0;
+    private static Set<MyButton> buttonsBeingTouched = new HashSet<>();
+
+    private static final int DEFAULT_LONG_CLICK_DURATION = 2000;
 
     private String command;
+
+    private static long firstTime=0;
+    private static long secondTime=0;
+
+    private static CountDownTimer countDownTimer;
+
+    private static Toast toast;
+
+    private static boolean isBadTouch = false;
 
     private BroadcastReceiver remoteControlReceiver = new BroadcastReceiver() {
         @Override
@@ -113,14 +132,6 @@ public class MyButton extends MaterialButton {
                 super.setOnTouchListener(null);
             } else {
                 super.setOnTouchListener(new OnTouchListener() {
-                    private long firstTime=0;
-                    private long secondTime=0;
-
-                    private CountDownTimer countDownTimer;
-
-                    private Toast toast;
-
-                    private boolean isBadTouch = false;
 
                     private boolean isInside(View v, MotionEvent e) {
                         return !(e.getX() < 0 || e.getY() < 0
@@ -130,6 +141,11 @@ public class MyButton extends MaterialButton {
 
                     @Override
                     public boolean onTouch(View view, MotionEvent motionEvent) {
+                        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                            buttonsBeingTouched.add((MyButton) view);
+                        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                            buttonsBeingTouched.remove((MyButton) view);
+                        }
                         int numFingers = motionEvent.getPointerCount();
                         if (numFingers > 1) {
                             if (countDownTimer != null) {
@@ -139,7 +155,8 @@ public class MyButton extends MaterialButton {
                                 if (toast != null) {
                                     toast.cancel();
                                 }
-                                toast = Toast.makeText(getContext(), "You can only use one finger to click the button.", Toast.LENGTH_SHORT);
+                                toast = FancyToast.makeText(getContext(), "You can only use one finger to click the button.", FancyToast.LENGTH_SHORT, FancyToast.INFO, false);
+                                toast.setGravity(Gravity.TOP, 0, 0);
                                 toast.show();
                                 isBadTouch = true;
                             }
@@ -153,7 +170,23 @@ public class MyButton extends MaterialButton {
                                 if (toast != null) {
                                     toast.cancel();
                                 }
-                                toast = Toast.makeText(getContext(), "You canceled the clicking by moving outside of the button", Toast.LENGTH_SHORT);
+                                toast = FancyToast.makeText(getContext(), "You canceled the clicking by moving outside of the button", FancyToast.LENGTH_SHORT, FancyToast.INFO, false);
+                                toast.setGravity(Gravity.TOP, 0, 0);
+                                toast.show();
+                                isBadTouch = true;
+                            }
+                            return false;
+                        }
+                        if (buttonsBeingTouched.size() >= 2) {
+                            if (countDownTimer != null) {
+                                countDownTimer.cancel();
+                            }
+                            if (!isBadTouch) {
+                                if (toast != null) {
+                                    toast.cancel();
+                                }
+                                toast = FancyToast.makeText(getContext(), "You can touch only one button at a time.", FancyToast.LENGTH_SHORT, FancyToast.INFO, false);
+                                toast.setGravity(Gravity.TOP, 0, 0);
                                 toast.show();
                                 isBadTouch = true;
                             }
@@ -171,7 +204,8 @@ public class MyButton extends MaterialButton {
                                     if (toast != null) {
                                         toast.cancel();
                                     }
-                                    toast = Toast.makeText(getContext(), "Press the button for " + (int) Math.ceil(millisUntilFinished / 1000.0) + " more second(s) to confirm.", Toast.LENGTH_SHORT);
+                                    toast = FancyToast.makeText(getContext(), "Press the button for " + (int) Math.ceil(millisUntilFinished / 1000.0) + " more second(s) to confirm.", FancyToast.LENGTH_SHORT, FancyToast.INFO, false);
+                                    toast.setGravity(Gravity.TOP, 0, 0);
                                     toast.show();
                                 }
 
@@ -180,7 +214,8 @@ public class MyButton extends MaterialButton {
                                     if (toast != null) {
                                         toast.cancel();
                                     }
-                                    toast = Toast.makeText(getContext(), "Release the button to confirm.", Toast.LENGTH_SHORT);
+                                    toast = FancyToast.makeText(getContext(), "Release the button to confirm.", FancyToast.LENGTH_SHORT, FancyToast.INFO, false);
+                                    toast.setGravity(Gravity.TOP, 0, 0);
                                     toast.show();
                                 }
                             };
