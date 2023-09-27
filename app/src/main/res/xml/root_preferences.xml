@@ -1,0 +1,29 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="Accessibility">
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="prevent_accidental_touches"
+            app:title="Prevent Accidental Touches" />
+
+        <SeekBarPreference
+            android:max="5000"
+            app:defaultValue="2000"
+            app:key="button_hold_time"
+            app:min="100"
+            app:showSeekBarValue="true"
+            app:title="Button hold time (ms)" />
+
+
+        <!-- Reset to Default Setting -->
+        <Preference
+            app:key="reset_to_default"
+            app:title="Reset to Default"
+            app:summary="Tap to reset all settings to their default values." />
+
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

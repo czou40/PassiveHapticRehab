@@ -38,6 +38,10 @@
         android:theme="@style/Theme.PHL"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activities.SettingsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_settings" />
+        <activity
             android:name=".activities.MasActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
@@ -45,8 +49,8 @@
             android:name=".activities.TiltTestActivity"
             android:exported="false"
             android:label="@string/title_activity_tilt_test"
-            android:theme="@style/Theme.PHL"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PHL" />
         <activity
             android:name=".activities.BallTestActivity"
             android:exported="false"

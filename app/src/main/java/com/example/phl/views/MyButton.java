@@ -1,10 +1,10 @@
 package com.example.phl.views;
 
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.os.CountDownTimer;
 import android.util.AttributeSet;
@@ -14,17 +14,17 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
 import android.widget.Toast;
+
 import com.shashank.sony.fancytoastlib.FancyToast;
 
 import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
 
 import com.example.phl.R;
 import com.example.phl.services.RemoteControlService;
 import com.google.android.material.button.MaterialButton;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class MyButton extends MaterialButton {
@@ -35,18 +35,18 @@ public class MyButton extends MaterialButton {
 
     private boolean isReceiverRegistered = false;
 
-    private boolean preventAccidentalClicks = true;
+    private boolean preventAccidentalClicks = false;
 
     private OnClickListener onClickListener;
 
     private static Set<MyButton> buttonsBeingTouched = new HashSet<>();
 
-    private static final int DEFAULT_LONG_CLICK_DURATION = 2000;
+    private static int longPressDuration;
 
     private String command;
 
-    private static long firstTime=0;
-    private static long secondTime=0;
+    private static long firstTime = 0;
+    private static long secondTime = 0;
 
     private static CountDownTimer countDownTimer;
 
@@ -127,6 +127,7 @@ public class MyButton extends MaterialButton {
     @Override
     public void setOnClickListener(@Nullable OnClickListener l) {
         onClickListener = l;
+        Log.d("MyButton", "preventAccidentalClicks: " + preventAccidentalClicks);
         if (preventAccidentalClicks) {
             if (onClickListener == null) {
                 super.setOnTouchListener(null);
@@ -155,7 +156,7 @@ public class MyButton extends MaterialButton {
                                 if (toast != null) {
                                     toast.cancel();
                                 }
-                                toast = FancyToast.makeText(getContext(), "You can only use one finger to click the button.", FancyToast.LENGTH_SHORT, FancyToast.INFO, false);
+                                toast = FancyToast.makeText(getContext(), "You can only use one finger to press the button.", FancyToast.LENGTH_SHORT, FancyToast.INFO, false);
                                 toast.setGravity(Gravity.TOP, 0, 0);
                                 toast.show();
                                 isBadTouch = true;
@@ -170,7 +171,7 @@ public class MyButton extends MaterialButton {
                                 if (toast != null) {
                                     toast.cancel();
                                 }
-                                toast = FancyToast.makeText(getContext(), "You canceled the clicking by moving outside of the button", FancyToast.LENGTH_SHORT, FancyToast.INFO, false);
+                                toast = FancyToast.makeText(getContext(), "You canceled the pressing by moving outside of the button", FancyToast.LENGTH_SHORT, FancyToast.INFO, false);
                                 toast.setGravity(Gravity.TOP, 0, 0);
                                 toast.show();
                                 isBadTouch = true;
@@ -185,7 +186,7 @@ public class MyButton extends MaterialButton {
                                 if (toast != null) {
                                     toast.cancel();
                                 }
-                                toast = FancyToast.makeText(getContext(), "You can touch only one button at a time.", FancyToast.LENGTH_SHORT, FancyToast.INFO, false);
+                                toast = FancyToast.makeText(getContext(), "You can press only one button at a time.", FancyToast.LENGTH_SHORT, FancyToast.INFO, false);
                                 toast.setGravity(Gravity.TOP, 0, 0);
                                 toast.show();
                                 isBadTouch = true;
@@ -198,7 +199,7 @@ public class MyButton extends MaterialButton {
                             if (countDownTimer != null) {
                                 countDownTimer.cancel();
                             }
-                            countDownTimer = new CountDownTimer(DEFAULT_LONG_CLICK_DURATION, 1000) {
+                            countDownTimer = new CountDownTimer(longPressDuration, 1000) {
                                 @Override
                                 public void onTick(long millisUntilFinished) {
                                     if (toast != null) {
@@ -225,7 +226,7 @@ public class MyButton extends MaterialButton {
                                 return false;
                             }
                             secondTime = System.currentTimeMillis();
-                            if (secondTime - firstTime > DEFAULT_LONG_CLICK_DURATION) {
+                            if (secondTime - firstTime > longPressDuration) {
                                 onClickListener.onClick(view);
                             } else {
                                 if (countDownTimer != null) {
@@ -241,6 +242,7 @@ public class MyButton extends MaterialButton {
                 });
             }
         } else {
+            Log.d("MyButton", "Setting onClickListener without preventing accidental clicks");
             super.setOnClickListener(onClickListener);
         }
     }
@@ -299,20 +301,23 @@ public class MyButton extends MaterialButton {
     }
 
     private void init(Context context, AttributeSet attrs) {
-       if (attrs != null) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        boolean globalPreventAccidentalTouchesSetting = sharedPreferences.getBoolean("prevent_accidental_touches", true);
+        longPressDuration = sharedPreferences.getInt("button_hold_time", 2000);
+        if (attrs != null) {
             TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.MyButton);
             try {
                 int groupValue = typedArray.getInt(R.styleable.MyButton_group, Group.OTHER.getValue());
                 group = Group.fromInt(groupValue);
                 allowRemoteControlWhenNotShown = typedArray.getBoolean(R.styleable.MyButton_allow_remote_control_when_not_shown, false);
-                preventAccidentalClicks = typedArray.getBoolean(R.styleable.MyButton_prevent_accidental_clicks, true);
+                preventAccidentalClicks = typedArray.getBoolean(R.styleable.MyButton_prevent_accidental_clicks, true) && globalPreventAccidentalTouchesSetting;
             } finally {
                 typedArray.recycle();
             }
         } else {
             group = Group.OTHER;
             allowRemoteControlWhenNotShown = false;
-            preventAccidentalClicks = true;
+            preventAccidentalClicks = true && globalPreventAccidentalTouchesSetting;
         }
     }
 
@@ -353,6 +358,7 @@ public class MyButton extends MaterialButton {
             }
             return OTHER;
         }
+
         public static Group fromString(String name) {
             if (name != null) {
                 for (Group group : Group.values()) {

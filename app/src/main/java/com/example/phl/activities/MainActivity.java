@@ -118,6 +118,14 @@ public class MainActivity extends MyBaseActivity {
             Intent intent = new Intent(this, MasActivity.class);
             startActivity(intent);
         });
+
+
+        ImageView settingsIcon = findViewById(R.id.settings_icon);
+        settingsIcon.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(intent);
+        });
+
         if (RemoteControlService.getSocketId() != null) {
             displayQRCode(RemoteControlService.getSocketId());
         } else {
