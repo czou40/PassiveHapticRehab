@@ -1,5 +1,6 @@
 package com.example.phl.activities
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
@@ -29,7 +30,8 @@ import java.util.Locale
 import java.util.UUID
 
 class TactileSensationActivity : MyBaseActivity() {
-    private lateinit var speechRecognizer: SpeechRecognizer
+    private val USE_SPEECH_RECOGNIZER = false
+    private var speechRecognizer: SpeechRecognizer? = null
     private var mediaPlayer: MediaPlayer? = null
     private val MAX_AMPLITUDE = 255
     private val MIN_AMPLITUDE = 1
@@ -44,6 +46,8 @@ class TactileSensationActivity : MyBaseActivity() {
     private lateinit var notSureButton: Button
     private lateinit var ripple: RippleBackground
     private lateinit var textView: TextView
+    private lateinit var timerTextView: TextView
+    private val VIBRATION_DURATION = 5000L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +58,7 @@ class TactileSensationActivity : MyBaseActivity() {
         didNotFeelVibrationButton = findViewById(R.id.did_not_feel_vibration_button)
         notSureButton = findViewById(R.id.i_am_not_sure_button)
         textView = findViewById(R.id.text_view)
+        timerTextView = findViewById(R.id.textview_timer)
         ripple = findViewById(R.id.ripple)
         textView.visibility = View.VISIBLE
         ripple.visibility = View.GONE
@@ -63,46 +68,48 @@ class TactileSensationActivity : MyBaseActivity() {
         feltVibrationButton.setOnClickListener { handleFeltVibration() }
         didNotFeelVibrationButton.setOnClickListener { handleDidNotFeelVibration() }
         notSureButton.setOnClickListener { handleNotSure() }
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this)
-        speechRecognizer.setRecognitionListener(object : RecognitionListener {
-            override fun onReadyForSpeech(bundle: Bundle) {}
-            override fun onBeginningOfSpeech() {}
-            override fun onRmsChanged(v: Float) {}
-            override fun onBufferReceived(bytes: ByteArray) {}
-            override fun onEndOfSpeech() {}
-            override fun onError(i: Int) {
-                // display error message
-                Toast.makeText(this@TactileSensationActivity, "Error: $i", Toast.LENGTH_SHORT)
-                    .show()
-            }
+        if (USE_SPEECH_RECOGNIZER) {
+            speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this)
+            speechRecognizer!!.setRecognitionListener(object : RecognitionListener {
+                override fun onReadyForSpeech(bundle: Bundle) {}
+                override fun onBeginningOfSpeech() {}
+                override fun onRmsChanged(v: Float) {}
+                override fun onBufferReceived(bytes: ByteArray) {}
+                override fun onEndOfSpeech() {}
+                override fun onError(i: Int) {
+                    // display error message
+                    Toast.makeText(this@TactileSensationActivity, "Error: $i", Toast.LENGTH_SHORT)
+                        .show()
+                }
 
-            override fun onResults(results: Bundle) {
-                val matches = results
-                    .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-                if (!matches.isNullOrEmpty()) {
-                    val match = matches[0].lowercase(Locale.getDefault())
-                    Log.d("Speech", "onResults: $match")
-                    if (match == "yes") {
-                        handleFeltVibration()
-                    } else if (match == "no") {
-                        handleDidNotFeelVibration()
-                    } else if (match.contains("not sure")) {
-                        handleNotSure()
-                    } else {
-                        Toast.makeText(
-                            this@TactileSensationActivity,
-                            "I didn't understand that",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        handlePlayAudio(R.raw.i_dont_understand_it) { startSpeechRecognizer() }
+                override fun onResults(results: Bundle) {
+                    val matches = results
+                        .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                    if (!matches.isNullOrEmpty()) {
+                        val match = matches[0].lowercase(Locale.getDefault())
+                        Log.d("Speech", "onResults: $match")
+                        if (match == "yes") {
+                            handleFeltVibration()
+                        } else if (match == "no") {
+                            handleDidNotFeelVibration()
+                        } else if (match.contains("not sure")) {
+                            handleNotSure()
+                        } else {
+                            Toast.makeText(
+                                this@TactileSensationActivity,
+                                "I didn't understand that",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            handlePlayAudio(R.raw.i_dont_understand_it) { startSpeechRecognizer() }
+                        }
                     }
                 }
-            }
 
-            override fun onPartialResults(bundle: Bundle) {}
-            override fun onEvent(i: Int, bundle: Bundle) {}
-        })
-        handlePlayAudio(R.raw.please_close_your_eyes, null)
+                override fun onPartialResults(bundle: Bundle) {}
+                override fun onEvent(i: Int, bundle: Bundle) {}
+            })
+            handlePlayAudio(R.raw.please_close_your_eyes, null)
+        }
     }
 
     override fun onStart() {
@@ -118,7 +125,7 @@ class TactileSensationActivity : MyBaseActivity() {
         )
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say yes, no, or not sure")
-        speechRecognizer.startListening(intent)
+        speechRecognizer!!.startListening(intent)
     }
 
     private fun checkBoundsAndHandleNextStep() {
@@ -133,9 +140,11 @@ class TactileSensationActivity : MyBaseActivity() {
         displayVibrationInterface()
         val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
         Log.d("Vibration", "handleStartVibration: $amplitude")
-        vibrator.vibrate(VibrationEffect.createOneShot(3000, amplitude))
-        object : CountDownTimer(2000, 1000) {
-            override fun onTick(millisUntilFinished: Long) {}
+        vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_DURATION, amplitude))
+        object : CountDownTimer(VIBRATION_DURATION, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                timerTextView.text = (millisUntilFinished / 1000 + 1).toString()
+            }
             override fun onFinish() {
                 vibrator.cancel()
                 displayResultInterface()
@@ -161,18 +170,29 @@ class TactileSensationActivity : MyBaseActivity() {
     }
 
     private fun finishTestWithScore(score: Int) {
-        Toast.makeText(
-            this@TactileSensationActivity,
-            "The smallest amplitude you can feel is $score",
-            Toast.LENGTH_SHORT
-        ).show()
-        speechRecognizer.cancel()
+        val builder = AlertDialog.Builder(this@TactileSensationActivity)
+        builder.setMessage("The smallest amplitude you can feel is $score")
+
+        builder.setPositiveButton("OK") { dialog, which ->
+            dialog.dismiss()
+            finish()
+        }
+
+        builder.setCancelable(false)
+
+
+
         val date = Date()
         lifecycleScope.launch(Dispatchers.IO) {
             val db = AppDatabase.getInstance(this@TactileSensationActivity)
             db.tactileSensationDao().insert(TactileSensation(UUID.randomUUID().toString(), score.toDouble()))
         }
-        handlePlayAudio(R.raw.done) { finish() }
+        if (USE_SPEECH_RECOGNIZER) {
+            speechRecognizer?.cancel()
+            handlePlayAudio(R.raw.done) { builder.show() }
+        } else {
+            builder.show()
+        }
     }
 
     private fun reset() {
@@ -181,7 +201,7 @@ class TactileSensationActivity : MyBaseActivity() {
         textView.visibility = View.VISIBLE
         ripple.stopRippleAnimation()
         ripple.visibility = View.GONE
-        speechRecognizer.cancel()
+        speechRecognizer?.cancel()
         resetAudioPlayerAndSpeechRecognizer()
     }
 
@@ -217,7 +237,7 @@ class TactileSensationActivity : MyBaseActivity() {
         if (mediaPlayer != null) {
             mediaPlayer!!.release()
         }
-        speechRecognizer.cancel()
+        speechRecognizer?.cancel()
     }
 
     override fun onDestroy() {
@@ -225,7 +245,7 @@ class TactileSensationActivity : MyBaseActivity() {
         if (mediaPlayer != null) {
             mediaPlayer!!.release()
         }
-        speechRecognizer.destroy()
+        speechRecognizer?.destroy()
     }
 
     private fun displayResultInterface() {
@@ -234,8 +254,10 @@ class TactileSensationActivity : MyBaseActivity() {
         resultLayout.visibility = View.VISIBLE
         textView.visibility = View.GONE
         vibrateButton.visibility = View.GONE
-        resetAudioPlayerAndSpeechRecognizer()
-        handlePlayAudio(R.raw.did_you_feel_it) { startSpeechRecognizer() }
+        if (USE_SPEECH_RECOGNIZER) {
+            resetAudioPlayerAndSpeechRecognizer()
+            handlePlayAudio(R.raw.did_you_feel_it) { startSpeechRecognizer() }
+        }
     }
 
     override fun onRequestPermissionsResult(
@@ -255,9 +277,5 @@ class TactileSensationActivity : MyBaseActivity() {
                 finish()
             }
         }
-    }
-
-    override fun onBackPressed() {
-        // do nothing
     }
 }

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activities.spasticity.TouchscreenTestInstruction2Fragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Instruction 2/2"
+        android:textSize="36sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/MyTestStyle"
+        android:text="After the previous step, the app will instruct you to lift your fingers, try your best to lift your fingertips, ensuring that your fingers don't curve inward. If you can't lift your fingers completely, that's okay. Just do your best. You have a countdown of 10 seconds to achieve this. When the countdown ends, we will test the pressure on the touchscreen for another 10 seconds." />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="250dp"
+        android:src="@drawable/instruction5"
+        />
+    <com.example.phl.views.MyButton
+        android:id="@+id/continue_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="24sp"
+        android:text="@string/continue_to_next"
+        />
+</LinearLayout>

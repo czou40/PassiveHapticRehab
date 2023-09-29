@@ -3,26 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph_mas"
-    app:startDestination="@id/masVisualizationFragment">
+    app:startDestination="@id/masCollectionFragment">
 
     <fragment
         android:id="@+id/masVisualizationFragment"
         android:name="com.example.phl.activities.mas.MasVisualizationFragment"
         android:label="fragment_mas_visualization"
-        tools:layout="@layout/fragment_mas_visualization" >
-        <action
-            android:id="@+id/action_masVisualizationFragment_to_masInstructionFragment"
-            app:destination="@id/masInstructionFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/masInstructionFragment"
-        android:name="com.example.phl.activities.mas.MasInstructionFragment"
-        android:label="fragment_mas_instruction"
-        tools:layout="@layout/fragment_mas_instruction" >
-        <action
-            android:id="@+id/action_masInstructionFragment_to_masCollectionFragment"
-            app:destination="@id/masCollectionFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_mas_visualization" />
     <fragment
         android:id="@+id/masCollectionFragment"
         android:name="com.example.phl.activities.mas.MasCollectionFragment"

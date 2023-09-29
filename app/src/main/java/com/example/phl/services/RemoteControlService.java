@@ -32,6 +32,7 @@ public class RemoteControlService extends Service {
     public static final String NOTIFY_ACTION = "com.example.phl.services.RemoteControlService.NOTIFY";
 
     public static final String ID = "id";
+    
     public static final String ACTION = "com.example.phl.services.RemoteControlService";
 
     public static final String SOCKET_CONNECTED_ACTION = "com.example.phl.services.RemoteControlService.SOCKET_CONNECTED";

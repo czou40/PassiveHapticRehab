@@ -70,12 +70,12 @@ tools:context=".activities.mas.MasVisualizationFragment">
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:id="@+id/start"
-    android:text="@string/start" />
+    android:text="@string/start" android:textSize="24sp" />
 
 <com.example.phl.views.MyButton
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:id="@+id/start_workflow"
-    android:text="@string/start_workflow" />
+    android:text="@string/start_workflow" android:textSize="24sp"/>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

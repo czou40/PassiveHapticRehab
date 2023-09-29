@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Place your phone in your hand and grip it with your fingers. Bend your arm so your hand is in front of your shoulder. Then, press the volume button to begin the test. Following the beep sound, use your unaffected hand to pull down on your affected arm. Make an effort to fully straighten your elbow. When the system recognizes that you can't stretch your arm any further, it will emit another beep. Upon hearing this beep, return your arm to its original position. Press the volume button again to start a new test. Repeat this procedure three times. If you want to discard the previous test, press the volume button for more than 2 seconds."
+        style="@style/MyTestStyle"
+        android:textSize="20sp"
+        />
+<!--    <ImageView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0dp"-->
+
+<!--        android:src="@drawable/instruction7" />-->
+    <VideoView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:id="@+id/videoView"
+        />
+
+</LinearLayout>

@@ -12,21 +12,11 @@
         tools:layout="@layout/fragment_first">
 
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
-        <action
             android:id="@+id/action_FirstFragment_to_calibrationInstructionFragment"
             app:destination="@id/calibrationInstructionFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/SecondFragment"
-        android:name="com.example.phl.activities.spasticity.SecondFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
-
         <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/action_FirstFragment_to_touchscreenTestInstructionFragment"
+            app:destination="@id/touchscreenTestInstructionFragment" />
     </fragment>
     <fragment
         android:id="@+id/CalibrationFragment"
@@ -83,9 +73,37 @@
         android:id="@+id/measurementResultFragment"
         android:name="com.example.phl.activities.spasticity.MeasurementResultFragment"
         android:label="fragment_measurement_result"
-        tools:layout="@layout/fragment_measurement_result" >
+        tools:layout="@layout/fragment_measurement_result" />
+    <fragment
+        android:id="@+id/touchscreenTestInstructionFragment"
+        android:name="com.example.phl.activities.spasticity.TouchscreenTestInstructionFragment"
+        android:label="fragment_touchscreen_test_instruction"
+        tools:layout="@layout/fragment_touchscreen_test_instruction" >
         <action
-            android:id="@+id/action_measurementResultFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/action_touchscreenTestInstructionFragment_to_touchscreenTestInstruction2Fragment"
+            app:destination="@id/touchscreenTestInstruction2Fragment" />
     </fragment>
+    <fragment
+        android:id="@+id/touchscreenTestInstruction2Fragment"
+        android:name="com.example.phl.activities.spasticity.TouchscreenTestInstruction2Fragment"
+        android:label="fragment_touchscreen_test_instruction2"
+        tools:layout="@layout/fragment_touchscreen_test_instruction2" >
+        <action
+            android:id="@+id/action_touchscreenTestInstruction2Fragment_to_touchscreenTestFragment"
+            app:destination="@id/touchscreenTestFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/touchscreenTestFragment"
+        android:name="com.example.phl.activities.spasticity.TouchscreenTestFragment"
+        android:label="fragment_touchscreen_test"
+        tools:layout="@layout/fragment_touchscreen_test" >
+        <action
+            android:id="@+id/action_touchscreenTestFragment_to_touchscreenTestResultFragment"
+            app:destination="@id/touchscreenTestResultFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/touchscreenTestResultFragment"
+        android:name="com.example.phl.activities.spasticity.TouchscreenTestResultFragment"
+        android:label="fragment_touchscreen_test_result"
+        tools:layout="@layout/fragment_touchscreen_test_result" />
 </navigation>

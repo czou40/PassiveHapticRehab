@@ -247,21 +247,10 @@ public class MyButton extends MaterialButton {
         }
     }
 
-//    @Override
-//    public boolean performClick() {
-//        if (preventAccidentalClicks) {
-//            if (onClickListener == null) {
-//                return false;
-//            } else {
-//                onClickListener.onClick(this);
-//                return true;
-//            }
-//        } else {
-//            return super.performClick();
-//        }
-//    }
-
     private void registerReceiverIfNotRegistered() {
+        if (!isAttachedToWindow()) {
+            return;
+        }
         if (!isReceiverRegistered) {
             IntentFilter filter = new IntentFilter(RemoteControlService.ACTION);
             getContext().registerReceiver(remoteControlReceiver, filter);
@@ -274,7 +263,17 @@ public class MyButton extends MaterialButton {
         }
     }
 
+    @Override
+    public void setText(CharSequence text, BufferType type) {
+        unregisterReceiverIfRegistered();
+        super.setText(text, type);
+        registerReceiverIfNotRegistered();
+    }
+
     private void unregisterReceiverIfRegistered() {
+        if (!isAttachedToWindow()) {
+            return;
+        }
         if (isReceiverRegistered) {
             getContext().unregisterReceiver(remoteControlReceiver);
             isReceiverRegistered = false;

@@ -33,6 +33,7 @@
             android:layout_height="wrap_content"
             android:text="@string/exit"
             android:id="@+id/exit_button"
+            android:textSize="24sp"
             />
     </LinearLayout>
 

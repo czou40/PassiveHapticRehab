@@ -9,19 +9,21 @@
         android:id="@+id/textView_needed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/total_data_points_needed"/>
+        android:text="@string/total_data_points_needed" android:textSize="24sp"
+        android:textColor="@color/mp_color_primary_dark"/>
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:text="TextView" android:textSize="24sp"
+        android:textColor="@color/mp_color_primary_dark"/>
 
     <LinearLayout
         android:id="@+id/weight_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <com.example.phl.views.MyButton
             android:id="@+id/add_new_object_button"
@@ -30,7 +32,7 @@
             android:layout_gravity="center"
             android:text="@string/calibrate_with_another_object"
             android:layout_weight="1"
-            style="?android:attr/buttonBarButtonStyle"
+            android:textSize="24sp"
             app:group="no"/>
 
         <com.example.phl.views.MyButton
@@ -40,7 +42,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:text="@string/next"
-            style="?android:attr/buttonBarButtonStyle"
+            android:textSize="24sp"
             app:group="yes"
             />
     </LinearLayout>

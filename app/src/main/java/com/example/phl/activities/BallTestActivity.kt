@@ -1,11 +1,9 @@
 package com.example.phl.activities
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import com.example.phl.R
-import java.util.UUID
 
-class BallTestActivity : AppCompatActivity() {
+class BallTestActivity : MyBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

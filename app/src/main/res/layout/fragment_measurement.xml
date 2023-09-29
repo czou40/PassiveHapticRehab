@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.spasticity.SecondFragment">
+    tools:context=".activities.spasticity.MeasurementFragment">
 
     <TextView
         android:id="@+id/textview_counting_down"
@@ -14,12 +14,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="@string/counting_down"/>
+        android:text="@string/counting_down" android:textSize="24sp"
+        android:textColor="@color/mp_color_primary_dark"/>
 
     <com.skyfishjy.library.RippleBackground
         android:id="@+id/ripple"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="300dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="300dp"
         app:rb_color="#0099CC"
         app:rb_duration="3000"
         app:rb_radius="32dp"
@@ -45,5 +48,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:group="forward"/>
+        app:group="forward" android:textSize="24sp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activities.spasticity.TouchscreenTestResultFragment">
+
+    <LinearLayout
+        android:id="@+id/touch_layout2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Average pressure applied to the screen (relaxed):"
+            android:gravity="center"
+            style="@style/MyTestStyle"/>
+
+        <TextView
+            android:id="@+id/average_pressure_relaxed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:gravity="center"
+            style="@style/MyTestStyle"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Average pressure applied to the screen (during attempts to lift the fingers):"
+            android:gravity="center"
+            style="@style/MyTestStyle"/>
+
+        <TextView
+            android:id="@+id/average_pressure_lift"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:gravity="center"
+            style="@style/MyTestStyle"/>
+
+        <com.example.phl.views.MyButton
+            android:id="@+id/continue_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/continue_to_next"
+            android:textSize="24sp"
+            />
+    </LinearLayout>
+</LinearLayout>

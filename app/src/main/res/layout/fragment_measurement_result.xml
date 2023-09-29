@@ -52,5 +52,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/linearlayout_measurement_result"
-        app:group="forward"/>
+        app:group="forward" android:textSize="24sp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

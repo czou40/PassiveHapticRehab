@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:text="@string/camera_test_instruction_1"
         android:paddingBottom="16dp"
-        android:textSize="18sp"
+        android:textSize="24sp"
         android:textColor="@color/mp_color_primary_dark" />
 
     <ImageView
@@ -33,5 +33,6 @@
         android:id="@+id/start"
         android:layout_gravity="center_horizontal"
         android:textColor="@android:color/white"
+        android:textSize="24sp"
         android:padding="12dp" />
 </LinearLayout>

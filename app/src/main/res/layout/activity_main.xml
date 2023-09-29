@@ -22,10 +22,12 @@
         android:padding="16dp">
 
         <TextView
+            android:textSize="24sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/qr_code_text_view"
             android:text="@string/qr_code_for_remote_control"
+            android:textColor="@color/black"
             />
 
         <ImageView
@@ -35,100 +37,118 @@
             />
 
         <TextView
+            android:textSize="24sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/connecting"
             android:text="@string/connecting_to_server"
+            android:textColor="@color/black"
             />
 
         <TextView
+            android:textSize="24sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/no_internet"
             android:text="@string/no_internet_connection_remote_control_is_not_available"
+            android:textColor="@color/black"
             />
 
         <com.example.phl.views.MyButton
             android:id="@+id/button1"
             style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="wrap_content"
+            android:backgroundTint="#ee6002"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/start_spasticity_test"
+            android:text="Force Sensing Test"
+            android:textSize="28dp"
+            android:textAllCaps="false"
             android:layout_marginTop="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
             />
 
         <com.example.phl.views.MyButton
             android:id="@+id/button4"
             style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Start Ball Test"
+            android:text="Finger Tracking Test"
+            android:textAllCaps="false"
+            android:textSize="28dp"
             android:layout_marginTop="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
             />
 
         <com.example.phl.views.MyButton
             android:id="@+id/button5"
+            android:visibility="gone"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Start Tilt Test"
             android:layout_marginTop="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
             />
 
         <com.example.phl.views.MyButton
             android:id="@+id/button6"
             style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="wrap_content"
+            android:backgroundTint="#008b00"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Start MAS Test"
+            android:text="Modified Ashworth"
+            android:textAllCaps="false"
+            android:textSize="28dp"
             android:layout_marginTop="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
             />
 
         <com.example.phl.views.MyButton
             android:id="@+id/button2"
-            android:layout_width="wrap_content"
+            style="@style/Widget.MaterialComponents.Button"
+            android:backgroundTint="#ba00e5"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/start_tactile_sensation_test"
-            android:layout_marginTop="16dp" />
+            android:text="Tactile Sensation Test"
+            android:textAllCaps="false"
+            android:textSize="28dp"
+            android:layout_marginTop="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            />
 
         <com.example.phl.views.MyButton
             android:id="@+id/button3"
-            android:layout_width="wrap_content"
+            style="@style/Widget.MaterialComponents.Button"
+            android:backgroundTint="#0085c9"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/view_my_progress"
-            android:layout_marginTop="16dp" />
-
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="vertical"-->
-<!--            android:gravity="center">-->
-
-<!--            &lt;!&ndash; Your TextViews and ImageView... &ndash;&gt;-->
-
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="16dp"-->
-<!--                android:gravity="center"-->
-<!--                android:orientation="horizontal">-->
+            android:textAllCaps="false"
+            android:textSize="28dp"
+            android:layout_marginTop="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            />
 
 <!--                <com.google.android.material.card.MaterialCardView-->
 <!--                    android:id="@+id/card1"-->
-<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_width="match_parent"-->
 <!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginLeft="8dp"-->
-<!--                    android:layout_marginTop="8dp"-->
-<!--                    android:layout_marginRight="8dp"-->
+<!--                    android:layout_marginLeft="16dp"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:layout_marginRight="16dp"-->
 <!--                    android:layout_marginBottom="16dp"-->
-<!--                    android:layout_weight="1"-->
 <!--                    app:cardCornerRadius="8dp"-->
 <!--                    app:cardElevation="8dp"-->
 <!--                    app:cardBackgroundColor="@color/material_dynamic_neutral95"-->
 <!--                    android:clickable="true"-->
 <!--                    android:focusable="true"-->
 <!--                    android:foreground="?android:attr/selectableItemBackground">-->
-
 
 <!--                    <LinearLayout-->
 <!--                        android:layout_width="match_parent"-->
@@ -144,20 +164,186 @@
 <!--                            android:src="@drawable/ic_launcher_foreground" />-->
 
 <!--                        <com.google.android.material.textview.MaterialTextView-->
+<!--                            android:layout_gravity="center"-->
 <!--                            android:id="@+id/card1_title"-->
 <!--                            android:layout_width="wrap_content"-->
 <!--                            android:layout_height="wrap_content"-->
-<!--                            android:text="@string/start_spasticity_test"-->
+<!--                            android:text="PressureSense Test"-->
+<!--                            android:textSize="32sp"-->
 <!--                            android:textAlignment="center"-->
 <!--                            android:textStyle="bold"/>-->
 
 <!--                    </LinearLayout>-->
+
 <!--                </com.google.android.material.card.MaterialCardView>-->
+
+<!--        <com.google.android.material.card.MaterialCardView-->
+<!--            android:id="@+id/card2"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginLeft="16dp"-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            android:layout_marginRight="16dp"-->
+<!--            android:layout_marginBottom="16dp"-->
+<!--            app:cardCornerRadius="8dp"-->
+<!--            app:cardElevation="8dp"-->
+<!--            app:cardBackgroundColor="@color/material_dynamic_neutral95"-->
+<!--            android:clickable="true"-->
+<!--            android:focusable="true"-->
+<!--            android:foreground="?android:attr/selectableItemBackground">-->
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical"-->
+<!--                android:padding="16dp">-->
+
+<!--                <ImageView-->
+<!--                    android:id="@+id/card2_image"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:scaleType="fitCenter"-->
+<!--                    android:src="@drawable/ic_launcher_foreground" />-->
+
+<!--                <com.google.android.material.textview.MaterialTextView-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:id="@+id/card2_title"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="FingerTrack Test"-->
+<!--                    android:textSize="32sp"-->
+<!--                    android:textAlignment="center"-->
+<!--                    android:textStyle="bold"/>-->
 
 <!--            </LinearLayout>-->
 
+<!--        </com.google.android.material.card.MaterialCardView>-->
 
-<!--        </LinearLayout>-->
+<!--        <com.google.android.material.card.MaterialCardView-->
+<!--            android:id="@+id/card3"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginLeft="16dp"-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            android:layout_marginRight="16dp"-->
+<!--            android:layout_marginBottom="16dp"-->
+<!--            app:cardCornerRadius="8dp"-->
+<!--            app:cardElevation="8dp"-->
+<!--            app:cardBackgroundColor="@color/material_dynamic_neutral95"-->
+<!--            android:clickable="true"-->
+<!--            android:focusable="true"-->
+<!--            android:foreground="?android:attr/selectableItemBackground">-->
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical"-->
+<!--                android:padding="16dp">-->
+
+<!--                <ImageView-->
+<!--                    android:id="@+id/card3_image"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:scaleType="fitCenter"-->
+<!--                    android:src="@drawable/ic_launcher_foreground" />-->
+
+<!--                <com.google.android.material.textview.MaterialTextView-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:id="@+id/card3_title"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Modified Ashworth Test"-->
+<!--                    android:textSize="32sp"-->
+<!--                    android:textAlignment="center"-->
+<!--                    android:textStyle="bold"/>-->
+
+<!--            </LinearLayout>-->
+
+<!--        </com.google.android.material.card.MaterialCardView>-->
+
+<!--        <com.google.android.material.card.MaterialCardView-->
+<!--            android:id="@+id/card4"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginLeft="16dp"-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            android:layout_marginRight="16dp"-->
+<!--            android:layout_marginBottom="16dp"-->
+<!--            app:cardCornerRadius="8dp"-->
+<!--            app:cardElevation="8dp"-->
+<!--            app:cardBackgroundColor="@color/material_dynamic_neutral95"-->
+<!--            android:clickable="true"-->
+<!--            android:focusable="true"-->
+<!--            android:foreground="?android:attr/selectableItemBackground">-->
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical"-->
+<!--                android:padding="16dp">-->
+
+<!--                <ImageView-->
+<!--                    android:id="@+id/card4_image"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:scaleType="fitCenter"-->
+<!--                    android:src="@drawable/ic_launcher_foreground" />-->
+
+<!--                <com.google.android.material.textview.MaterialTextView-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:id="@+id/card4_title"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Tactile Sensation Test"-->
+<!--                    android:textSize="32sp"-->
+<!--                    android:textAlignment="center"-->
+<!--                    android:textStyle="bold"/>-->
+
+<!--            </LinearLayout>-->
+
+<!--        </com.google.android.material.card.MaterialCardView>-->
+
+<!--        <com.google.android.material.card.MaterialCardView-->
+<!--            android:id="@+id/card5"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginLeft="16dp"-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            android:layout_marginRight="16dp"-->
+<!--            android:layout_marginBottom="16dp"-->
+<!--            app:cardCornerRadius="8dp"-->
+<!--            app:cardElevation="8dp"-->
+<!--            app:cardBackgroundColor="@color/material_dynamic_neutral95"-->
+<!--            android:clickable="true"-->
+<!--            android:focusable="true"-->
+<!--            android:foreground="?android:attr/selectableItemBackground">-->
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical"-->
+<!--                android:padding="16dp">-->
+
+<!--                <ImageView-->
+<!--                    android:id="@+id/card5_image"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:scaleType="fitCenter"-->
+<!--                    android:src="@drawable/ic_launcher_foreground" />-->
+
+<!--                <com.google.android.material.textview.MaterialTextView-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:id="@+id/card5_title"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="@string/view_my_progress"-->
+<!--                    android:textSize="32sp"-->
+<!--                    android:textAlignment="center"-->
+<!--                    android:textStyle="bold"/>-->
+
+<!--            </LinearLayout>-->
+
+<!--        </com.google.android.material.card.MaterialCardView>-->
 
     </LinearLayout>
     </ScrollView>

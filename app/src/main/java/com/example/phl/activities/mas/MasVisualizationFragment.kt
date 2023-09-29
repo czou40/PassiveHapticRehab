@@ -104,7 +104,7 @@ class MasVisualizationFragment : Fragment(), SensorEventListener {
 
         val startWorkflowButton = view.findViewById<TextView>(R.id.start_workflow)
         startWorkflowButton.setOnClickListener {
-            findNavController().navigate(R.id.action_masVisualizationFragment_to_masInstructionFragment)
+            findNavController().navigate(R.id.masCollectionFragment)
         }
     }
 

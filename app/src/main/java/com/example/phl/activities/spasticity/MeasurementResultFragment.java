@@ -71,8 +71,7 @@ public class MeasurementResultFragment extends Fragment {
         binding = FragmentMeasurementResultBinding.inflate(inflater, container, false);
         binding.textviewMeasurementResult.setText(String.valueOf(result));
         binding.buttonMeasurementResult.setOnClickListener(v -> {
-            NavHostFragment.findNavController(MeasurementResultFragment.this)
-                    .navigate(R.id.action_measurementResultFragment_to_FirstFragment);
+            requireActivity().finish();
         });
         if(this.isOnLegacyWorkflow) {
             binding.legacy.setVisibility(View.VISIBLE);

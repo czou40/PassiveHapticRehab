@@ -6,7 +6,8 @@
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:key="prevent_accidental_touches"
-            app:title="Prevent Accidental Touches" />
+            app:title="Prevent Accidental Touches"
+            />
 
         <SeekBarPreference
             android:max="5000"

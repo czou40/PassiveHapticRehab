@@ -12,8 +12,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/tactile_sensation_test_description"
-        android:textSize="20sp"
-        android:paddingBottom="16dp"/>
+        android:paddingBottom="16dp"
+        android:textSize="24sp"
+        android:textColor="@color/mp_color_primary_dark"
+        />
 
     <com.skyfishjy.library.RippleBackground
         android:visibility="gone"
@@ -27,6 +29,14 @@
         app:rb_scale="6"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="302dp">
+        <TextView
+            android:id="@+id/textview_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textSize="32sp"
+            android:text="0"
+            />
     </com.skyfishjy.library.RippleBackground>
 
     <com.example.phl.views.MyButton
@@ -34,7 +44,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/vibrate"
-        app:group="forward"/>
+        app:group="forward"
+        android:textSize="24sp"/>
 
     <LinearLayout
         android:id="@+id/result_layout"
@@ -50,7 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/i_felt_the_vibration"
-            app:group="yes"
+            app:group="yes" android:textSize="24sp"
             />
 
         <com.example.phl.views.MyButton
@@ -58,7 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/i_did_not_feel_the_vibration"
-            app:group="no"
+            app:group="no" android:textSize="24sp"
             />
 
         <com.example.phl.views.MyButton
@@ -66,7 +77,7 @@
             android:layout_height="wrap_content"
             android:text="@string/i_am_not_sure"
             android:id="@+id/i_am_not_sure_button"
-            app:group="uncertain"
+            app:group="uncertain" android:textSize="24sp"
             />
     </LinearLayout>
 

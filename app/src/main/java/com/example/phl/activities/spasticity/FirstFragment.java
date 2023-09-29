@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -77,7 +78,7 @@ public class FirstFragment extends Fragment implements SensorEventListener {
     ) {
         binding = FragmentFirstBinding.inflate(inflater, container, false);
         binding.buttonFirst
-                .setText(R.string.vibrate);
+                .setText("Switch to Vibration-based Tests");
         graphView =  binding.graph;
         graphView2 = binding.graph2;
         graphView3 = binding.graph3;
@@ -102,8 +103,8 @@ public class FirstFragment extends Fragment implements SensorEventListener {
         graphView.addSeries(screenSensorDataSeries);
 
         graphView.getViewport().setXAxisBoundsManual(true);
-        graphView.getViewport().setMinX(0);
-        graphView.getViewport().setMaxX(100);
+//        graphView.getViewport().setMinX(0);
+//        graphView.getViewport().setMaxX(100);
 
         // set manual X bounds
         graphView2.getViewport().setXAxisBoundsManual(true);
@@ -118,6 +119,7 @@ public class FirstFragment extends Fragment implements SensorEventListener {
         graphView3.addSeries(accelerometerZDataSeries);
 //        graphView3.addSeries(accelerometerMagnitudeDataSeries);
 
+        updateLayouts();
 
         return binding.getRoot();
 
@@ -138,31 +140,38 @@ public class FirstFragment extends Fragment implements SensorEventListener {
                 if (isVibrating) {
                     return true;
                 }
-                if (motionEvent.getAction()==MotionEvent.ACTION_DOWN) {
-                    if (toast!=null) {
-                        toast.cancel();
-                    }
-                    toast = Toast.makeText(mContext, "You are pressing!", Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-                else if (motionEvent.getAction()==MotionEvent.ACTION_UP) {
-                    if (toast!=null) {
-                        toast.cancel();
-                    }
-                    toast = Toast.makeText(mContext, "You released!", Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-                float pressure = motionEvent.getPressure();
-                float area = motionEvent.getSize();
+//                if (motionEvent.getAction()==MotionEvent.ACTION_DOWN) {
+//                    if (toast!=null) {
+//                        toast.cancel();
+//                    }
+//                    toast = Toast.makeText(mContext, "You are pressing!", Toast.LENGTH_SHORT);
+//                    toast.show();
+//                }
+//                else if (motionEvent.getAction()==MotionEvent.ACTION_UP) {
+//                    if (toast!=null) {
+//                        toast.cancel();
+//                    }
+//                    toast = Toast.makeText(mContext, "You released!", Toast.LENGTH_SHORT);
+//                    toast.show();
+//                }
                 int numFingers = motionEvent.getPointerCount();
+                int historySize = motionEvent.getHistorySize();
+                float pressure = 0;
+                for (int i = 0; i < numFingers; i++) {
+                    float currentFingerPressureSum = Math.min(motionEvent.getPressure(i), 1.0f);
+                    for (int  j = 0; j < historySize; j++) {
+                        currentFingerPressureSum += Math.min(motionEvent.getHistoricalPressure(i, j), 1.0f);
+                    }
+                    pressure += currentFingerPressureSum / (historySize + 1);
+                }
+                pressure /= numFingers;
+//                float area = motionEvent.getSize();
+
                 Log.i("MotionEvent", String.valueOf(motionEvent.getPointerCount()));
                 pressures.add(pressure);
-                screenSensorDataSeries.appendData(new DataPoint(pressures.size(), pressure), false, 10000);
-                graphView.getViewport().setMaxX(pressures.size() * 1.01);
-                binding.textviewFirst.setText(
-                        String.format("Pressure: %.4f\tArea: %.4f\tNum Fingers: %d\n%s",
-                                pressure, area, numFingers,
-                                numFingers > 1 ? "Touchscreen sensor readings are not accurate for multiple fingers.": ""));
+                screenSensorDataSeries.appendData(new DataPoint(motionEvent.getEventTime()/1000.0, pressure), false, 10000);
+                graphView.getViewport().setMaxX(motionEvent.getEventTime()/1000.0 + 0.5);
+                graphView.getViewport().setMinX(motionEvent.getEventTime()/1000.0 - 5);
                 return true;
             }
         });
@@ -190,22 +199,18 @@ public class FirstFragment extends Fragment implements SensorEventListener {
             public void onClick(View view) {
 //                NavHostFragment.findNavController(FirstFragment.this)
 //                        .navigate(R.id.action_FirstFragment_to_SecondFragment);
-                Vibrator vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
                 if (FirstFragment.this.isVibrating) {
-                    vibrator.cancel();
+                    ((SpasticityDiagnosisActivity) requireActivity()).stopVibration();
                     FirstFragment.this.isVibrating = false;
-                    binding.buttonFirst.setText(R.string.vibrate);
+                    updateLayouts();
                     // Unregister the gyroscope sensor listener
                     sensorManager.unregisterListener(FirstFragment.this);
 //                    FileWriter.writeToCSV("data.csv", Arrays.asList("Gyroscope X", "Gyroscope Y", "Gyroscope Z", "Accelerometer X", "Accelerometer Y", "Accelerometer Z"), Arrays.asList(gyroscopeX, gyroscopeY, gyroscopeZ, accelerometerX, accelerometerY, accelerometerZ));
 //                    Toast.makeText(mContext, "Data saved to data.csv", Toast.LENGTH_SHORT).show();
                 } else {
+                    ((SpasticityDiagnosisActivity) requireActivity()).startVibration();
                     FirstFragment.this.isVibrating = true;
-                    long[] pattern = {0, 30000};
-                    VibrationEffect effect = VibrationEffect.createWaveform(pattern, 1);
-//                    VibrationEffect effect = VibrationEffect.createOneShot(65535, 255);
-                    vibrator.vibrate(effect);
-                    binding.buttonFirst.setText(R.string.stop);
+                    updateLayouts();
                     // Register the gyroscope sensor listener
                     sensorManager.registerListener(FirstFragment.this, gyroscopeSensor, SensorManager.SENSOR_DELAY_FASTEST);
                     sensorManager.registerListener(FirstFragment.this, accelerometerSensor, SensorManager.SENSOR_DELAY_FASTEST);
@@ -220,6 +225,11 @@ public class FirstFragment extends Fragment implements SensorEventListener {
                     accelerometerYDataSeries.resetData(empty);
                     accelerometerZDataSeries.resetData(empty);
                     accelerometerMagnitudeDataSeries.resetData(empty);
+                    binding.vibrationLayout.setVisibility(View.VISIBLE);
+                    binding.vibrationLayout3.setVisibility(View.VISIBLE);
+                    binding.touchLayout.setVisibility(View.GONE);
+                    binding.touchLayout2.setVisibility(View.GONE);
+                    binding.touchLayout3.setVisibility(View.GONE);
                 }
             }
         });
@@ -236,6 +246,9 @@ public class FirstFragment extends Fragment implements SensorEventListener {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+        ((SpasticityDiagnosisActivity) requireActivity()).stopVibration();
+        FirstFragment.this.isVibrating = false;
+        sensorManager.unregisterListener(FirstFragment.this);
     }
 
     @Override
@@ -277,6 +290,26 @@ public class FirstFragment extends Fragment implements SensorEventListener {
             accelerometerMagnitudeDataSeries.appendData(new DataPoint(accelerometerMagnitude.size(), accelerometerMagnitude.get(accelerometerMagnitude.size() - 1)), false, 500);
             graphView3.getViewport().setMinX(Math.max(0, accelerometerX.size() - 500));
             graphView3.getViewport().setMaxX(accelerometerX.size());
+        }
+    }
+
+    public void updateLayouts() {
+        if (binding!=null) {
+            if (isVibrating) {
+                binding.buttonFirst.setText("Switch to Touchscreen-based Tests");
+                binding.vibrationLayout.setVisibility(View.VISIBLE);
+                binding.vibrationLayout3.setVisibility(View.VISIBLE);
+                binding.touchLayout.setVisibility(View.GONE);
+                binding.touchLayout2.setVisibility(View.GONE);
+                binding.touchLayout3.setVisibility(View.GONE);
+            } else {
+                binding.buttonFirst.setText("Switch to Vibration-based Tests");
+                binding.vibrationLayout.setVisibility(View.GONE);
+                binding.vibrationLayout3.setVisibility(View.GONE);
+                binding.touchLayout.setVisibility(View.VISIBLE);
+                binding.touchLayout2.setVisibility(View.VISIBLE);
+                binding.touchLayout3.setVisibility(View.VISIBLE);
+            }
         }
     }
 

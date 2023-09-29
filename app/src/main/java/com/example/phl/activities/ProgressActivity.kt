@@ -54,7 +54,6 @@ class ProgressActivity : MyBaseActivity() {
                 // Handle tab reselection
             }
         })
-        registerCommand("Exit") { finish() }
     }
 
     private fun loadTactileSensationData() {

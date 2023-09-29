@@ -45,63 +45,37 @@ public class SpasticityDiagnosisActivity extends MyBaseActivity {
         setContentView(binding.getRoot());
 
         RawDataset.initializeInstance(SensorData.includedSensors.length);
-
-
-//        setSupportActionBar(binding.toolbar);
-//
-//        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-//        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-
     }
-//
-//    @Override
-//    public boolean onSupportNavigateUp() {
-//        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-//        return NavigationUI.navigateUp(navController, appBarConfiguration)
-//                || super.onSupportNavigateUp();
-//    }
 
     public void startVibration() {
-        isVibrationOn = true;
-        long[] pattern = {0, 65535};
-        VibrationEffect effect = VibrationEffect.createWaveform(pattern, 1);
-        vibrator.vibrate(effect);
+        if (!isVibrationOn) {
+            isVibrationOn = true;
+            long[] pattern = {0, 65535};
+            VibrationEffect effect = VibrationEffect.createWaveform(pattern, 1);
+            vibrator.vibrate(effect);
+        }
     }
 
     public void startVibration(int seconds) {
-        isVibrationOn = true;
-        long[] pattern = {0, seconds * 1000};
-        VibrationEffect effect = VibrationEffect.createWaveform(pattern, 0);
-        vibrator.vibrate(effect);
+        if (!isVibrationOn) {
+            isVibrationOn = true;
+            long[] pattern = {0, seconds * 1000L};
+            VibrationEffect effect = VibrationEffect.createWaveform(pattern, 0);
+            vibrator.vibrate(effect);
+        }
     }
 
     public void stopVibration() {
-        vibrator.cancel();
-        isVibrationOn = false;
+        if (isVibrationOn) {
+            vibrator.cancel();
+            isVibrationOn = false;
+        }
     }
 
     @Override
-    public void onBackPressed() {
-        // display a warning dialog, then navigate to main activity
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Warning");
-        builder.setMessage("Are you sure you want to exit?");
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // navigate to main activity
-                finish();
-            }
-        });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // do nothing
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
+    protected void onPause() {
+        super.onPause();
+        stopVibration();
     }
 
     public boolean isOnLegacyWorkflow() {

@@ -26,6 +26,6 @@
         android:id="@+id/exit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/exit" />
+        android:text="@string/exit" android:textSize="24sp"/>
 
 </androidx.appcompat.widget.LinearLayoutCompat>
