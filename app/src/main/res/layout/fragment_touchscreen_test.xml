@@ -7,7 +7,7 @@
     tools:context=".activities.spasticity.TouchscreenTestFragment">
 
     <LinearLayout
-        android:id="@+id/touch_layout2"
+        android:id="@+id/touch_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -15,9 +15,19 @@
         android:background="@color/black"
         android:orientation="vertical">
         <TextView
+            android:id="@+id/instruction_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Press the screen."
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="36sp"/>
+
+        <TextView
+            android:id="@+id/pressure_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pressure per finger: 0"
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="24sp"/>
@@ -26,7 +36,7 @@
             android:id="@+id/countdown_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="0"
+            android:text="Countdown: 0"
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="24sp"/>

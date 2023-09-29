@@ -35,7 +35,7 @@
             style="@style/MyTestStyle"/>
 
         <TextView
-            android:id="@+id/average_pressure_lift"
+            android:id="@+id/average_pressure_lifted"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="0"

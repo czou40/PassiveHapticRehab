@@ -10,22 +10,22 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class SensorData  implements SensorEventListener  {
-//    List<Float> pressures = new LinkedList<>();
-    private List<Double> gyroscopeX = new LinkedList<>();
-    private List<Double> gyroscopeY = new LinkedList<>();
-    private List<Double> gyroscopeZ = new LinkedList<>();
+//    List<Float> pressures = new ArrayList<>();
+    private List<Double> gyroscopeX = new ArrayList<>();
+    private List<Double> gyroscopeY = new ArrayList<>();
+    private List<Double> gyroscopeZ = new ArrayList<>();
 
-    private List<Double> gyroscopeMagnitude = new LinkedList<>();
-    private List<Double> accelerometerX = new LinkedList<>();
-    private List<Double> accelerometerY = new LinkedList<>();
-    private List<Double> accelerometerZ = new LinkedList<>();
+    private List<Double> gyroscopeMagnitude = new ArrayList<>();
+    private List<Double> accelerometerX = new ArrayList<>();
+    private List<Double> accelerometerY = new ArrayList<>();
+    private List<Double> accelerometerZ = new ArrayList<>();
 
-    private List<Double> accelerometerMagnitude = new LinkedList<>();
+    private List<Double> accelerometerMagnitude = new ArrayList<>();
 
     private HashMap<String, List<Double>> map = new HashMap<>();
 

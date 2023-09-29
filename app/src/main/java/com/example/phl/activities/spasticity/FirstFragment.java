@@ -31,7 +31,7 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FirstFragment extends Fragment implements SensorEventListener {
@@ -42,15 +42,15 @@ public class FirstFragment extends Fragment implements SensorEventListener {
     GraphView graphView2;
     GraphView graphView3;
     Toast toast;
-    List<Float> pressures = new LinkedList<>();
-    List<Float> gyroscopeX = new LinkedList<>();
-    List<Float> gyroscopeY = new LinkedList<>();
-    List<Float> gyroscopeZ = new LinkedList<>();
-    List<Float> gyroscopeMagnitude = new LinkedList<>();
-    List<Float> accelerometerX = new LinkedList<>();
-    List<Float> accelerometerY = new LinkedList<>();
-    List<Float> accelerometerZ = new LinkedList<>();
-    List<Float> accelerometerMagnitude = new LinkedList<>();
+    List<Float> pressures = new ArrayList<>();
+    List<Float> gyroscopeX = new ArrayList<>();
+    List<Float> gyroscopeY = new ArrayList<>();
+    List<Float> gyroscopeZ = new ArrayList<>();
+    List<Float> gyroscopeMagnitude = new ArrayList<>();
+    List<Float> accelerometerX = new ArrayList<>();
+    List<Float> accelerometerY = new ArrayList<>();
+    List<Float> accelerometerZ = new ArrayList<>();
+    List<Float> accelerometerMagnitude = new ArrayList<>();
 
     boolean isVibrating = false;
     LineGraphSeries<DataPoint> screenSensorDataSeries;
@@ -140,31 +140,17 @@ public class FirstFragment extends Fragment implements SensorEventListener {
                 if (isVibrating) {
                     return true;
                 }
-//                if (motionEvent.getAction()==MotionEvent.ACTION_DOWN) {
-//                    if (toast!=null) {
-//                        toast.cancel();
-//                    }
-//                    toast = Toast.makeText(mContext, "You are pressing!", Toast.LENGTH_SHORT);
-//                    toast.show();
-//                }
-//                else if (motionEvent.getAction()==MotionEvent.ACTION_UP) {
-//                    if (toast!=null) {
-//                        toast.cancel();
-//                    }
-//                    toast = Toast.makeText(mContext, "You released!", Toast.LENGTH_SHORT);
-//                    toast.show();
-//                }
                 int numFingers = motionEvent.getPointerCount();
                 int historySize = motionEvent.getHistorySize();
                 float pressure = 0;
                 for (int i = 0; i < numFingers; i++) {
-                    float currentFingerPressureSum = Math.min(motionEvent.getPressure(i), 1.0f);
+                    float currentFingerPressureSum = Math.min(motionEvent.getPressure(i), 2.0f);
                     for (int  j = 0; j < historySize; j++) {
-                        currentFingerPressureSum += Math.min(motionEvent.getHistoricalPressure(i, j), 1.0f);
+                        currentFingerPressureSum += Math.min(motionEvent.getHistoricalPressure(i, j), 2.0f);
                     }
                     pressure += currentFingerPressureSum / (historySize + 1);
                 }
-                pressure /= numFingers;
+                pressure /= 4; // We have 4 fingers on the screen.
 //                float area = motionEvent.getSize();
 
                 Log.i("MotionEvent", String.valueOf(motionEvent.getPointerCount()));
@@ -192,7 +178,13 @@ public class FirstFragment extends Fragment implements SensorEventListener {
                         .navigate(R.id.action_FirstFragment_to_calibrationInstructionFragment);
             }});
 
-
+        binding.buttonWorkflowTouchscreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((SpasticityDiagnosisActivity) requireActivity()).setOnLegacyWorkflow(false);
+                NavHostFragment.findNavController(FirstFragment.this)
+                        .navigate(R.id.action_FirstFragment_to_touchscreenTestInstructionFragment);
+            }});
 
         binding.buttonFirst.setOnClickListener(new View.OnClickListener() {
             @Override

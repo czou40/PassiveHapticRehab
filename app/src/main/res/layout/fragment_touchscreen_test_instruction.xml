@@ -17,7 +17,7 @@
         style="@style/MyTestStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="After pressing 'continue,' place your fingers (excluding the pinky) on the screen within the next 10 seconds. Use the fingertips only. Once the countdown finishes, we will measure the pressure applied to the screen for another 10 seconds. Remain relaxed and avoid pressing too hard intentionally." />
+        android:text="After pressing 'continue,' place your fingers (excluding the pinky) on the screen. Use the fingertips only. We will measure the pressure applied to the screen for 10 seconds. Remain relaxed and avoid pressing too hard intentionally." />
 
     <ImageView
         android:layout_width="wrap_content"
