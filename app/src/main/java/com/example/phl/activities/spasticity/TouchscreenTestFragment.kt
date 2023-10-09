@@ -147,8 +147,7 @@ class TouchscreenTestFragment : Fragment(), View.OnTouchListener {
                             putDouble("pressure2", getAveragePressure(pressures2))
                         })
                 }
-            }`
-
+            }
             Stage.DONE -> {
                 // Do nothing
             }

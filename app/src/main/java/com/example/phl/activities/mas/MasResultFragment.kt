@@ -48,11 +48,11 @@ class MasResultFragment : Fragment() {
         resultTextView.text = "Passive Range of Motion: $passiveRangeOfMotion\n" +
                 "Maximum Angular Deceleration: $maximumAngularDeceleration\n" +
                 "Maximum Angular Deceleration Angle: $maximumAngularDecelerationAngle\n" +
-                "Angular Deceleration to Angular Velocity Ratio: $angularDecelerationToAngularVelocityRatio\n" +
+//                "Angular Deceleration to Angular Velocity Ratio: $angularDecelerationToAngularVelocityRatio\n" +
                 "Maximum Angular Velocity: $maximumAngularVelocity\n" +
-                "Maximum Angular Acceleration: $maximumAngularAcceleration\n" +
-                "Angular Acceleration to Angle Slope: $angularAccelerationToAngleSlope\n" +
-                "Angular Deceleration to Angle Slope: $angularDecelerationToAngleSlope"
+                "Maximum Angular Acceleration: $maximumAngularAcceleration\n" //+
+//                "Angular Acceleration to Angle Slope: $angularAccelerationToAngleSlope\n" +
+//                "Angular Deceleration to Angle Slope: $angularDecelerationToAngleSlope"
 
         val exitButton = view.findViewById<View>(R.id.exit_button)
         exitButton.setOnClickListener {

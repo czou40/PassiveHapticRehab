@@ -55,6 +55,33 @@
             />
 
         <com.example.phl.views.MyButton
+            android:id="@+id/button4"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Finger Tracking Test"
+            android:textAllCaps="false"
+            android:textSize="28dp"
+            android:layout_marginTop="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            />
+
+        <com.example.phl.views.MyButton
+            android:id="@+id/button2"
+            style="@style/Widget.MaterialComponents.Button"
+            android:backgroundTint="#ba00e5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tactile Sensation Test"
+            android:textAllCaps="false"
+            android:textSize="28dp"
+            android:layout_marginTop="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            />
+
+        <com.example.phl.views.MyButton
             android:id="@+id/button1"
             style="@style/Widget.MaterialComponents.Button"
             android:backgroundTint="#ee6002"
@@ -68,18 +95,7 @@
             android:paddingBottom="16dp"
             />
 
-        <com.example.phl.views.MyButton
-            android:id="@+id/button4"
-            style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Finger Tracking Test"
-            android:textAllCaps="false"
-            android:textSize="28dp"
-            android:layout_marginTop="16dp"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
-            />
+
 
         <com.example.phl.views.MyButton
             android:id="@+id/button5"
@@ -107,19 +123,6 @@
             android:paddingBottom="16dp"
             />
 
-        <com.example.phl.views.MyButton
-            android:id="@+id/button2"
-            style="@style/Widget.MaterialComponents.Button"
-            android:backgroundTint="#ba00e5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Tactile Sensation Test"
-            android:textAllCaps="false"
-            android:textSize="28dp"
-            android:layout_marginTop="16dp"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
-            />
 
         <com.example.phl.views.MyButton
             android:id="@+id/button3"

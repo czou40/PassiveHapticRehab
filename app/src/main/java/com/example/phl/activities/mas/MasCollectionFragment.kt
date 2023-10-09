@@ -54,19 +54,19 @@ class MasCollectionFragment : Fragment(), SensorEventListener, MasActivity.Compa
         const val HAND_STILL_TIME_FINAL = 1000L // The amount of time the hand must be still at the FINAL stage to move to the next stage.
         const val NUM_ATTEMPTS = 3 // The number of attempts the user has to complete the test.
 
-        enum class Stage {
-            NONE,
+        enum class Stage(val message: String) {
+            NONE(""), // The test has not started.
             // When the acceleration is too large during warmup,
             // the phone would not be able to accurately estimate the rotation.
             // That is, the phone does not know the "up" direction correctly and may give wrong results.
             // Therefore, we need to restart the warmup process.
-            WARMUP, // User hand is still. Only the accelerometer data is collected. The data is not saved. We perform a state check to see if the hand is still. If it is, we move to the next stage.
-            INITIAL_1, // When the user presses the volume button for less than 2 seconds, move to the next stage. Otherwise, delete the previous attempt.
-            INITIAL_2, // User hand is still but may start moving at any time. The data is saved. When the user moves their hand for some time, we move to the next stage.
-            MIDDLE, // User hand is moving. The data is saved. When the user moves their hand for a certain amount of time, we move to the next stage.
-            FINAL, // User hand is moving and may stop at any time. The data is saved. When the hand stops moving for a certain amount of time, we move to the next stage.
-            WRAPUP, // User hand is still. The end. The test is complete. We turn off the sensors and save the data.
-            INVALID, // The test is invalid. This could be because the user does not move their hand, moves their hand for too short a time, or the test takes too long.
+            WARMUP("Calibrating phone sensors"), // User hand is still. Only the accelerometer data is collected. The data is not saved. We perform a state check to see if the hand is still. If it is, we move to the next stage.
+            INITIAL_1("Please press the volume button"), // When the user presses the volume button for less than 2 seconds, move to the next stage. Otherwise, delete the previous attempt.
+            INITIAL_2("Start moving your arm"), // User hand is still but may start moving at any time. The data is saved. When the user moves their hand for some time, we move to the next stage.
+            MIDDLE("Continue moving your arm"), // User hand is moving. The data is saved. When the user moves their hand for a certain amount of time, we move to the next stage.
+            FINAL("Stop when you can no longer stretch your arm"), // User hand is moving and may stop at any time. The data is saved. When the hand stops moving for a certain amount of time, we move to the next stage.
+            WRAPUP("Data collected!"), // User hand is still. The end. The test is complete. We turn off the sensors and save the data.
+            INVALID("Invalid data"), // The test is invalid. This could be because the user does not move their hand, moves their hand for too short a time, or the test takes too long.
         }
     }
 
@@ -406,7 +406,7 @@ class MasCollectionFragment : Fragment(), SensorEventListener, MasActivity.Compa
                 throw RuntimeException("Bug!")
             }
         }
-        currentStageTextView?.text = currentStage.name
+        currentStageTextView?.text = currentStage.message
         configureSensorsIfNeeded()
         resetDataBuffer()
     }

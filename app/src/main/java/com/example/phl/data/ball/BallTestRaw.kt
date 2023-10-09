@@ -56,7 +56,7 @@ data class BallTestRaw  (
         val average =
             (indexAverage + middleAverage + ringAverage + pinkieAverage) / 4
 
-        return ((180 - average) / 90 * 100)
+        return 180 - average
     }
     fun getDescription(): String {
         val points = worldLandMarks.map { landmark -> Point3D(landmark[0], landmark[1], landmark[2]) }
@@ -90,7 +90,7 @@ data class BallTestRaw  (
         val average =
             (indexAverage + middleAverage + ringAverage + pinkieAverage) / 4
 
-        val strength = ((180 - average) / 90 * 100)
+        val strength = 180 - average
 
         val (alpha, beta, gamma) = getAngles()
 
@@ -234,9 +234,9 @@ data class BallTestRaw  (
 
         val ANGLE_CALCULATION_POINTS = listOf(0, 6, 18)
 
-        val CLOSED_HAND_THRESHOLD = 85
+        val CLOSED_HAND_THRESHOLD = 0
 
-        val PALM_Y_ANGLE_THRESHOLD = 35
+        val PALM_Y_ANGLE_THRESHOLD = 37.5
 
         private data class Point3D(val x: Double, val y: Double, val z: Double)
 
