@@ -1,4 +1,6 @@
-The code base is adapted from [this repo](https://github.com/ganeshsar/UnityPythonMediaPipeHands) by  ganeshar.
+This unity project uses MediaPipe to detect hand and body poses and sends the data to a Unity project.
+
+The code base is adapted from [this repo](https://github.com/ganeshsar/UnityPythonMediaPipeHands) and [this repo](https://github.com/ganeshsar/UnityPythonMediaPipeBodyPose) by ganeshar.
 
 Changes made (Chunhao): 
 
@@ -7,10 +9,6 @@ Changes made (Chunhao):
 2. Cleaned up the python code and allowed it to exit gracefully when ctrl-c is pressed.
 
 3. Decoupled the python code from Unity. Now the python code can run independently of Unity.
-
-
-# Multithreaded Unity Python MediaPipe Hands
-Testing hand tracking inside of Unity using Google MediaPipe Hands Python framework. Webcam readings, piping, and MediaPipe Hands all run on a different thread.
 
 # Instructions
 1. Requires Python, Unity Hub, a WebCam, and decently fast CPU.
@@ -21,3 +19,7 @@ Testing hand tracking inside of Unity using Google MediaPipe Hands Python framew
 * You can set the DEBUG flag True in hands.py to visualize what is being seen and how your hands are being interpreted.
 * Improve the accuracy of the model by setting MODEL_COMPLEXITY to 1 inside hands.py
 * Make sure port 7777 is not used. If it is used, change the port number in both Unity and Python scripts.
+
+# Future Work
+* Create scripts to control a rigged 3d hand model for better visualization.
+* Import Figma designs to Unity.
