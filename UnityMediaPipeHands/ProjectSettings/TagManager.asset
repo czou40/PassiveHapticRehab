@@ -41,3 +41,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Background
+    uniqueID: 1519304791
+    locked: 0
+  - name: Fence
+    uniqueID: 2364922715
+    locked: 0
+  - name: Crops
+    uniqueID: 1227429755
+    locked: 0
+  - name: Foreground
+    uniqueID: 3054952609
+    locked: 0

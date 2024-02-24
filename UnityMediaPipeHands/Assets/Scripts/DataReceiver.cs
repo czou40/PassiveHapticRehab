@@ -145,4 +145,18 @@ public class DataReceiver : MonoBehaviour
             udpClient.Close();
         }
     }
+
+    public float getLeftShoulderAngle()
+    {
+        Vector3 leftShoulder = PosePositions[11];
+        Vector3 leftWrist = PosePositions[15];
+        Vector3 leftShoulderToWrist = leftWrist - leftShoulder;
+
+        Vector3 leftHip = PosePositions[23];
+        Vector3 leftShoulderToHip = leftHip - leftShoulder;
+
+        float angle = Vector3.Angle(leftShoulderToWrist, leftShoulderToHip);
+
+        return angle;
+    }
 }
