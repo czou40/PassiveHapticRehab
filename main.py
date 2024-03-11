@@ -6,7 +6,7 @@ import socket
 import mediapipe.python.solutions.drawing_utils as mp_drawing
 import mediapipe.python.solutions.pose as mp_pose
 import mediapipe.python.solutions.hands as mp_hands
-
+from queue import Queue 
 
 # Toggle this in order to view how your WebCam is being interpreted (reduces performance).
 DEBUG = True
@@ -22,6 +22,8 @@ HEIGHT = 240
 
 # [0, 2] Higher numbers are more precise, but also cost more performance. Good environment conditions = 1, otherwise 2.
 MODEL_COMPLEXITY = 0
+
+q = Queue()
 
 
 class HandThread(threading.Thread):
@@ -98,7 +100,6 @@ class HandThread(threading.Thread):
                             self.data += "Pose|{}|{}|{}|{}\n".format(i, pose_results.pose_world_landmarks.landmark[i].x, pose_results.pose_world_landmarks.landmark[i].y, pose_results.pose_world_landmarks.landmark[i].z)
 
                     self.dirty = True
-
                     if DEBUG:
                         if hand_results.multi_hand_landmarks:
                             for hand in hand_results.multi_hand_landmarks:
@@ -117,9 +118,7 @@ class HandThread(threading.Thread):
                                     color=(255, 255, 255), thickness=2, circle_radius=2
                                 ),
                             )
-                        cv2.imshow("Hand and Body Tracking", image)
-                        if cv2.waitKey(5) & 0xFF == ord("q"):
-                            break
+                        q.put(image)
         cv2.destroyAllWindows()
         print("HandThread stopped")
 
@@ -139,6 +138,11 @@ if __name__ == "__main__":
                 # TODO: send data to server 127.0.0.1:7777 using udp
                 client_socket.sendto(data, server_address)
                 hand_thread.dirty = False
+            if DEBUG:
+                image = q.get()
+                cv2.imshow("Hand and Body Tracking", image)
+                if cv2.waitKey(5) & 0xFF == ord("q"):
+                    break
             time.sleep(0.016)
     except KeyboardInterrupt:
         print("Interrupt received, stopping...")
