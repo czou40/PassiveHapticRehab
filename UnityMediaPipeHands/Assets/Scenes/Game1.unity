@@ -1032,11 +1032,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7af0e60b2604d744aa3f9a5ab417e04f, type: 3}
-<<<<<<< HEAD
 --- !u!1 &679463020
-=======
 --- !u!1 &824537713
->>>>>>> main
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1044,29 +1041,24 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-<<<<<<< HEAD
   - component: {fileID: 679463021}
   - component: {fileID: 679463024}
   - component: {fileID: 679463023}
   - component: {fileID: 679463022}
   m_Layer: 5
   m_Name: Mask
-=======
   - component: {fileID: 824537717}
   - component: {fileID: 824537716}
   - component: {fileID: 824537715}
   - component: {fileID: 824537714}
   m_Layer: 5
   m_Name: Canvas
->>>>>>> main
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
-<<<<<<< HEAD
 --- !u!224 &679463021
-=======
 --- !u!114 &824537714
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1129,13 +1121,11 @@ Canvas:
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!224 &824537717
->>>>>>> main
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-<<<<<<< HEAD
   m_GameObject: {fileID: 679463020}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -1202,7 +1192,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 679463020}
   m_CullTransparentMesh: 1
-=======
   m_GameObject: {fileID: 824537713}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -1218,7 +1207,6 @@ CanvasRenderer:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
->>>>>>> main
 --- !u!1 &840219511
 GameObject:
   m_ObjectHideFlags: 0
