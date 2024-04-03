@@ -8,6 +8,8 @@ public class Cutting : MonoBehaviour
     [SerializeField] private DataReceiver dataReceiver;
 
     public GameObject bottomRightCrop;
+    public GameObject basket1;
+    public GameObject basket2;
     //public GameObject bottomRightCrop;
 
     //public GameObject bottomRightCrop;
