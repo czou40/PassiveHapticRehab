@@ -17,35 +17,94 @@ public class Cutting : MonoBehaviour
     //public GameObject bottomRightCrop;
    // public GameObject bottomRightCrop;
 
-    public GameObject bottomRightCrop4;
-    public GameObject bottomRightCrop3;
-    public GameObject bottomRightCrop2;
+    public GameObject crop2;
+    public GameObject crop9;
+    public GameObject crop8;
+    public GameObject crop;
+    public GameObject crop11;
 
 
-    private int cropDeactivationCount = 0;
+
+    private int count = 0;
 
     public TextMeshProUGUI counterText;
 
-    HashSet<GameObject> crops;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        crops = new HashSet<GameObject>();
-        counterText.text = "Crop Deactivated: " + cropDeactivationCount.ToString();
+        counterText.text = "Crops cut: " + count.ToString();
+        basket1.SetActive(false);
+        basket2.SetActive(false);
     }
+
+    private void OnCollisionEnter2D(Collision2D collision){
+        Debug.Log(collision.gameObject.name);
+        if (collision.gameObject.name == "crop (2)") {
+            StartCoroutine(HandleCollisionWithPause(crop2));
+        }
+        if (collision.gameObject.name == "crop (9)") {
+            StartCoroutine(HandleCollisionWithPause(crop9));
+        }
+        if (collision.gameObject.name == "crop (8)") {
+            StartCoroutine(HandleCollisionWithPause(crop8));
+        }
+        if (collision.gameObject.name == "crop") {
+            StartCoroutine(HandleCollisionWithPause(crop));
+        }
+        if (collision.gameObject.name == "crop (11)") {
+            StartCoroutine(HandleCollisionWithPause(crop11));
+        }
+    }
+
+    private IEnumerator HandleCollisionWithPause(GameObject crop)
+{
+    // Increment your counter here if needed
+    count++;
+    Debug.Log(count);
+
+    // Deactivate the crop
+    crop.SetActive(false);
+
+    // Wait for one second
+    yield return new WaitForSeconds(1);
+
+    // Reactivate the crop after the pause
+    crop.SetActive(true);
+}
+
+
+    void OnCollisionStay2D(Collision2D collision) {
+        if (collision.gameObject.name == "crop (2)") {
+            Debug.Log("hi");
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D collision){
+
+        if (collision.gameObject.name == "crop (2)") {
+            crop2.SetActive(true);
+            Debug.Log("crop 222");
+
+        }
+        if (collision.gameObject.name == "crop (9)") {
+            crop9.SetActive(true);
+            Debug.Log("bye");
+        }
+    }
+    
+
 
     // Update is called once per frame
     void Update()
     {
-        if (dataReceiver.HasPoseData) {
-            if (dataReceiver.getLeftShoulderAngle() > 100 && dataReceiver.getLeftShoulderAngle() < 120){
-                // bottomRightCrop.SetActive(false);
-                cropDeactivationCount++; // Increment the counter
-                Debug.Log(dataReceiver.getLeftShoulderAngle());
-                counterText.text = "Crops Cut: " + cropDeactivationCount.ToString();
-            }
+        
+        if (count > 0) {
+            basket1.SetActive(true);
+            basket2.SetActive(true);
+            
         }
+        counterText.text = "Crops Cut: " + count.ToString();
     }
 }
