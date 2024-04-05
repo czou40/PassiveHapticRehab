@@ -62,38 +62,16 @@ public class Cutting : MonoBehaviour
 {
     // Increment your counter here if needed
     count++;
-    Debug.Log(count);
 
     // Deactivate the crop
     crop.SetActive(false);
 
     // Wait for one second
-    yield return new WaitForSeconds(1);
+    yield return new WaitForSeconds(2);
 
     // Reactivate the crop after the pause
     crop.SetActive(true);
 }
-
-
-    void OnCollisionStay2D(Collision2D collision) {
-        if (collision.gameObject.name == "crop (2)") {
-            Debug.Log("hi");
-        }
-    }
-
-    void OnCollisionExit2D(Collision2D collision){
-
-        if (collision.gameObject.name == "crop (2)") {
-            crop2.SetActive(true);
-            Debug.Log("crop 222");
-
-        }
-        if (collision.gameObject.name == "crop (9)") {
-            crop9.SetActive(true);
-            Debug.Log("bye");
-        }
-    }
-    
 
 
     // Update is called once per frame
