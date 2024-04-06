@@ -20,7 +20,7 @@ public class HoeController : MonoBehaviour
     void Update()
     {
         if (dataReceiver.HasPoseData) {
-            float angle = dataReceiver.getLeftShoulderAngle();
+            float angle = dataReceiver.getLeftShoulderExtensionAngle();
             transform.rotation = Quaternion.Euler(0, 0, -angle+90);
             text.text = "Left Shoulder Angle: " + angle;
         }

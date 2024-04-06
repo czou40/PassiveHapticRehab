@@ -146,7 +146,7 @@ public class DataReceiver : MonoBehaviour
         }
     }
 
-    public float getLeftShoulderAngle()
+    public float getLeftShoulderExtensionAngle()
     {
         Vector3 leftShoulder = PosePositions[11];
         Vector3 leftWrist = PosePositions[15];
@@ -157,6 +157,18 @@ public class DataReceiver : MonoBehaviour
 
         float angle = Vector3.Angle(leftShoulderToWrist, leftShoulderToHip);
 
+        return angle;
+    }
+
+    public float getLeftShoulderRotationAngle()
+    {
+        Vector3 leftShoulder = PosePositions[11];
+        Vector3 rightShoulder = PosePositions[12];
+        Vector3 leftShoulderToRightShoulder = rightShoulder - leftShoulder;
+        Vector3 leftElbow = PosePositions[13];
+        Vector3 leftWrist = PosePositions[15];
+        Vector3 leftElbowToWrist = leftWrist - leftElbow;
+        float angle = Vector3.Angle(leftShoulderToRightShoulder, leftElbowToWrist);
         return angle;
     }
 }
