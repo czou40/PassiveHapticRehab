@@ -78,7 +78,7 @@ class HandThread(threading.Thread):
                     self.data = ""
                     if hand_results and hand_results.multi_hand_world_landmarks:
                         print(
-                            f"HandThread: Detected {len(hand_results.multi_hand_world_landmarks)} hand(s)."
+                            f"HandThread: Deteceted {len(hand_results.multi_hand_world_landmarks)} hand(s)."
                         )
                         for j in range(len(hand_results.multi_handedness)):
                             hand_world_landmarks = (
