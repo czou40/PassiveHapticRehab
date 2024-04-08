@@ -16,7 +16,7 @@ public class pivotPoint : MonoBehaviour
     void Update()
     {
         if (dataReceiver.HasPoseData) {
-            float angle = dataReceiver.getLeftShoulderAngle();
+            float angle = dataReceiver.getLeftShoulderExtensionAngle();
             //transform.rotation = Quaternion.Euler(0, 0, angle-90);//range: 0 to counterclockwise 180 degrees 
             //transform.RotateAround(pivotPoint.transform.position, Vector3.forward, angle-90);
             transform.eulerAngles = new Vector3(0,0,-angle-180);

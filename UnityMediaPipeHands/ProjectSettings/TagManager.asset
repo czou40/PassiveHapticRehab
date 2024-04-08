@@ -44,6 +44,9 @@ TagManager:
   - name: Background
     uniqueID: 1519304791
     locked: 0
+  - name: Mud
+    uniqueID: 4241427107
+    locked: 0
   - name: Fence
     uniqueID: 2364922715
     locked: 0

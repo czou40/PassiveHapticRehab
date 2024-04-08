@@ -9,7 +9,7 @@ import mediapipe.python.solutions.hands as mp_hands
 from queue import Queue 
 
 # Toggle this in order to view how your WebCam is being interpreted (reduces performance).
-DEBUG = True
+DEBUG = False
 
 # To switch cameras. Sometimes takes a while.
 WEBCAM_INDEX = 0
@@ -119,7 +119,6 @@ class HandThread(threading.Thread):
                                 ),
                             )
                         q.put(image)
-        cv2.destroyAllWindows()
         print("HandThread stopped")
 
 
@@ -148,4 +147,6 @@ if __name__ == "__main__":
         print("Interrupt received, stopping...")
         hand_thread.stop()
         hand_thread.join()
+        cv2.destroyAllWindows()
+        client_socket.close()
         print("Threads successfully stopped.")
