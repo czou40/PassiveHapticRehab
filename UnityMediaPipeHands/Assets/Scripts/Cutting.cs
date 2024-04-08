@@ -10,6 +10,12 @@ public class Cutting : MonoBehaviour
     public GameObject bottomRightCrop;
     public GameObject basket1;
     public GameObject basket2;
+    //public GameObject bottomRightCrop;
+
+    //public GameObject bottomRightCrop;
+    //public GameObject bottomRightCrop;
+    //public GameObject bottomRightCrop;
+   // public GameObject bottomRightCrop;
 
     public GameObject crop2;
     public GameObject crop9;
