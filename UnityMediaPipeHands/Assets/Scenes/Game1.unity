@@ -1515,7 +1515,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -4.4314575, y: -101.07358, z: -29.187439, w: 68.800934}
+  m_margin: {x: -4.4314575, y: -173.17236, z: -76.135376, w: 135.8696}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1541,8 +1541,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3de964533d9a48c2a2769510198bb6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dataReceiver: {fileID: 0}
-  angleDisplayText: {fileID: 0}
+  dataReceiver: {fileID: 445269089}
+  angleDisplayText: {fileID: 865926853}
 --- !u!1001 &880551257
 PrefabInstance:
   m_ObjectHideFlags: 0
