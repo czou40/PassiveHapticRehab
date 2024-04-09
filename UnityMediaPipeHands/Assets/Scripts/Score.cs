@@ -21,6 +21,6 @@ public class Score : MonoBehaviour
     {
         //Change this score assignment to something based on input from game (maybe max shoulder angle reached...)
         int score = Random.Range(0, 1000);
-        scoreText.text = "Score: " + score.ToString();
+        scoreText.text = score.ToString();
     }
 }
