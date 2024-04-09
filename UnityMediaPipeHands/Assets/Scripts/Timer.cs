@@ -2,7 +2,7 @@ using UnityEngine;
 using TMPro;
 using System;
 using UnityEngine.UI;
-
+using UnityEngine.SceneManagement;
 
 public class Timer : MonoBehaviour
 {
@@ -30,6 +30,9 @@ public class Timer : MonoBehaviour
                 Debug.Log("Time is up");
                 TimeLeft = 0;
                 TimerOn = false;
+
+                //Added ScreenManager:
+                SceneManager.LoadScene("Score1");
             }
         }
     }
