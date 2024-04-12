@@ -2,7 +2,7 @@ using UnityEngine;
 using TMPro;
 using System;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
+
 
 public class Timer : MonoBehaviour
 {
@@ -26,14 +26,21 @@ public class Timer : MonoBehaviour
                 updateTimer(TimeLeft);
             }
             else
-            {
-                Debug.Log("Time is up");
-                TimeLeft = 0;
-                TimerOn = false;
+        {
+            Debug.Log("Time is up");
+            TimerOn = false;
+            TimeLeft = 0;
 
-                //Added ScreenManager:
-                SceneManager.LoadScene("Score1");
+            HoeController hoeController = GameObject.FindObjectOfType<HoeController>();
+            if (hoeController != null)
+            {
+                hoeController.EndGame();
             }
+            else
+            {
+                Debug.LogError("HoeController component not found.");
+            }
+        }
         }
     }
     void updateTimer(float currentTime)

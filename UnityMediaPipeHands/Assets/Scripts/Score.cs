@@ -7,20 +7,16 @@ public class Score : MonoBehaviour
 
     void Start()
     {
-        scoreText = GetComponent<TMP_Text>();
+        scoreText = GetComponent<TMP_Text>(); // Ensure this component is attached to a UI TextMeshPro element.
         GenerateScore();
-    }
-
-    void Update()
-    {
-        // For updating score every frame uncomment following line:
-        // GenerateScore();
     }
 
     void GenerateScore()
     {
-        //Change this score assignment to something based on input from game (maybe max shoulder angle reached...)
-        int score = Random.Range(0, 1000);
+        // Fetch the score stored in PlayerPrefs and set it as the text for the TextMeshPro UI element.
+        int score = PlayerPrefs.GetInt("FinalScore", 0); // The second parameter is a default value if "FinalScore" is not found.
         scoreText.text = score.ToString();
     }
+
+
 }
