@@ -975,7 +975,6 @@ MonoBehaviour:
   crop8: {fileID: 1925961454}
   crop: {fileID: 1519203495}
   crop11: {fileID: 1978450598}
-  count: 0
   counterText: {fileID: 410530259}
 --- !u!60 &562578376
 PolygonCollider2D:
@@ -2725,7 +2724,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 8400000, guid: bfb8f9693b39d4db4aaf135a8aaed8bb, type: 2}
+  m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
