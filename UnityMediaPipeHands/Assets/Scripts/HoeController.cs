@@ -1,3 +1,4 @@
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -23,7 +24,7 @@ public class HoeController : MonoBehaviour
 
 
 
-    private int count = 0;
+    public int count = 0;
 
     public TextMeshProUGUI counterText;
 
@@ -89,5 +90,13 @@ public class HoeController : MonoBehaviour
         }
 
         counterText.text = "Crops Cut: " + count.ToString();
+    }
+
+
+    public void EndGame()
+    {
+        PlayerPrefs.SetInt("FinalScore", count);
+        PlayerPrefs.Save();
+        SceneManager.LoadScene("Score1");
     }
 }
