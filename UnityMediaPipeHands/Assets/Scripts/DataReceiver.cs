@@ -133,7 +133,7 @@ public class DataReceiver : MonoBehaviour
         }
     }
 
-    void OnApplicationQuit()
+    void OnDestroy()
     {
         if (udpThread != null && udpThread.IsAlive)
         {
