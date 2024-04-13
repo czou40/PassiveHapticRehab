@@ -8,9 +8,10 @@ public class ScoreControl : MonoBehaviour
 {
     // Start is called before the first frame update
     [SerializeField] public int score;
+    private float angle;
     //minimum and maximum angle needed to reach to increment score
-    private const float min_target = 40;
-    private const float max_target = 120;
+    private const float min_target = 50;
+    private const float max_target = 100;
     private bool min_exceeded = false;
     private bool max_exceeded = false;
     [SerializeField] private DataReceiver dataReceiver;
@@ -24,7 +25,11 @@ public class ScoreControl : MonoBehaviour
     void Update()
     {
         if (dataReceiver.HasPoseData) {
-            float angle = dataReceiver.getLeftShoulderRotationAngle();
+            if (SceneManager.GetActiveScene().name == "Game1"){
+                angle = dataReceiver.getLeftShoulderExtensionAngle();
+            } else {
+                angle = dataReceiver.getLeftShoulderRotationAngle();
+            }
             if (angle > max_target){
                 max_exceeded = true;
             } else if (angle < min_target) {
