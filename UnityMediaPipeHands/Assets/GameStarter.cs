@@ -7,6 +7,7 @@ public class GameStarter : MonoBehaviour
 
     public void StartGame()
     {
+        
         if (pauseMenu != null)
         {
             pauseMenu.HideMenu(); // Hide the panel
@@ -16,6 +17,6 @@ public class GameStarter : MonoBehaviour
             Debug.LogError("Reference to PauseMenuToggle is not set in the GameStarter script.");
         }
         
-        // SceneManager.LoadScene("Game1"); // Load the game scene
+        SceneManager.LoadScene("Game1"); // Load the game scene
     }
 }

@@ -10,36 +10,44 @@ public class PauseMenuToggle : MonoBehaviour
 
     private void Awake()
     {
-        canvasGroup = GetComponent<CanvasGroup>();
-        if (canvasGroup == null)
+        if (FindObjectsOfType(GetType()).Length > 1)
         {
-            Debug.LogError("PauseMenuToggle script requires a CanvasGroup component attached to the same GameObject.");
+            Destroy(gameObject); // Destroy this if another exists
         }
-
-        // Initially visible
-        ShowMenu();
+        else
+        {
+            DontDestroyOnLoad(gameObject); // Only don't destroy the first instance
+        }
+        canvasGroup = GetComponent<CanvasGroup>();
+        ShowMenu(); // Initialize as visible
     }
 
-    // Call this method to hide the menu
-    public void HideMenu()
+    public void ShowMenu()
     {
-        canvasGroup.alpha = 0f;
-        canvasGroup.interactable = false;
-        canvasGroup.blocksRaycasts = false;
+        if (canvasGroup.alpha == 1f) // Add this check to prevent recursive loop if already shown
+            return;
 
-        // Optionally, disable the GameObject to prevent it from receiving input.
-        gameObject.SetActive(false);
-        onMenuHidden?.Invoke();
-
-    }
-
-    // Call this method to show the menu
-    private void ShowMenu()
-    {
         canvasGroup.alpha = 1f;
         canvasGroup.interactable = true;
         canvasGroup.blocksRaycasts = true;
-        onMenuShown?.Invoke();
 
+        // Only invoke the event if this action is due to an external request,
+        // not when it's already being processed.
+        // onMenuShown?.Invoke(); // Consider removing or guarding this to prevent recursion
+    }
+
+    public void HideMenu()
+    {
+        if (canvasGroup.alpha == 0f) // Add this check to prevent recursive loop if already hidden
+            return;
+
+        canvasGroup.alpha = 0f;
+        canvasGroup.interactable = false;
+        canvasGroup.blocksRaycasts = false;
+        gameObject.SetActive(false);
+
+        // Only invoke the event if this action is due to an external request,
+        // not when it's already being processed.
+        // onMenuHidden?.Invoke(); // Consider removing or guarding this to prevent recursion
     }
 }
