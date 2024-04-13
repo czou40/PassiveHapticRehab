@@ -9,9 +9,11 @@ public class Score : MonoBehaviour
 
     void Start()
     {
-        scoreText = GetComponent<TMP_Text>();
-        //GenerateScore();
+        
+
     }
+        //GenerateScore();
+    
 
     void Update()
     {
@@ -34,8 +36,13 @@ public class Score : MonoBehaviour
             Debug.Log(score);
             //string test = score.ToString();
             //scoreText.text = score.ToString();
-            int pscore = Random.Range(0,1000);
-            scoreText.text = pscore.ToString();
+            scoreText = GetComponent<TMP_Text>();
+            if (scoreText == null) {
+            Debug.Log("text is null");
+            }
+            scoreText.text = score.ToString();
+            //int pscore = Random.Range(0,1000);
+            //scoreText.text = pscore.ToString();
         //scoreText.text = Convert.ToString(score);
         }
     }
