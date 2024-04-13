@@ -3,12 +3,18 @@ using TMPro;
 using System;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using static ScoreControl;
 
 public class Timer : MonoBehaviour
 {
     public float TimeLeft;
     public bool TimerOn = false;
     public TMP_Text timerText;
+
+    public ScoreControl scoreControl;
+
+
+    public 
     void Start()
     {
         TimerOn = true;
@@ -31,8 +37,8 @@ public class Timer : MonoBehaviour
                 TimeLeft = 0;
                 TimerOn = false;
 
-                //Added ScreenManager:
-                SceneManager.LoadScene("Score1");
+                scoreControl.displayScore();
+                
             }
         }
     }
