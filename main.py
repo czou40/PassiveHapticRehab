@@ -9,7 +9,7 @@ import mediapipe.python.solutions.hands as mp_hands
 from queue import Queue 
 
 # Toggle this in order to view how your WebCam is being interpreted (reduces performance).
-DEBUG = False
+DEBUG = True
 
 # To switch cameras. Sometimes takes a while.
 WEBCAM_INDEX = 0
