@@ -1713,6 +1713,10 @@ PrefabInstance:
       propertyPath: onMenuHidden.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 6876066139497881342, guid: ab66a209d67484f1cb1bf4281c3019b9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: StartGame1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ab66a209d67484f1cb1bf4281c3019b9, type: 3}
 --- !u!1001 &7363841707491057278
