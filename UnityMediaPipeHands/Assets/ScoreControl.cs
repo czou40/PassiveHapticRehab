@@ -10,8 +10,8 @@ public class ScoreControl : MonoBehaviour
     [SerializeField] public int score;
     private float angle;
     //minimum and maximum angle needed to reach to increment score
-    private const float min_target = 50;
-    private const float max_target = 100;
+    private float min_target = 50;
+    private float max_target = 100;
     private bool min_exceeded = false;
     private bool max_exceeded = false;
     [SerializeField] private DataReceiver dataReceiver;
@@ -29,6 +29,7 @@ public class ScoreControl : MonoBehaviour
                 angle = dataReceiver.getLeftShoulderExtensionAngle();
             } else {
                 angle = dataReceiver.getLeftShoulderRotationAngle();
+                min_target = 70;//make target more lenient for game 2 for better results
             }
             if (angle > max_target){
                 max_exceeded = true;
