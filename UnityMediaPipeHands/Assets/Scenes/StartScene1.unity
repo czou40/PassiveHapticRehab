@@ -859,7 +859,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 800, y: 368}
+  m_AnchoredPosition: {x: 642, y: 368}
   m_SizeDelta: {x: 3231, y: 700}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1048193846
@@ -1712,6 +1712,10 @@ PrefabInstance:
     - target: {fileID: 6876066139497881339, guid: ab66a209d67484f1cb1bf4281c3019b9, type: 3}
       propertyPath: onMenuHidden.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 6876066139497881342, guid: ab66a209d67484f1cb1bf4281c3019b9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: StartGame1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ab66a209d67484f1cb1bf4281c3019b9, type: 3}
