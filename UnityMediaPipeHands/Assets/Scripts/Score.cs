@@ -30,9 +30,7 @@ public class Score : MonoBehaviour
     // }
     public void displayScore(int score){
         Debug.Log("displaying score text");
-        if (score==null){
-            Debug.Log("invalid score");
-        } else {
+
             Debug.Log(score);
             //string test = score.ToString();
             //scoreText.text = score.ToString();
@@ -44,6 +42,6 @@ public class Score : MonoBehaviour
             //int pscore = Random.Range(0,1000);
             //scoreText.text = pscore.ToString();
         //scoreText.text = Convert.ToString(score);
-        }
+        
     }
 }
