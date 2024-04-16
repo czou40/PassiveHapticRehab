@@ -16,9 +16,12 @@ public class SickleController : MonoBehaviour
 
     private Vector3 direction;
 
-    public GameObject crop2;
-    public GameObject crop9;
-    public GameObject crop8;
+    public GameObject grass62;
+    public GameObject grass52;
+    public GameObject grass42;
+    public GameObject grass32;
+    public GameObject grass22;
+    public GameObject grass12;
 
     public GameObject bag;
 
@@ -46,17 +49,23 @@ public class SickleController : MonoBehaviour
         if (!isCollisionReady) return;
         Debug.Log(collision.gameObject.name);
         if (collision.gameObject.name == "grass6 (2)"){
-            StartCoroutine(HandleCollisionWithPause(crop2));
+            StartCoroutine(HandleCollisionWithPause(grass62));
 
         }
-        if (collision.gameObject.name == "grass6 (1)"){
-            StartCoroutine(HandleCollisionWithPause(crop9));
+        if (collision.gameObject.name == "grass5 (2)"){
+            StartCoroutine(HandleCollisionWithPause(grass52));
         }
-        if (collision.gameObject.name == "grass6"){
-            StartCoroutine(HandleCollisionWithPause(crop8));
-            crop2.SetActive(true);
-            crop8.SetActive(true);
-            crop9.SetActive(true);
+        if (collision.gameObject.name == "grass4 (2)"){
+            StartCoroutine(HandleCollisionWithPause(grass42));
+        }
+        if (collision.gameObject.name == "grass3 (2)"){
+            StartCoroutine(HandleCollisionWithPause(grass32));
+        }
+        if (collision.gameObject.name == "grass2 (2)"){
+            StartCoroutine(HandleCollisionWithPause(grass22));
+        }
+        if (collision.gameObject.name == "grass1 (2)"){
+            StartCoroutine(HandleCollisionWithPause(grass12));
         }
     }
 
@@ -75,27 +84,40 @@ public class SickleController : MonoBehaviour
 
     if (crop.name == "grass6 (2)") {
         Vector3 curr = transform.position;
-        curr.y = 0.43f;
-        curr.x = 5.68f;
+        curr.x = 3.41f;
         transform.position = curr;
+        grass22.SetActive(true);
     }
 
-    if (crop.name == "grass6 (1)") {
+    if (crop.name == "grass5 (2)") {
         Vector3 curr = transform.position;
-        curr.y = -1.41f;
-        curr.x = 6.83f;
+        curr.x = 1.61f;
         transform.position = curr;
+        grass12.SetActive(true);
     }
-
-    if (crop.name == "grass6") {
-        crop2.SetActive(true);
-        crop8.SetActive(true);
-        crop9.SetActive(true);
-
+    if (crop.name == "grass4 (2)") {
         Vector3 curr = transform.position;
-        curr.y = 2.98f;
-        curr.x = 5.37f;
+        curr.x = -0.03f;
         transform.position = curr;
+        grass62.SetActive(true);
+    }
+    if (crop.name == "grass3 (2)") {
+        Vector3 curr = transform.position;
+        curr.x = -2.24f;
+        transform.position = curr;
+        grass52.SetActive(true);
+    }
+    if (crop.name == "grass2 (2)") {
+        Vector3 curr = transform.position;
+        curr.x = -3.55f;
+        transform.position = curr;
+        grass42.SetActive(true);
+    }
+    if (crop.name == "grass1 (2)") {
+        Vector3 curr = transform.position;
+        curr.x = 5.92f;
+        transform.position = curr;
+        grass32.SetActive(true);
     }
 
     isCollisionReady = true;
