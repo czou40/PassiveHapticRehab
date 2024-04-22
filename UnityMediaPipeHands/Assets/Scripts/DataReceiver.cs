@@ -22,6 +22,10 @@ public class DataReceiver : MonoBehaviour
 
     public Vector3[] PosePositions { get; private set; } = new Vector3[POSE_LANDMARK_COUNT];
 
+    public byte[] ImageData { get; private set; } = null;
+
+    public bool hasImageData { get; private set;} = false;
+
     public bool HasLeftHandData { get; private set; } = false;
 
     public bool HasRightHandData { get; private set; } = false;
@@ -37,18 +41,27 @@ public class DataReceiver : MonoBehaviour
 
     const int POSE_LANDMARK_COUNT = 33;
 
-    private Thread udpThread;
-    private UdpClient udpClient;
-    private int listenPort = 7777; // You can change this port number
+    private Thread dataUdpThread;
+    private Thread imageUdpThread;
+    private UdpClient dataUdpClient;
+    private UdpClient imageUdpClient;
+    private int dataListenPort = 7777; 
+    private int imageListenPort = 7778;
 
 
     private void Start()
     {
-        udpThread = new Thread(new ThreadStart(ThreadMethod))
+        dataUdpThread = new Thread(new ThreadStart(DataThreadMethod))
         {
             IsBackground = true
         };
-        udpThread.Start();
+        dataUdpThread.Start();
+
+        imageUdpThread = new Thread(new ThreadStart(ImageThreadMethod))
+        {
+            IsBackground = true
+        };
+        imageUdpThread.Start();
 
     }
 
@@ -112,15 +125,19 @@ public class DataReceiver : MonoBehaviour
         this.HasPoseData = hasPoseData;
     }
 
-    private void ThreadMethod()
+    private void DataThreadMethod()
     {
-        udpClient = new UdpClient(listenPort);
+        if (dataUdpClient != null)
+        {
+            dataUdpClient.Close();
+        }
+        dataUdpClient = new UdpClient(dataListenPort);
         while (true)
         {
             try
             {
                 IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
-                byte[] receiveBytes = udpClient.Receive(ref RemoteIpEndPoint);
+                byte[] receiveBytes = dataUdpClient.Receive(ref RemoteIpEndPoint);
                 string receivedData = Encoding.ASCII.GetString(receiveBytes);
 
                 // Handle the received data as you need
@@ -133,16 +150,47 @@ public class DataReceiver : MonoBehaviour
         }
     }
 
+    private void ImageThreadMethod()
+    {
+        imageUdpClient = new UdpClient(imageListenPort);
+        while (true)
+        {
+            try
+            {
+                IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                byte[] receiveBytes = imageUdpClient.Receive(ref RemoteIpEndPoint);
+
+                this.hasImageData = true;
+                this.ImageData = receiveBytes;
+
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.ToString());
+            }
+        }
+    }
+
     void OnDestroy()
     {
-        if (udpThread != null && udpThread.IsAlive)
+        if (dataUdpThread != null && dataUdpThread.IsAlive)
         {
-            udpThread.Abort();
+            dataUdpThread.Abort();
         }
 
-        if (udpClient != null)
+        if (dataUdpClient != null)
         {
-            udpClient.Close();
+            dataUdpClient.Close();
+        }
+
+        if (imageUdpThread != null && imageUdpThread.IsAlive)
+        {
+            imageUdpThread.Abort();
+        }
+
+        if (imageUdpClient != null)
+        {
+            imageUdpClient.Close();
         }
     }
 
