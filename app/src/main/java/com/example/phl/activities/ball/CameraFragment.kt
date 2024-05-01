@@ -40,14 +40,12 @@ import androidx.fragment.app.activityViewModels
 import com.example.phl.R
 import com.example.phl.data.HandLandmarkerViewModel
 import com.example.phl.databinding.FragmentCameraBinding
-import com.example.phl.utils.HandLandmarkerHelper
+import com.example.phl.utils.LandmarkerHelper
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import kotlin.math.acos
 import kotlin.math.ceil
-import kotlin.math.sqrt
 import android.view.animation.ScaleAnimation
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
@@ -56,16 +54,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.phl.data.AppDatabase
 import com.example.phl.data.ball.BallTestRaw
-import com.example.phl.data.ball.BallTestResult
-import com.google.mediapipe.tasks.components.containers.Category
 import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.apache.commons.math3.linear.MatrixUtils
-import org.apache.commons.math3.linear.RealMatrix
 
-class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
+class CameraFragment : Fragment(), LandmarkerHelper.LandmarkerListener {
 
     companion object {
         private const val TAG = "Hand Landmarker"
@@ -81,7 +74,7 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
     private val fragmentCameraBinding
         get() = _fragmentCameraBinding!!
 
-    private lateinit var handLandmarkerHelper: HandLandmarkerHelper
+    private lateinit var landmarkerHelper: LandmarkerHelper
     private val viewModel: HandLandmarkerViewModel by activityViewModels()
     private var preview: Preview? = null
     private var imageAnalyzer: ImageAnalysis? = null
@@ -110,26 +103,26 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
         if (!PermissionsFragment.hasPermissions(requireContext())) {
             findNavController().navigate(R.id.permissions_fragment)
         }
-        // Start the HandLandmarkerHelper again when users come back
+        // Start the LandmarkerHelper again when users come back
         // to the foreground.
         backgroundExecutor.execute {
-            if (handLandmarkerHelper.isClose()) {
-                handLandmarkerHelper.setupHandLandmarker()
+            if (landmarkerHelper.isClose()) {
+                landmarkerHelper.setupHandLandmarker()
             }
         }
     }
 
     override fun onPause() {
         super.onPause()
-        if (this::handLandmarkerHelper.isInitialized) {
-            viewModel.setMaxHands(handLandmarkerHelper.maxNumHands)
-            viewModel.setMinHandDetectionConfidence(handLandmarkerHelper.minHandDetectionConfidence)
-            viewModel.setMinHandTrackingConfidence(handLandmarkerHelper.minHandTrackingConfidence)
-            viewModel.setMinHandPresenceConfidence(handLandmarkerHelper.minHandPresenceConfidence)
-            viewModel.setDelegate(handLandmarkerHelper.currentDelegate)
+        if (this::landmarkerHelper.isInitialized) {
+            viewModel.setMaxHands(landmarkerHelper.maxNumHands)
+            viewModel.setMinHandDetectionConfidence(landmarkerHelper.minHandDetectionConfidence)
+            viewModel.setMinHandTrackingConfidence(landmarkerHelper.minHandTrackingConfidence)
+            viewModel.setMinHandPresenceConfidence(landmarkerHelper.minHandPresenceConfidence)
+            viewModel.setDelegate(landmarkerHelper.currentDelegate)
 
-            // Close the HandLandmarkerHelper and release resources
-            backgroundExecutor.execute { handLandmarkerHelper.clearHandLandmarker() }
+            // Close the LandmarkerHelper and release resources
+            backgroundExecutor.execute { landmarkerHelper.clearHandLandmarker() }
         }
     }
 
@@ -180,9 +173,9 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
             }
         }
 
-        // Create the HandLandmarkerHelper that will handle the inference
+        // Create the LandmarkerHelper that will handle the inference
         backgroundExecutor.execute {
-            handLandmarkerHelper = HandLandmarkerHelper(
+            landmarkerHelper = LandmarkerHelper(
                 context = requireContext(),
                 runningMode = RunningMode.LIVE_STREAM,
                 minHandDetectionConfidence = viewModel.currentMinHandDetectionConfidence,
@@ -388,7 +381,7 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
     }
 
     private fun detectHand(imageProxy: ImageProxy) {
-        handLandmarkerHelper.detectLiveStream(
+        landmarkerHelper.detectLiveStream(
             imageProxy = imageProxy,
             isFrontCamera = cameraFacing == CameraSelector.LENS_FACING_FRONT
         )
@@ -404,7 +397,7 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
     // image height/width to scale and place the landmarks properly through
     // HandLandmarkerOverlayView
     override fun onResults(
-        resultBundle: HandLandmarkerHelper.ResultBundle
+        resultBundle: LandmarkerHelper.ResultBundle
     ) {
         val result = resultBundle.results.first()
         val handDetected = result.worldLandmarks() != null && result.worldLandmarks().size > 0
@@ -510,9 +503,9 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
     override fun onError(error: String, errorCode: Int) {
         activity?.runOnUiThread {
             Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
-            if (errorCode == HandLandmarkerHelper.GPU_ERROR) {
+            if (errorCode == LandmarkerHelper.GPU_ERROR) {
                 fragmentCameraBinding.bottomSheetLayout.spinnerDelegate.setSelection(
-                    HandLandmarkerHelper.DELEGATE_CPU, false
+                    LandmarkerHelper.DELEGATE_CPU, false
                 )
             }
         }

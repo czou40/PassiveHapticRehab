@@ -13,6 +13,7 @@ import android.view.Surface
 import android.widget.Toast
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.core.resolutionselector.AspectRatioStrategy
 import androidx.camera.core.resolutionselector.ResolutionSelector
@@ -22,11 +23,12 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
 import com.example.phl.R
-import java.util.Random
+import com.example.phl.utils.LandmarkerHelper
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
+import com.google.mediapipe.tasks.vision.core.RunningMode
 
-class MediaPipeService : LifecycleService() {
+class MediaPipeService : LifecycleService(), LandmarkerHelper.LandmarkerListener {
 
     private val executor = Executors.newSingleThreadExecutor()
     private var cameraProvider: ProcessCameraProvider? = null
@@ -39,9 +41,19 @@ class MediaPipeService : LifecycleService() {
 
     private val binder = LocalBinder()
 
+    private lateinit var landmarkerHelper: LandmarkerHelper
+
+    private var configuration: Configuration = Configuration()
+
     // Class used for the client Binder.
     inner class LocalBinder : Binder() {
-        fun startStreaming(previewView: PreviewView?=null) {
+
+//        fun setConfiguration(config: Configuration) {
+//            configuration = config
+//        }
+//        fun getConfiguration(): Configuration = configuration
+
+        fun startStreaming(previewView: PreviewView? = null) {
             if (isCameraReady.get()) {
                 if (!isStreaming.get()) {
                     isStreaming.set(true)
@@ -89,6 +101,20 @@ class MediaPipeService : LifecycleService() {
             cameraProvider = cameraProviderFuture.get()
             isCameraReady.set(true)
         }, ContextCompat.getMainExecutor(this))
+
+        // Create the LandmarkerHelper that will handle the inference
+        executor.execute {
+            landmarkerHelper = LandmarkerHelper(
+                context = applicationContext,
+                runningMode = RunningMode.LIVE_STREAM,
+                minHandDetectionConfidence = configuration.minHandDetectionConfidence,
+                minHandTrackingConfidence = configuration.minHandTrackingConfidence,
+                minHandPresenceConfidence = configuration.minHandPresenceConfidence,
+                maxNumHands = configuration.maxHands,
+                currentDelegate = configuration.delegate,
+                handLandmarkerHelperListener = this
+            )
+        }
     }
 
     override fun onDestroy() {
@@ -106,8 +132,8 @@ class MediaPipeService : LifecycleService() {
         val cameraSelector = CameraSelector.Builder().requireLensFacing(cameraFacing).build()
 
         val resolutionSelector = ResolutionSelector.Builder().setAspectRatioStrategy(
-                AspectRatioStrategy.RATIO_4_3_FALLBACK_AUTO_STRATEGY
-            ).build()
+            AspectRatioStrategy.RATIO_4_3_FALLBACK_AUTO_STRATEGY
+        ).build()
 
         val rotation = previewView?.display?.rotation ?: Surface.ROTATION_0
 
@@ -117,11 +143,12 @@ class MediaPipeService : LifecycleService() {
 
         imageAnalyzer = ImageAnalysis.Builder().setTargetRotation(rotation)
             .setResolutionSelector(resolutionSelector)
+            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
             .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888).build()
             .also { analyzer ->
                 analyzer.setAnalyzer(executor) { imageProxy ->
                     // Insert your image analysis code here
-                    imageProxy.close()
+                    detectHand(imageProxy)
                 }
             }
 
@@ -136,6 +163,13 @@ class MediaPipeService : LifecycleService() {
             // Handle exception
             Log.e("MediaPipeService", "Error starting camera: ${e.message}")
         }
+    }
+
+    private fun detectHand(imageProxy: ImageProxy) {
+        landmarkerHelper.detectLiveStream(
+            imageProxy = imageProxy,
+            isFrontCamera = cameraFacing == CameraSelector.LENS_FACING_FRONT
+        )
     }
 
     private fun stopCamera() {
@@ -163,16 +197,49 @@ class MediaPipeService : LifecycleService() {
 
     companion object {
         private const val CHANNEL_ID = "media_pipe_service_channel"
-//        const val ACTION_CAPTURE_PHOTO = "action_capture_photo"
-//        const val ACTION_SEND_PHOTO = "action_send_photo"
-//        const val ACTION_START_STREAMING = "action_start_streaming"
-//        const val ACTION_STOP_STREAMING = "action_stop_streaming"
-//        const val ACTION_SEND_STREAM = "action_send_stream"
+        const val DELEGATE_CPU = 0
+        const val DELEGATE_GPU = 1
+        const val DEFAULT_HAND_DETECTION_CONFIDENCE = 0.6F
+        const val DEFAULT_HAND_TRACKING_CONFIDENCE = 0.6F
+        const val DEFAULT_HAND_PRESENCE_CONFIDENCE = 0.6F
+        const val DEFAULT_NUM_HANDS = 1
+        const val DEFAULT_POSE_DETECTION_CONFIDENCE = 0.5F
+        const val DEFAULT_POSE_TRACKING_CONFIDENCE = 0.5F
+        const val DEFAULT_POSE_PRESENCE_CONFIDENCE = 0.5F
+        const val DEFAULT_NUM_POSES = 1
+        const val MODEL_POSE_LANDMARKER_FULL = 0
+        const val MODEL_POSE_LANDMARKER_LITE = 1
+        const val MODEL_POSE_LANDMARKER_HEAVY = 2
+        const val OTHER_ERROR = 0
+        const val GPU_ERROR = 1
     }
 
     override fun onBind(intent: Intent): IBinder {
         super.onBind(intent)
         return binder
     }
+
+    data class Configuration(
+        val delegate: Int = DELEGATE_CPU,
+        val minHandDetectionConfidence: Float = DEFAULT_HAND_DETECTION_CONFIDENCE,
+        val minHandTrackingConfidence: Float = DEFAULT_HAND_TRACKING_CONFIDENCE,
+        val minHandPresenceConfidence: Float = DEFAULT_HAND_PRESENCE_CONFIDENCE,
+        val maxHands: Int = DEFAULT_NUM_HANDS,
+        val poseModel: Int = MODEL_POSE_LANDMARKER_FULL,
+        val minPoseDetectionConfidence: Float = DEFAULT_POSE_DETECTION_CONFIDENCE,
+        val minPoseTrackingConfidence: Float = DEFAULT_POSE_TRACKING_CONFIDENCE,
+        val minPosePresenceConfidence: Float = DEFAULT_POSE_PRESENCE_CONFIDENCE,
+        val maxPoses: Int = DEFAULT_NUM_POSES
+    )
+
+
+    override fun onError(error: String, errorCode: Int) {
+        Log.e("MediaPipeService", "Error: $error")
+    }
+
+    override fun onResults(resultBundle: LandmarkerHelper.ResultBundle) {
+        Log.d("MediaPipeService", "Results: ${resultBundle.results.first().worldLandmarks()}")
+    }
+
 
 }

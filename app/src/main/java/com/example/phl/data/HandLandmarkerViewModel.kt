@@ -17,21 +17,21 @@
 package com.example.phl.data
 
 import androidx.lifecycle.ViewModel
-import com.example.phl.utils.HandLandmarkerHelper
+import com.example.phl.utils.LandmarkerHelper
 
 /**
  *  This ViewModel is used to store hand landmarker helper settings
  */
 class HandLandmarkerViewModel : ViewModel() {
 
-    private var _delegate: Int = HandLandmarkerHelper.DELEGATE_GPU
+    private var _delegate: Int = LandmarkerHelper.DELEGATE_GPU
     private var _minHandDetectionConfidence: Float =
-        HandLandmarkerHelper.DEFAULT_HAND_DETECTION_CONFIDENCE
-    private var _minHandTrackingConfidence: Float = HandLandmarkerHelper
+        LandmarkerHelper.DEFAULT_HAND_DETECTION_CONFIDENCE
+    private var _minHandTrackingConfidence: Float = LandmarkerHelper
         .DEFAULT_HAND_TRACKING_CONFIDENCE
-    private var _minHandPresenceConfidence: Float = HandLandmarkerHelper
+    private var _minHandPresenceConfidence: Float = LandmarkerHelper
         .DEFAULT_HAND_PRESENCE_CONFIDENCE
-    private var _maxHands: Int = HandLandmarkerHelper.DEFAULT_NUM_HANDS
+    private var _maxHands: Int = LandmarkerHelper.DEFAULT_NUM_HANDS
 
     val currentDelegate: Int get() = _delegate
     val currentMinHandDetectionConfidence: Float
