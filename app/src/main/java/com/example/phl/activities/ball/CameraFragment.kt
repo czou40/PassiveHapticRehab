@@ -40,7 +40,7 @@ import androidx.fragment.app.activityViewModels
 import com.example.phl.R
 import com.example.phl.data.HandLandmarkerViewModel
 import com.example.phl.databinding.FragmentCameraBinding
-import com.example.phl.utils.LandmarkerHelper
+import com.example.phl.utils.HandLandmarkerHelper
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -58,7 +58,7 @@ import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class CameraFragment : Fragment(), LandmarkerHelper.LandmarkerListener {
+class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
 
     companion object {
         private const val TAG = "Hand Landmarker"
@@ -74,7 +74,7 @@ class CameraFragment : Fragment(), LandmarkerHelper.LandmarkerListener {
     private val fragmentCameraBinding
         get() = _fragmentCameraBinding!!
 
-    private lateinit var landmarkerHelper: LandmarkerHelper
+    private lateinit var handLandmarkerHelper: HandLandmarkerHelper
     private val viewModel: HandLandmarkerViewModel by activityViewModels()
     private var preview: Preview? = null
     private var imageAnalyzer: ImageAnalysis? = null
@@ -103,26 +103,26 @@ class CameraFragment : Fragment(), LandmarkerHelper.LandmarkerListener {
         if (!PermissionsFragment.hasPermissions(requireContext())) {
             findNavController().navigate(R.id.permissions_fragment)
         }
-        // Start the LandmarkerHelper again when users come back
+        // Start the HandLandmarkerHelper again when users come back
         // to the foreground.
         backgroundExecutor.execute {
-            if (landmarkerHelper.isClose()) {
-                landmarkerHelper.setupHandLandmarker()
+            if (handLandmarkerHelper.isClose()) {
+                handLandmarkerHelper.setupHandLandmarker()
             }
         }
     }
 
     override fun onPause() {
         super.onPause()
-        if (this::landmarkerHelper.isInitialized) {
-            viewModel.setMaxHands(landmarkerHelper.maxNumHands)
-            viewModel.setMinHandDetectionConfidence(landmarkerHelper.minHandDetectionConfidence)
-            viewModel.setMinHandTrackingConfidence(landmarkerHelper.minHandTrackingConfidence)
-            viewModel.setMinHandPresenceConfidence(landmarkerHelper.minHandPresenceConfidence)
-            viewModel.setDelegate(landmarkerHelper.currentDelegate)
+        if (this::handLandmarkerHelper.isInitialized) {
+            viewModel.setMaxHands(handLandmarkerHelper.maxNumHands)
+            viewModel.setMinHandDetectionConfidence(handLandmarkerHelper.minHandDetectionConfidence)
+            viewModel.setMinHandTrackingConfidence(handLandmarkerHelper.minHandTrackingConfidence)
+            viewModel.setMinHandPresenceConfidence(handLandmarkerHelper.minHandPresenceConfidence)
+            viewModel.setDelegate(handLandmarkerHelper.currentDelegate)
 
-            // Close the LandmarkerHelper and release resources
-            backgroundExecutor.execute { landmarkerHelper.clearHandLandmarker() }
+            // Close the HandLandmarkerHelper and release resources
+            backgroundExecutor.execute { handLandmarkerHelper.clearHandLandmarker() }
         }
     }
 
@@ -173,9 +173,9 @@ class CameraFragment : Fragment(), LandmarkerHelper.LandmarkerListener {
             }
         }
 
-        // Create the LandmarkerHelper that will handle the inference
+        // Create the HandLandmarkerHelper that will handle the inference
         backgroundExecutor.execute {
-            landmarkerHelper = LandmarkerHelper(
+            handLandmarkerHelper = HandLandmarkerHelper(
                 context = requireContext(),
                 runningMode = RunningMode.LIVE_STREAM,
                 minHandDetectionConfidence = viewModel.currentMinHandDetectionConfidence,
@@ -381,7 +381,7 @@ class CameraFragment : Fragment(), LandmarkerHelper.LandmarkerListener {
     }
 
     private fun detectHand(imageProxy: ImageProxy) {
-        landmarkerHelper.detectLiveStream(
+        handLandmarkerHelper.detectLiveStream(
             imageProxy = imageProxy,
             isFrontCamera = cameraFacing == CameraSelector.LENS_FACING_FRONT
         )
@@ -396,8 +396,8 @@ class CameraFragment : Fragment(), LandmarkerHelper.LandmarkerListener {
     // Update UI after hand have been detected. Extracts original
     // image height/width to scale and place the landmarks properly through
     // HandLandmarkerOverlayView
-    override fun onResults(
-        resultBundle: LandmarkerHelper.ResultBundle
+    override fun onHandLandmarkerResults(
+        resultBundle: HandLandmarkerHelper.ResultBundle
     ) {
         val result = resultBundle.results.first()
         val handDetected = result.worldLandmarks() != null && result.worldLandmarks().size > 0
@@ -500,12 +500,12 @@ class CameraFragment : Fragment(), LandmarkerHelper.LandmarkerListener {
         }
     }
 
-    override fun onError(error: String, errorCode: Int) {
+    override fun onHandLandmarkerError(error: String, errorCode: Int) {
         activity?.runOnUiThread {
             Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
-            if (errorCode == LandmarkerHelper.GPU_ERROR) {
+            if (errorCode == HandLandmarkerHelper.GPU_ERROR) {
                 fragmentCameraBinding.bottomSheetLayout.spinnerDelegate.setSelection(
-                    LandmarkerHelper.DELEGATE_CPU, false
+                    HandLandmarkerHelper.DELEGATE_CPU, false
                 )
             }
         }

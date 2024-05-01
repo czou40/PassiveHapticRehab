@@ -5,9 +5,12 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
 import android.content.pm.ServiceInfo
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
+import android.os.SystemClock
 import android.util.Log
 import android.view.Surface
 import android.widget.Toast
@@ -23,12 +26,15 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
 import com.example.phl.R
-import com.example.phl.utils.LandmarkerHelper
+import com.example.phl.utils.HandLandmarkerHelper
+import com.example.phl.utils.PoseLandmarkerHelper
+import com.google.mediapipe.framework.image.BitmapImageBuilder
+import com.google.mediapipe.framework.image.MPImage
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 import com.google.mediapipe.tasks.vision.core.RunningMode
 
-class MediaPipeService : LifecycleService(), LandmarkerHelper.LandmarkerListener {
+class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerListener, PoseLandmarkerHelper.LandmarkerListener {
 
     private val executor = Executors.newSingleThreadExecutor()
     private var cameraProvider: ProcessCameraProvider? = null
@@ -41,7 +47,8 @@ class MediaPipeService : LifecycleService(), LandmarkerHelper.LandmarkerListener
 
     private val binder = LocalBinder()
 
-    private lateinit var landmarkerHelper: LandmarkerHelper
+    private lateinit var handLandmarkerHelper: HandLandmarkerHelper
+    private lateinit var poseLandmarkerHelper: PoseLandmarkerHelper
 
     private var configuration: Configuration = Configuration()
 
@@ -102,9 +109,9 @@ class MediaPipeService : LifecycleService(), LandmarkerHelper.LandmarkerListener
             isCameraReady.set(true)
         }, ContextCompat.getMainExecutor(this))
 
-        // Create the LandmarkerHelper that will handle the inference
+        // Create the HandLandmarkerHelper that will handle the inference
         executor.execute {
-            landmarkerHelper = LandmarkerHelper(
+            handLandmarkerHelper = HandLandmarkerHelper(
                 context = applicationContext,
                 runningMode = RunningMode.LIVE_STREAM,
                 minHandDetectionConfidence = configuration.minHandDetectionConfidence,
@@ -113,6 +120,17 @@ class MediaPipeService : LifecycleService(), LandmarkerHelper.LandmarkerListener
                 maxNumHands = configuration.maxHands,
                 currentDelegate = configuration.delegate,
                 handLandmarkerHelperListener = this
+            )
+
+            poseLandmarkerHelper = PoseLandmarkerHelper(
+                context = applicationContext,
+                runningMode = RunningMode.LIVE_STREAM,
+                minPoseDetectionConfidence = configuration.minPoseDetectionConfidence,
+                minPoseTrackingConfidence = configuration.minPoseTrackingConfidence,
+                minPosePresenceConfidence = configuration.minPosePresenceConfidence,
+                currentModel = configuration.poseModel,
+                currentDelegate = configuration.delegate,
+                poseLandmarkerHelperListener = this
             )
         }
     }
@@ -148,7 +166,11 @@ class MediaPipeService : LifecycleService(), LandmarkerHelper.LandmarkerListener
             .also { analyzer ->
                 analyzer.setAnalyzer(executor) { imageProxy ->
                     // Insert your image analysis code here
-                    detectHand(imageProxy)
+                    val mpImage = convertToMPImage(imageProxy)
+                    val frameTime = SystemClock.uptimeMillis()
+
+                    detectHand(mpImage, frameTime)
+                    detectPose(mpImage, frameTime)
                 }
             }
 
@@ -165,11 +187,61 @@ class MediaPipeService : LifecycleService(), LandmarkerHelper.LandmarkerListener
         }
     }
 
-    private fun detectHand(imageProxy: ImageProxy) {
-        landmarkerHelper.detectLiveStream(
-            imageProxy = imageProxy,
-            isFrontCamera = cameraFacing == CameraSelector.LENS_FACING_FRONT
+    private fun detectHand(mpImage: MPImage, frameTime: Long) {
+//        handLandmarkerHelper.detectLiveStream(
+//            imageProxy = imageProxy,
+//            isFrontCamera = cameraFacing == CameraSelector.LENS_FACING_FRONT
+//        )
+        handLandmarkerHelper.detectAsync(mpImage, frameTime)
+    }
+
+    private fun detectPose(mpImage: MPImage, frameTime: Long) {
+        if(this::poseLandmarkerHelper.isInitialized) {
+//            poseLandmarkerHelper.detectLiveStream(
+//                imageProxy = imageProxy,
+//                isFrontCamera = cameraFacing == CameraSelector.LENS_FACING_FRONT
+//            )
+            poseLandmarkerHelper.detectAsync(mpImage, frameTime)
+        }
+    }
+
+    private fun convertToMPImage(imageProxy: ImageProxy): MPImage {
+        val isFrontCamera = cameraFacing == CameraSelector.LENS_FACING_FRONT
+
+        // Copy out RGB bits from the frame to a bitmap buffer
+        val bitmapBuffer =
+            Bitmap.createBitmap(
+                imageProxy.width,
+                imageProxy.height,
+                Bitmap.Config.ARGB_8888
+            )
+
+        imageProxy.use { bitmapBuffer.copyPixelsFromBuffer(imageProxy.planes[0].buffer) }
+        imageProxy.close()
+
+        val matrix = Matrix().apply {
+            // Rotate the frame received from the camera to be in the same direction as it'll be shown
+            postRotate(imageProxy.imageInfo.rotationDegrees.toFloat())
+
+            // flip image if user use front camera
+            if (isFrontCamera) {
+                postScale(
+                    -1f,
+                    1f,
+                    imageProxy.width.toFloat(),
+                    imageProxy.height.toFloat()
+                )
+            }
+        }
+
+        val rotatedBitmap = Bitmap.createBitmap(
+            bitmapBuffer, 0, 0, bitmapBuffer.width, bitmapBuffer.height,
+            matrix, true
         )
+
+        // Convert the input Bitmap object to an MPImage object to run inference
+        val mpImage = BitmapImageBuilder(rotatedBitmap).build()
+        return mpImage
     }
 
     private fun stopCamera() {
@@ -233,12 +305,20 @@ class MediaPipeService : LifecycleService(), LandmarkerHelper.LandmarkerListener
     )
 
 
-    override fun onError(error: String, errorCode: Int) {
+    override fun onHandLandmarkerError(error: String, errorCode: Int) {
         Log.e("MediaPipeService", "Error: $error")
     }
 
-    override fun onResults(resultBundle: LandmarkerHelper.ResultBundle) {
-        Log.d("MediaPipeService", "Results: ${resultBundle.results.first().worldLandmarks()}")
+    override fun onHandLandmarkerResults(resultBundle: HandLandmarkerHelper.ResultBundle) {
+        Log.d("MediaPipeService", "Hand: ${resultBundle.results.first().worldLandmarks()}")
+    }
+
+    override fun onPoseLandmarkerError(error: String, errorCode: Int) {
+        Log.e("MediaPipeService", "Error: $error")
+    }
+
+    override fun onPoseLandmarkerResults(resultBundle: PoseLandmarkerHelper.ResultBundle) {
+        Log.d("MediaPipeService", "Pose: ${resultBundle.results.first().worldLandmarks()}")
     }
 
 
