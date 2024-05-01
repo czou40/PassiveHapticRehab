@@ -80,8 +80,8 @@ class TiltTestFragment : MyBaseFragment(), SensorEventListener {
         val countdownTextView = view.findViewById(R.id.countdown_text) as TextView
 
         sensorManager = requireActivity().getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-        rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)!!
+        rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)!!
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL)
         sensorManager.registerListener(this, rotationSensor, SensorManager.SENSOR_DELAY_NORMAL)
 

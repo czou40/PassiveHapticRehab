@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission
         android:name="android.permission.HIGH_SAMPLING_RATE_SENSORS"
@@ -21,6 +21,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <uses-feature
         android:name="android.hardware.bluetooth_le"
@@ -38,6 +39,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PHL"
         android:usesCleartextTraffic="true">
+        <service
+            android:name=".services.MediaPipeService"
+            android:enabled="true"
+            android:exported="true"></service>
+
+        <activity
+            android:name=".activities.UnityActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".activities.SettingsActivity"
             android:exported="false"

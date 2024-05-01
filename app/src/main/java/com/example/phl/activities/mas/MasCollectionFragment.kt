@@ -121,9 +121,9 @@ class MasCollectionFragment : Fragment(), SensorEventListener, MasActivity.Compa
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         sensorManager = requireContext().getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
-        rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
-        gyroScope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)!!
+        rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)!!
+        gyroScope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)!!
     }
 
     override fun onResume() {
