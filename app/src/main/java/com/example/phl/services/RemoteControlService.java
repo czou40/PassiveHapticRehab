@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -185,7 +186,11 @@ public class RemoteControlService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        registerReceiver(broadcastReceiver, new IntentFilter(NOTIFY_ACTION));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(broadcastReceiver, new IntentFilter(NOTIFY_ACTION), Context.RECEIVER_EXPORTED);
+        } else {
+            registerReceiver(broadcastReceiver, new IntentFilter(NOTIFY_ACTION));
+        }
     }
 
     public interface CommandHandler {

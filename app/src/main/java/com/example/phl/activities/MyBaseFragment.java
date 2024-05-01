@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.fragment.app.Fragment;
@@ -55,7 +56,11 @@ public class MyBaseFragment extends Fragment {
     private void registerReceiverIfNotRegistered() {
         if (!isReceiverRegistered) {
             IntentFilter filter = new IntentFilter(RemoteControlService.ACTION);
-            requireContext().registerReceiver(remoteControlReceiver, filter);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                requireContext().registerReceiver(remoteControlReceiver,filter, Context.RECEIVER_EXPORTED);
+            } else {
+                requireContext().registerReceiver(remoteControlReceiver, filter);
+            }
             isReceiverRegistered = true;
         }
         registerAllCommands();

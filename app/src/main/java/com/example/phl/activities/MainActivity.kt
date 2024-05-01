@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -152,7 +153,11 @@ class MainActivity : MyBaseActivity() {
         val intentFilter = IntentFilter()
         intentFilter.addAction(RemoteControlService.SOCKET_CONNECTED_ACTION)
         intentFilter.addAction(RemoteControlService.SOCKET_ERROR_ACTION)
-        this.registerReceiver(broadcastReceiver, intentFilter)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            this.registerReceiver(broadcastReceiver, intentFilter, Context.RECEIVER_EXPORTED);
+        } else {
+            this.registerReceiver(broadcastReceiver, intentFilter);
+        }
     }
 
     override fun onPause() {

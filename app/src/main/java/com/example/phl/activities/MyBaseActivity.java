@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -64,7 +65,11 @@ public class MyBaseActivity  extends AppCompatActivity {
     private void registerReceiverIfNotRegistered() {
         if (!isReceiverRegistered) {
             IntentFilter filter = new IntentFilter(RemoteControlService.ACTION);
-            this.registerReceiver(remoteControlReceiver, filter);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                this.registerReceiver(remoteControlReceiver, filter, Context.RECEIVER_EXPORTED);
+            } else {
+                this.registerReceiver(remoteControlReceiver, filter);
+            }
             isReceiverRegistered = true;
         }
         registerAllCommands();

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -253,7 +254,11 @@ public class MyButton extends MaterialButton {
         }
         if (!isReceiverRegistered) {
             IntentFilter filter = new IntentFilter(RemoteControlService.ACTION);
-            getContext().registerReceiver(remoteControlReceiver, filter);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                getContext().registerReceiver(remoteControlReceiver, filter, Context.RECEIVER_EXPORTED);
+            } else {
+                getContext().registerReceiver(remoteControlReceiver, filter);
+            }
             isReceiverRegistered = true;
             if (getText() != null && !getText().toString().trim().isEmpty()) {
                 command = getText().toString().trim();
