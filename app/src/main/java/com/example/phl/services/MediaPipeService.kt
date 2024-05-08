@@ -33,6 +33,9 @@ import com.google.mediapipe.framework.image.MPImage
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 import com.google.mediapipe.tasks.vision.core.RunningMode
+import java.net.DatagramSocket
+import java.net.DatagramPacket
+import java.net.InetAddress
 
 class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerListener, PoseLandmarkerHelper.LandmarkerListener {
 
@@ -274,7 +277,7 @@ class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerList
         const val DEFAULT_HAND_DETECTION_CONFIDENCE = 0.6F
         const val DEFAULT_HAND_TRACKING_CONFIDENCE = 0.6F
         const val DEFAULT_HAND_PRESENCE_CONFIDENCE = 0.6F
-        const val DEFAULT_NUM_HANDS = 1
+        const val DEFAULT_NUM_HANDS = 2
         const val DEFAULT_POSE_DETECTION_CONFIDENCE = 0.5F
         const val DEFAULT_POSE_TRACKING_CONFIDENCE = 0.5F
         const val DEFAULT_POSE_PRESENCE_CONFIDENCE = 0.5F
@@ -310,7 +313,26 @@ class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerList
     }
 
     override fun onHandLandmarkerResults(resultBundle: HandLandmarkerHelper.ResultBundle) {
-        Log.d("MediaPipeService", "Hand: ${resultBundle.results.first().worldLandmarks()}")
+        val result = resultBundle.results.first()
+        val handDetected = result.worldLandmarks() != null && result.worldLandmarks().size > 0
+
+        if (handDetected) {
+            val worldLandmarks = result.worldLandmarks()
+            val handednesses = result.handednesses()
+            val data = ArrayList<String>()
+            for (i in worldLandmarks.indices) {
+                val landmarks = worldLandmarks[i]
+                val handedness = handednesses[i][0]
+                for (j in landmarks.indices) {
+                    val landmark = landmarks[j]
+                    val dataForJoint = handedness.categoryName() + "|" + j + "|" + landmark.x() + "|" + landmark.y() + "|" + landmark.z()
+                    data.add(dataForJoint)
+                }
+            }
+            val dataString = data.joinToString("\n")
+            Log.d("MediaPipeService", dataString)
+            sendData(dataString)
+        }
     }
 
     override fun onPoseLandmarkerError(error: String, errorCode: Int) {
@@ -318,8 +340,51 @@ class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerList
     }
 
     override fun onPoseLandmarkerResults(resultBundle: PoseLandmarkerHelper.ResultBundle) {
-        Log.d("MediaPipeService", "Pose: ${resultBundle.results.first().worldLandmarks()}")
+        val result = resultBundle.results.first()
+        val poseDetected = result.worldLandmarks() != null && result.worldLandmarks().size > 0
+        if (poseDetected) {
+            val worldLandmarks = result.worldLandmarks()[0]
+            val data = ArrayList<String>()
+            for (j in worldLandmarks.indices) {
+                val landmark = worldLandmarks[j]
+                val dataForJoint = "Pose|" + j + "|" + landmark.x() + "|" + landmark.y() + "|" + landmark.z()
+                data.add(dataForJoint)
+            }
+            val dataString = data.joinToString("\n")
+            Log.d("MediaPipeService", dataString)
+            sendData(dataString)
+        }
     }
 
+    fun sendImage(image: Bitmap) {
+        // Not implemented
+    }
 
+    fun sendData(data: String) {
+        // Not implemented
+        val serverAddress = "127.0.0.1"
+        val serverPort = 7777
+
+        try {
+            // Create a UDP socket
+            val socket = DatagramSocket()
+
+            // Get the IP address of the server
+            val serverIp = InetAddress.getByName(serverAddress)
+
+            // Convert the message to bytes
+            val sendData = data.toByteArray()
+
+            // Create a UDP packet with the data, server IP, and port
+            val sendPacket = DatagramPacket(sendData, sendData.size, serverIp, serverPort)
+
+            // Send the packet
+            socket.send(sendPacket)
+
+            // Close the socket
+            socket.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 }
