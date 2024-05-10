@@ -2,7 +2,7 @@ This project contains all the code for the passive haptic rehab (PHR) project. I
 
 # Unity Project
 
-The unity project is independent of the Android app and can be run on its own (though if you just export the project and launch it, it will just show a fedault scene which is just the loading screen and it requires the Android app to specify which game to run, but in the Unity editor, you can choose to run any game scene directly). The Unity games require data input from the MediaPipe hand and pose tracking models. We provide a convenient Python script to run the MediaPipe hand tracking model and send the data to the Unity project using UDP sockets. When running on Android, the Android app will handle the data input and send it to the Unity project.
+The Unity project is independent of the Android app and can run on its own (However, if you export the project and launch it, it will just display the default scene, which is the loading screen. To specify which game to run, the Android app is required. In the Unity editor, you can directly choose any game scene to run.) The Unity games require data input from the MediaPipe hand and pose tracking models. We provide a convenient Python script to run the MediaPipe hand tracking model and send the data to the Unity project using UDP sockets. When running on Android, the app will handle the data input and send it to the Unity project.
 
 ## Instructions
 1. Requires Python, Unity (6000.0.1f1, released in 2024), a WebCam, and decently fast CPU.
