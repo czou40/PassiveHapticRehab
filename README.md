@@ -28,26 +28,26 @@ To import a design, you need to select elements, copy as svg, save svg, use the 
 ### Step 1
 In the Unity Editor, go to File > Build Profiles. Make sure the Android platform is selected and "Export Project" is checked. Click "Switch Platform" if necessary.
 
-![Checklist 1](/Screenshots%20and%20Photos/setup/checklist1.png)
+![Checklist 1](/screenshots%20and%20photos/setup/checklist1.png)
 
 
 ### Step 2
 
 Click on "Player Settings in the Build Profiles window. Make sure the highlighted settings are set as shown in the screenshots below. (I believe they are already set like this, but it's good to double-check.)
 
-![Checklist 2](/Screenshots%20and%20Photos/setup/checklist2.png)
+![Checklist 2](/screenshots%20and%20photos/setup/checklist2.png)
 
 ### Step 3
 
 Click on "Export" in the Build Profiles window. You must choose "AndroidBuild" as the export location. "AndroidBuild" should be at the same level as the "AndroidApp" and "UnityGame" folders. 
 
-![Export](/Screenshots%20and%20Photos/setup/export.png)
+![Export](/screenshots%20and%20photos/setup/export.png)
 
 ### Step 4
 
 After exporting, double-check that the files are in the correct location, as shown below.
 
-![Export Location](/Screenshots%20and%20Photos/setup/export-location.png)
+![Export Location](/screenshots%20and%20photos/setup/export-location.png)
 
 ### Step 5
 
@@ -57,13 +57,13 @@ The fields that need to be modified are: unityProjectPath, unity.projectPath, un
 
 Please copy the values from the "gradle.properties" file in the "AndroidBuild" folder to the "gradle.properties" file in the "AndroidApp" folder. Do not copy the entire file.
 
-![Gradle Settings](/Screenshots%20and%20Photos/setup/gradle-properties.png)
+![Gradle Settings](/screenshots%20and%20photos/setup/gradle-properties.png)
 
 ### Step 6 (Optional) 
 
 Since we do not want to export the Unity games as a dedicated Android app, but rather as a library that the Android app can use, we can go to the "AndroidBuild/unityLibrary/src/main" and modify the "AndroidManifest.xml" file. Remove the `<intent-filter>` tags from the `<activity>` tags. This will prevent icons for the standalone Unity games from being displayed in the app list. (If you rebuild the Unity project, you DO NOT need to do this step again.) The following screenshot shows what the "AndroidManifest.xml" file should look like after the modification.
 
-![Android Manifest](/Screenshots%20and%20Photos/setup/manifest.png)
+![Android Manifest](/screenshots%20and%20photos/setup/manifest.png)
 
 ### Step 7
 
