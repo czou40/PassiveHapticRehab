@@ -40,22 +40,38 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PHL"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".activities.TestActivity"
+            android:exported="false"
+            android:label="@string/title_activity_test"
+            android:theme="@style/Theme.PHL" />
+        <activity
+            android:name=".activities.MainUnityActivity"
+            android:exported="false"
+            android:label="@string/title_activity_main_unity"
+            android:theme="@style/Theme.PHL"
+            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|fontScale|layoutDirection|density"
+            android:hardwareAccelerated="false"
+            android:process=":Unity"/>
 
         <service
             android:name=".services.MediaPipeService"
-            android:foregroundServiceType="camera"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true"
+            android:foregroundServiceType="camera"
+            android:process=":Unity"
+            />
 
         <activity
             android:name=".activities.MediaPipeDemoActivity"
+            android:exported="true"
             android:label="Unity Rehab Game"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:process=":Unity">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
         <activity
             android:name=".activities.SettingsActivity"
@@ -85,7 +101,7 @@
         <activity
             android:name=".activities.MainActivity"
             android:exported="true"
-            android:label="Old PHL App"
+            android:label="Passive Haptic Rehab"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

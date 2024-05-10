@@ -5,6 +5,11 @@ pluginManagement {
         mavenCentral()
     }
 }
+
+include ':app'
+include ':unityLibrary'
+project(':unityLibrary').projectDir=new File('..\\AndroidBuild\\unityLibrary')
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -12,7 +17,10 @@ dependencyResolutionManagement {
         mavenCentral()
         jcenter() // Warning: this repository is going to shut down soon
         maven { url 'https://jitpack.io' }
+        flatDir {
+            dirs "${project(':unityLibrary').projectDir}/libs"
+        }
     }
 }
 rootProject.name = "PHL"
-include ':app'
+

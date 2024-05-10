@@ -12,6 +12,9 @@ import androidx.core.content.ContextCompat;
 public class PermissionManager {
 
     public static final int RECORD_AUDIO_PERMISSION_REQUEST_CODE = 1001;
+
+    public static final int CAMERA_PERMISSION_REQUEST_CODE = 1003;
+
     public static final int BLUETOOTH_PERMISSION_REQUEST_CODE = 1002;
 
     public static void checkAndRequestRecordAudioPermission(Activity activity) {
@@ -25,6 +28,22 @@ public class PermissionManager {
         } else {
             // Permission already granted
             // Do something that requires this permission
+        }
+    }
+
+    public static boolean checkAndRequestCameraPermission(Activity activity) {
+        // Check if the CAMERA permission is already granted
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Request the permission
+            ActivityCompat.requestPermissions(activity,
+                    new String[]{Manifest.permission.CAMERA},
+                    CAMERA_PERMISSION_REQUEST_CODE);
+            return false;
+        } else {
+            // Permission already granted
+            // Do something that requires this permission
+            return true;
         }
     }
 

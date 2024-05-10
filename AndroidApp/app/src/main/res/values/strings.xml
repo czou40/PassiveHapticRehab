@@ -54,7 +54,7 @@
     <string name="start_workflow_legacy">Start Workflow (Legacy)</string>
     <string name="do_not_press_or_squeeze">Do not press or squeeze the phone.</string>
     <string name="connecting_to_server">Connecting to Server...</string>
-    <string name="no_internet_connection_remote_control_is_not_available">No Internet Connection! Remote Control is not available.</string>
+    <string name="no_internet_connection_remote_control_is_not_available">Remote Control is not available.</string>
     <string name="qr_code_for_remote_control">QR Code for Remote Control</string>
 
 
@@ -155,4 +155,9 @@
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="title_activity_media_pipe_demo2">MediaPipeDemo2Activity</string>
+    <string name="title_activity_unity_player">UnityPlayerActivity</string>
+    <string name="title_activity_main_unity">MainUnityActivity</string>
+
+    <string name="game_view_content_description">Game view</string>
+    <string name="title_activity_test">TestActivity</string>
 </resources>

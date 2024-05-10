@@ -24,4 +24,10 @@
         android:layout_height="wrap_content"
         android:text="Stop Streaming"/>
 
+    <Button
+        android:id="@+id/showUnityButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Show Unity"/>
+
 </LinearLayout>

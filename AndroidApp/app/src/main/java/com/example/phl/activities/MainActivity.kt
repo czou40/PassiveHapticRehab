@@ -1,5 +1,6 @@
 package com.example.phl.activities
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -79,6 +80,7 @@ class MainActivity : MyBaseActivity() {
         val button4 = findViewById<Button>(R.id.button4)
         val button5 = findViewById<Button>(R.id.button5)
         val button6 = findViewById<Button>(R.id.button6)
+        val button7 = findViewById<Button>(R.id.button7)
         noInternetConnection = findViewById(R.id.no_internet)
         connecting = findViewById(R.id.connecting)
         qrCodeImageView = findViewById(R.id.qr_code_image_view)
@@ -123,6 +125,10 @@ class MainActivity : MyBaseActivity() {
                 startActivity(intent)
             }
         }
+        button7.setOnClickListener { v: View? ->
+            val intent = Intent(this, TestActivity::class.java)
+            startActivity(intent)
+        }
         val settingsIcon = findViewById<ImageView>(R.id.settings_icon)
         settingsIcon.setOnClickListener { v: View? ->
             val intent = Intent(this@MainActivity, SettingsActivity::class.java)
@@ -137,15 +143,16 @@ class MainActivity : MyBaseActivity() {
         val intent = Intent(this, RemoteControlService::class.java)
         startService(intent)
         Log.d("MainActivity", "Started service")
-        if (!Python.isStarted()) {
-            Python.start(AndroidPlatform(this))
-        }
-        val py = Python.getInstance()
-        val pyModule = py.getModule("test_module")
-        val pyClass = pyModule.callAttr("TestModule")
-        val result = pyClass.callAttr("get_random_number")
-        val randomNumber = result.toInt()
-        Log.d("MainActivity", "Random number: $randomNumber")
+        // The following code is for testing Python scripts
+//        if (!Python.isStarted()) {
+//            Python.start(AndroidPlatform(this))
+//        }
+//        val py = Python.getInstance()
+//        val pyModule = py.getModule("test_module")
+//        val pyClass = pyModule.callAttr("TestModule")
+//        val result = pyClass.callAttr("get_random_number")
+//        val randomNumber = result.toInt()
+//        Log.d("MainActivity", "Random number: $randomNumber")
     }
 
     override fun onResume() {
@@ -165,6 +172,7 @@ class MainActivity : MyBaseActivity() {
         unregisterReceiver(broadcastReceiver)
     }
 
+    @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {
         // do nothing
     }

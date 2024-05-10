@@ -44,6 +44,7 @@ class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerList
     private var imageAnalyzer: ImageAnalysis? = null
     private var isStreaming = AtomicBoolean(false)
     private var isCameraReady = AtomicBoolean(false)
+    private var startStreamingWhenReady = false
     private var preview: Preview? = null
 
     private var cameraFacing = CameraSelector.LENS_FACING_FRONT
@@ -62,6 +63,10 @@ class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerList
 //            configuration = config
 //        }
 //        fun getConfiguration(): Configuration = configuration
+
+        fun setStartStreamingWhenReady(start: Boolean) {
+            startStreamingWhenReady = start
+        }
 
         fun startStreaming(previewView: PreviewView? = null) {
             if (isCameraReady.get()) {
@@ -110,6 +115,9 @@ class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerList
         cameraProviderFuture.addListener({
             cameraProvider = cameraProviderFuture.get()
             isCameraReady.set(true)
+            if (startStreamingWhenReady) {
+                binder.startStreaming()
+            }
         }, ContextCompat.getMainExecutor(this))
 
         // Create the HandLandmarkerHelper that will handle the inference

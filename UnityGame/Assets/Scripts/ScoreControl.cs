@@ -57,6 +57,7 @@ public class ScoreControl : MonoBehaviour
 
     void onSceneLoaded(Scene scene, LoadSceneMode mode){
         if (scene.name == "Score1"){
+            DataSender.sendStr("Score is: " + score.ToString());
             GameObject scoreText = GameObject.FindWithTag("scoreText");
             if(scoreText == null){
                 Debug.Log("cannot find score Text");

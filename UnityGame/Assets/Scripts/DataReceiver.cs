@@ -62,7 +62,6 @@ public class DataReceiver : MonoBehaviour
             IsBackground = true
         };
         imageUdpThread.Start();
-
     }
 
     private void extractData(string str)

@@ -123,6 +123,20 @@
             android:paddingBottom="16dp"
             />
 
+        <com.example.phl.views.MyButton
+            android:id="@+id/button7"
+            style="@style/Widget.MaterialComponents.Button"
+            android:backgroundTint="#aacc00"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Unity Game"
+            android:textAllCaps="false"
+            android:textSize="28dp"
+            android:layout_marginTop="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            />
+
 
         <com.example.phl.views.MyButton
             android:id="@+id/button3"

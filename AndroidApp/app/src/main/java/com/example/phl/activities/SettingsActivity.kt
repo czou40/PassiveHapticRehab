@@ -41,7 +41,7 @@ class SettingsActivity : AppCompatActivity() {
         private fun resetToDefaultValues() {
             // Reset each preference to its default value
             val accidentalTouchesPreference = findPreference<SwitchPreferenceCompat>("prevent_accidental_touches")
-            accidentalTouchesPreference?.isChecked = true
+            accidentalTouchesPreference?.isChecked = false
 
             val holdTimePreference = findPreference<SeekBarPreference>("button_hold_time")
             holdTimePreference?.value = 2000
