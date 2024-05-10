@@ -1,4 +1,4 @@
-This project contains all the code for the passive haptic rehab (PHR) project. It contains a native Android app and a Unity project.
+This project contains all the code for the passive haptic rehab (PHR) project. It contains a native Android app and a Unity project. A poster for this project can be found [here](https://docs.google.com/presentation/d/10tu4jEJqZrs_JyMw_0E2hgDyATYgn88k/edit?usp=sharing&ouid=101302997746283550194&rtpof=true&sd=true).
 
 # Unity Project
 
