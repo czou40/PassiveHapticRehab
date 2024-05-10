@@ -5,9 +5,9 @@ This project contains all the code for the passive haptic rehab (PHR) project. I
 The Unity project is independent of the Android app and can run on its own (However, if you export the project and launch it, it will just display the default scene, which is the loading screen. To specify which game to run, the Android app is required. In the Unity editor, you can directly choose any game scene to run.) The Unity games require data input from the MediaPipe hand and pose tracking models. We provide a convenient Python script to run the MediaPipe hand tracking model and send the data to the Unity project using UDP sockets. When running on Android, the app will handle the data input and send it to the Unity project.
 
 ## Instructions
-1. Requires Python, Unity (6000.0.1f1, released in 2024), a WebCam, and decently fast CPU.
+1. Requires Python, Unity (6000.0.1f1, released in 2024. When installing Unity, please make sure Android Build Support is also selected), a WebCam, and decently fast CPU.
 2. pip install mediapipe==0.10.9 (we recommend creating a virtual environment and installing mediapipe in it, using either the native venv, conda, or poetry.)
-3. Run the Unity project and mediapipe_hand_tracking_main.py
+3. Run the Unity project and mediapipe_hand_tracking_main.py. If you see a warning by the Unity Editor saying there is a deprecated dependency, you can ignore it (the deprecated dependency is Visual Studio Code Editor and is not necessary for the project to run).
 
 ## Tips
 * You can set the DEBUG flag True in hands.py to visualize what is being seen and how your hands are being interpreted.
@@ -67,7 +67,7 @@ Since we do not want to export the Unity games as a dedicated Android app, but r
 
 ### Step 7
 
-The Android app is now ready to be run on the phone. Open the "AndroidApp" folder in Android Studio and run the app on your phone. If Android Studio asks you to choose which SDK to use (since Unity installs the SDK in a different location), choose the SDK that Unity uses (though it is unlikely that chooing the SDK that Android Studio uses will cause any issues).
+The Android app is now ready to be run on the phone. Open the "AndroidApp" folder in Android Studio and run the app on your phone (assume you have the developer mode enabled on your phone). If Android Studio asks you to choose which SDK to use (since Unity installs the SDK in a different location), choose the SDK that Unity uses (though it is unlikely that chooing the SDK that Android Studio uses will cause any issues). Building the app could take as long as 10 minutes in the first run, should only take a few seconds in subsequent runs.
 
 ## Future Work for Unity Project
 * Add more games.
