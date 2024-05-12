@@ -7,19 +7,24 @@ import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.graphics.Bitmap
 import android.graphics.Matrix
+import android.hardware.camera2.CameraCharacteristics
+import android.icu.text.ListFormatter.Width
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.os.SystemClock
 import android.util.Log
+import android.util.Size
 import android.view.Surface
 import android.widget.Toast
+import androidx.camera.camera2.internal.Camera2CameraInfoImpl
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.core.resolutionselector.AspectRatioStrategy
 import androidx.camera.core.resolutionselector.ResolutionSelector
+import androidx.camera.core.resolutionselector.ResolutionStrategy
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.app.NotificationCompat
@@ -33,6 +38,7 @@ import com.google.mediapipe.framework.image.MPImage
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 import com.google.mediapipe.tasks.vision.core.RunningMode
+import java.io.ByteArrayOutputStream
 import java.net.DatagramSocket
 import java.net.DatagramPacket
 import java.net.InetAddress
@@ -64,15 +70,25 @@ class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerList
 //        }
 //        fun getConfiguration(): Configuration = configuration
 
-        fun setStartStreamingWhenReady(start: Boolean) {
+        private var previewView: PreviewView? = null
+        private var width: Int = 352
+        private var height: Int = 288
+
+        fun setStartStreamingWhenReady(start: Boolean,previewView: PreviewView? = null, width: Int? = null, height: Int? = null) {
             startStreamingWhenReady = start
+            this.previewView = previewView
+            this.width = width ?: this.width
+            this.height = height ?: this.height
         }
 
-        fun startStreaming(previewView: PreviewView? = null) {
+        fun startStreaming(previewView: PreviewView? = null, width: Int? = null, height: Int? = null) {
+            this.previewView = previewView ?: this.previewView
+            this.width = width ?: this.width
+            this.height = height ?: this.height
             if (isCameraReady.get()) {
                 if (!isStreaming.get()) {
                     isStreaming.set(true)
-                    startCamera(previewView)
+                    startCamera(this.previewView, this.width, this.height)
                     Toast.makeText(applicationContext, "Streaming started", Toast.LENGTH_SHORT)
                         .show()
                 } else {
@@ -153,33 +169,49 @@ class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerList
         executor.shutdown();  // Shutdown executor service
     }
 
-    private fun startCamera(previewView: PreviewView?) {
+    private fun startCamera(previewView: PreviewView?, width: Int=352, height: Int=288) {
         if (!isCameraReady.get()) {
             Log.e("MediaPipeService", "Camera provider is null")
             return
         }
-        val cameraSelector = CameraSelector.Builder().requireLensFacing(cameraFacing).build()
-
-        val resolutionSelector = ResolutionSelector.Builder().setAspectRatioStrategy(
+        val cameraSelector = CameraSelector.Builder()
+            .requireLensFacing(cameraFacing).
+        build()
+        val screenSize = Size(width, height)
+        val resolutionSelector = ResolutionSelector.Builder(
+        ).setAspectRatioStrategy(
             AspectRatioStrategy.RATIO_4_3_FALLBACK_AUTO_STRATEGY
         ).build()
 
-        val rotation = previewView?.display?.rotation ?: Surface.ROTATION_0
+        val previewResolutionSelector =  ResolutionSelector.Builder(
+        ).setAspectRatioStrategy(
+            AspectRatioStrategy.RATIO_4_3_FALLBACK_AUTO_STRATEGY
+        ).setResolutionStrategy(
+            ResolutionStrategy(screenSize,
+            ResolutionStrategy.FALLBACK_RULE_NONE)
+        ).build()
+
+        val rotation = Surface.ROTATION_270// previewView?.display?.rotation ?: Surface.ROTATION_0
 
         preview =
-            Preview.Builder().setResolutionSelector(resolutionSelector).setTargetRotation(rotation)
+            Preview.Builder()
+                .setResolutionSelector(previewResolutionSelector)
+                .setTargetRotation(rotation)
                 .build()
 
-        imageAnalyzer = ImageAnalysis.Builder().setTargetRotation(rotation)
+        imageAnalyzer = ImageAnalysis.Builder()
+            .setTargetRotation(rotation)
             .setResolutionSelector(resolutionSelector)
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
             .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888).build()
             .also { analyzer ->
                 analyzer.setAnalyzer(executor) { imageProxy ->
-                    // Insert your image analysis code here
-                    val mpImage = convertToMPImage(imageProxy)
-                    val frameTime = SystemClock.uptimeMillis()
 
+                    val bitmapBuffer = convertToBitmap(imageProxy)
+
+                    val mpImage = convertToMPImage(bitmapBuffer)
+                    val frameTime = SystemClock.uptimeMillis()
+                    sendImage(bitmapBuffer)
                     detectHand(mpImage, frameTime)
                     detectPose(mpImage, frameTime)
                 }
@@ -216,9 +248,8 @@ class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerList
         }
     }
 
-    private fun convertToMPImage(imageProxy: ImageProxy): MPImage {
+    private fun convertToBitmap(imageProxy: ImageProxy): Bitmap {
         val isFrontCamera = cameraFacing == CameraSelector.LENS_FACING_FRONT
-
         // Copy out RGB bits from the frame to a bitmap buffer
         val bitmapBuffer =
             Bitmap.createBitmap(
@@ -227,7 +258,10 @@ class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerList
                 Bitmap.Config.ARGB_8888
             )
 
-        imageProxy.use { bitmapBuffer.copyPixelsFromBuffer(imageProxy.planes[0].buffer) }
+
+        imageProxy.use {
+            bitmapBuffer.copyPixelsFromBuffer(imageProxy.planes[0].buffer)
+        }
         imageProxy.close()
 
         val matrix = Matrix().apply {
@@ -250,8 +284,12 @@ class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerList
             matrix, true
         )
 
+        return rotatedBitmap
+    }
+
+    private fun convertToMPImage(bitmapBuffer: Bitmap): MPImage {
         // Convert the input Bitmap object to an MPImage object to run inference
-        val mpImage = BitmapImageBuilder(rotatedBitmap).build()
+        val mpImage = BitmapImageBuilder(bitmapBuffer).build()
         return mpImage
     }
 
@@ -303,7 +341,7 @@ class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerList
     }
 
     data class Configuration(
-        val delegate: Int = DELEGATE_CPU,
+        val delegate: Int = DELEGATE_GPU,
         val minHandDetectionConfidence: Float = DEFAULT_HAND_DETECTION_CONFIDENCE,
         val minHandTrackingConfidence: Float = DEFAULT_HAND_TRACKING_CONFIDENCE,
         val minHandPresenceConfidence: Float = DEFAULT_HAND_PRESENCE_CONFIDENCE,
@@ -338,7 +376,6 @@ class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerList
                 }
             }
             val dataString = data.joinToString("\n")
-            Log.d("MediaPipeService", dataString)
             sendData(dataString)
         }
     }
@@ -359,17 +396,32 @@ class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerList
                 data.add(dataForJoint)
             }
             val dataString = data.joinToString("\n")
-            Log.d("MediaPipeService", dataString)
             sendData(dataString)
         }
     }
 
-    fun sendImage(image: Bitmap) {
-        // Not implemented
+    private fun sendImage(bitmapBuffer: Bitmap) {
+        val isFrontCamera = cameraFacing == CameraSelector.LENS_FACING_FRONT
+        val serverAddress = "127.0.0.1"
+        val serverPort = 7778
+
+        // Compress the bitmap to JPEG and convert to byte array
+        val stream = ByteArrayOutputStream()
+        bitmapBuffer.compress(Bitmap.CompressFormat.JPEG, 50, stream) // Compress quality is 50
+        val imageBytes = stream.toByteArray()
+
+        // Print the size of the compressed image data
+        println("Size of image data: ${imageBytes.size / 1024} KB")
+
+        // Send the image data via UDP
+        DatagramSocket().use { socket ->
+            val packet = DatagramPacket(imageBytes, imageBytes.size, InetAddress.getByName(serverAddress), serverPort)
+            socket.send(packet)
+        }
+
     }
 
-    fun sendData(data: String) {
-        // Not implemented
+    private fun sendData(data: String) {
         val serverAddress = "127.0.0.1"
         val serverPort = 7777
 

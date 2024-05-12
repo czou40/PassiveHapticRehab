@@ -359,6 +359,7 @@ class CameraFragment : Fragment(), HandLandmarkerHelper.LandmarkerListener {
                 // The analyzer can then be assigned to the instance
                 .also {
                     it.setAnalyzer(backgroundExecutor) { image ->
+                        Log.d(TAG, "Image received")
                         detectHand(image)
                     }
                 }

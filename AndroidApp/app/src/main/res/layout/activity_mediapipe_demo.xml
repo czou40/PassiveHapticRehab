@@ -8,9 +8,10 @@
 
     <androidx.camera.view.PreviewView
         android:id="@+id/previewView"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:scaleType="fitStart" />
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="fitCenter"
+        />
 
     <Button
         android:id="@+id/startStreamingButton"

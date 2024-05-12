@@ -1,5 +1,6 @@
 package com.example.phl.activities
 
+import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -7,8 +8,15 @@ import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.Toast
+import androidx.camera.core.Preview
+import androidx.camera.view.PreviewView
+import com.example.phl.R
 import com.example.phl.services.MediaPipeService
 import com.example.phl.utils.PermissionManager
 import com.unity3d.player.IUnityPlayerSupport
@@ -24,13 +32,17 @@ class MainUnityActivity : UnityPlayerActivity() {
 
     private var serviceBinder: MediaPipeService.LocalBinder? = null
     private var isBound: Boolean = false
+    private var previewView: PreviewView? = null
+
+    private val cameraImageHeight = 288
+    private val cameraImageWidth = 352
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
             val binder = service as MediaPipeService.LocalBinder
             this@MainUnityActivity.serviceBinder = binder
             isBound = true
-            binder.setStartStreamingWhenReady(true)
+            binder.setStartStreamingWhenReady(true, previewView, cameraImageWidth, cameraImageHeight)
         }
 
         override fun onServiceDisconnected(arg0: ComponentName) {
@@ -44,6 +56,7 @@ class MainUnityActivity : UnityPlayerActivity() {
 
         // Setup activity layout
 //        addControlsToUnityFrame()
+        addCameraPreviewToUnityFrame()
         val intent = intent
         handleIntent(intent)
     }
@@ -129,6 +142,20 @@ class MainUnityActivity : UnityPlayerActivity() {
         Log.d("MainUnityActivity", "Received command: $command")
         Toast.makeText(this, "Received command: $command", Toast.LENGTH_SHORT).show()
     }
+
+    @SuppressLint("RtlHardcoded")
+    private fun addCameraPreviewToUnityFrame() {
+        val unityPlayer = (UnityPlayer.currentActivity as IUnityPlayerSupport).unityPlayerConnection
+        val layout = unityPlayer.frameLayout
+
+        previewView = PreviewView(unityPlayer.context).apply {
+            layoutParams = FrameLayout.LayoutParams(cameraImageWidth, cameraImageHeight, Gravity.BOTTOM or Gravity.RIGHT)
+            scaleType = PreviewView.ScaleType.FIT_START
+        }
+
+        layout.addView(previewView)
+    }
+
 
 //    private fun addControlsToUnityFrame() {
 //        val unityPlayer = (UnityPlayer.currentActivity as IUnityPlayerSupport).unityPlayerConnection

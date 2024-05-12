@@ -47,12 +47,18 @@
             android:theme="@style/Theme.PHL" />
         <activity
             android:name=".activities.MainUnityActivity"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/title_activity_main_unity"
             android:theme="@style/Theme.PHL"
             android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|fontScale|layoutDirection|density"
             android:hardwareAccelerated="false"
-            android:process=":Unity"/>
+            android:process=":Unity">
+<!--                        <intent-filter>-->
+<!--                            <action android:name="android.intent.action.MAIN" />-->
+
+<!--                            <category android:name="android.intent.category.LAUNCHER" />-->
+<!--                        </intent-filter>-->
+        </activity>
 
         <service
             android:name=".services.MediaPipeService"
