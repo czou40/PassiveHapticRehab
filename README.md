@@ -1,4 +1,4 @@
-This project contains all the code for the passive haptic rehab (PHR) project. It contains a native Android app and a Unity project.
+This project contains all the code for the passive haptic rehab (PHR) project. It contains a native Android app and a Unity project. A poster for this project can be found [here](https://docs.google.com/presentation/d/10tu4jEJqZrs_JyMw_0E2hgDyATYgn88k/edit?usp=sharing&ouid=101302997746283550194&rtpof=true&sd=true).
 
 # Unity Project
 
@@ -16,7 +16,7 @@ The Unity project is independent of the Android app and can run on its own (Howe
 
 ## Importing Figma Designs to Unity
 
-The design for the Unity project can be found [here](https://www.figma.com/proto/OEFhAYB7VHAqsMBqTBMbz2/%E2%9D%A4%EF%B8%8F-%F0%9F%A7%A4-VTS-Gloves-Final-Design?type=design&node-id=835-483171&t=UpTGEKaSnHCwuobp-1&scaling=scale-down&page-id=683%3A8318&starting-point-node-id=741%3A8569&show-proto-sidebar=1).
+The design for the Unity project can be found [here](https://www.figma.com/proto/OEFhAYB7VHAqsMBqTBMbz2/%E2%9D%A4%EF%B8%8F-%F0%9F%A7%A4-VTS-Gloves-Final-Design?type=design&node-id=835-483171&t=UpTGEKaSnHCwuobp-1&scaling=scale-down&page-id=683%3A8318&starting-point-node-id=741%3A8569&show-proto-sidebar=1) and the report [here](https://docs.google.com/document/d/1UiRXvxPEOgVip0vOOhqs2Va40Fi3v0sDQcJMizoDwnw/edit#heading=h.eqd96iuoe4op).
 
 Unfortunately, there are no good ways to import Figma designs. I tried unity figma bridge, which is somewhat useful for UI but not for game elements. Also the imported UI is blurry.
 
