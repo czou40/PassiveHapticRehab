@@ -32,6 +32,12 @@ public class DataReceiver : MonoBehaviour
 
     public bool HasPoseData { get; private set; } = false;
 
+    public long LeftHandDataTimeStamp { get; private set; } = 0;
+
+    public long RightHandDataTimeStamp { get; private set; } = 0;
+
+    public long PoseDataTimeStamp { get; private set; } = 0;
+
     public float handScale = 10f;
 
     public float bodyScale = 1f;
@@ -71,6 +77,7 @@ public class DataReceiver : MonoBehaviour
         bool hasLeftHandData = false;
         bool hasRightHandData = false;
         bool hasPoseData = false;
+        long timeStamp = System.DateTimeOffset.Now.ToUnixTimeMilliseconds();
         foreach (string l in lines)
         {
             try
@@ -122,6 +129,18 @@ public class DataReceiver : MonoBehaviour
         this.HasLeftHandData = hasLeftHandData;
         this.HasRightHandData = hasRightHandData;
         this.HasPoseData = hasPoseData;
+        if (hasLeftHandData)
+        {
+            this.LeftHandDataTimeStamp = timeStamp;
+        }
+        if (hasRightHandData)
+        {
+            this.RightHandDataTimeStamp = timeStamp;
+        }
+        if (hasPoseData)
+        {
+            this.PoseDataTimeStamp = timeStamp;
+        }
     }
 
     private void DataThreadMethod()
@@ -216,6 +235,21 @@ public class DataReceiver : MonoBehaviour
         Vector3 leftWrist = PosePositions[15];
         Vector3 leftElbowToWrist = leftWrist - leftElbow;
         float angle = Vector3.Angle(leftShoulderToRightShoulder, leftElbowToWrist);
+        return angle;
+    }
+
+    public float getLeftWristExtensionAngle()
+    {
+        Vector3 leftWrist = PosePositions[15];
+        Vector3 leftElbow = PosePositions[13];
+        Vector3 leftWristToElbow = leftElbow - leftWrist;
+
+        Vector3 leftMiddleFingerMcp = LeftHandPositions[9];
+        Vector3 leftWristInHand = LeftHandPositions[0];
+        Vector3 leftWristToMiddleFingerMcp = leftMiddleFingerMcp - leftWristInHand;
+
+        float angle = Vector3.Angle(leftWristToElbow, leftWristToMiddleFingerMcp);
+
         return angle;
     }
 }

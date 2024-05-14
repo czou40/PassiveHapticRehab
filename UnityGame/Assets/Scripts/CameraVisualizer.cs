@@ -16,7 +16,7 @@ public class CameraVisualizer : MonoBehaviour
     void Start()
     {
         rawImage = GetComponent<RawImage>();
-        rawImageSize = rawImage.rectTransform.rect.width * rawImage.rectTransform.rect.height;
+        rawImageSize = 90000; // rawImage.rectTransform.rect.width * rawImage.rectTransform.rect.height;
         AdjustRectTransform();
     }
 
