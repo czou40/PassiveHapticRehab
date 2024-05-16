@@ -21,8 +21,9 @@ public class HoeController : MonoBehaviour
     public GameObject crop;
     public GameObject crop11;
 
-
-
+    private long lastCutTime = System.DateTimeOffset.Now.ToUnixTimeMilliseconds();
+    private bool canCut = false;
+    private bool prevCanCut = false;
     private int count = 0;
 
     public TextMeshProUGUI counterText;
@@ -40,20 +41,38 @@ public class HoeController : MonoBehaviour
 
 
     private void OnCollisionEnter2D(Collision2D collision){
+        long currentTime = System.DateTimeOffset.Now.ToUnixTimeMilliseconds();
+        if (currentTime - lastCutTime < 1000) {
+            canCut = prevCanCut;
+            lastCutTime = currentTime;
+        }
+        else {
+            prevCanCut = canCut;
+            lastCutTime = currentTime;
+        }
+
         Debug.Log(collision.gameObject.name);
+        if (!canCut) {
+            return;
+        }
         if (collision.gameObject.name == "crop (2)") {
+            canCut = false;
             StartCoroutine(HandleCollisionWithPause(crop2));
         }
         if (collision.gameObject.name == "crop (9)") {
+            canCut = false;
             StartCoroutine(HandleCollisionWithPause(crop9));
         }
         if (collision.gameObject.name == "crop (8)") {
+            canCut = false;
             StartCoroutine(HandleCollisionWithPause(crop8));
         }
         if (collision.gameObject.name == "crop") {
+            canCut = false;
             StartCoroutine(HandleCollisionWithPause(crop));
         }
         if (collision.gameObject.name == "crop (11)") {
+            canCut = false;
             StartCoroutine(HandleCollisionWithPause(crop11));
         }
     }
@@ -84,6 +103,11 @@ public class HoeController : MonoBehaviour
         }
         if (dataReceiver.HasPoseData) {
             float angle = dataReceiver.getLeftShoulderExtensionAngle();
+            canCut = angle > 100;
+            prevCanCut = angle > 100;
+            Debug.Log("STATE"+canCut+" "+angle); 
+
+            Debug.Log("POSI"+transform.position);
             transform.rotation = Quaternion.Euler(0, 0, -angle+90);
             text.text = "Left Shoulder Angle: " + angle;
         }

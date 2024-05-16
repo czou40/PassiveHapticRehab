@@ -1,12 +1,14 @@
-import mediapipe as mp
-import cv2
 import threading
 import time
+import math
 import socket
+from queue import Queue 
+import cv2
+import mediapipe as mp
 import mediapipe.python.solutions.drawing_utils as mp_drawing
 import mediapipe.python.solutions.pose as mp_pose
 import mediapipe.python.solutions.hands as mp_hands
-from queue import Queue 
+
 
 # Toggle this in order to view how your WebCam is being interpreted (reduces performance).
 DEBUG = False
@@ -111,10 +113,10 @@ class HandThread(threading.Thread):
                             pose_results.pose_landmarks,
                             mp_pose.POSE_CONNECTIONS,
                             mp_drawing.DrawingSpec(
-                                color=(255, 100, 0), thickness=2, circle_radius=4
+                                color=(255, 100, 0), thickness=5, circle_radius=8
                             ),
                             mp_drawing.DrawingSpec(
-                                color=(255, 255, 255), thickness=2, circle_radius=2
+                                color=(255, 255, 255), thickness=5, circle_radius=4
                             ),
                         )
                     q.put(image)
@@ -140,8 +142,14 @@ if __name__ == "__main__":
                 data_client_socket.sendto(data, data_server_address)
                 hand_thread.dirty = False
                 image = q.get()
+                height, width = image.shape[:2]
+                aspect_ratio = width / height
+                new_width = int(math.sqrt(100000 * aspect_ratio))
+                new_height = int(100000 / new_width)
+                resized_image = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_LINEAR)
+                image = resized_image
                 # Encode image as JPEG with lower quality
-                _, buffer = cv2.imencode('.jpg', image, [int(cv2.IMWRITE_JPEG_QUALITY), 50])  # Adjust quality here
+                _, buffer = cv2.imencode('.jpg', image, [int(cv2.IMWRITE_JPEG_QUALITY), 10])  # Adjust quality here
                 image_data = buffer.tobytes()
                 # print size of data in kb
                 print(f"Size of image data: {len(image_data)/1024} KB")

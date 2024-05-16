@@ -145,7 +145,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      dashed_line_0: -7197917366411214618
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

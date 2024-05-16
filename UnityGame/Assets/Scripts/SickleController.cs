@@ -133,6 +133,8 @@ public class SickleController : MonoBehaviour
         if (dataReceiver.HasPoseData) {
             float angle = dataReceiver.getLeftShoulderRotationAngle();
             Quaternion rot = Quaternion.AngleAxis(360-angle, rotationAxis);
+            Debug.Log("A: " + rotationPoint.transform.position + rot * direction);
+            Debug.Log("B: " + transform.position);
             transform.position = rotationPoint.transform.position + rot * direction;
             transform.localRotation = rot;
             text.text = "Left Shoulder Rotation: " + angle;

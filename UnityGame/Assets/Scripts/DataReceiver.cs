@@ -234,7 +234,8 @@ public class DataReceiver : MonoBehaviour
         Vector3 leftElbow = PosePositions[13];
         Vector3 leftWrist = PosePositions[15];
         Vector3 leftElbowToWrist = leftWrist - leftElbow;
-        float angle = Vector3.Angle(leftShoulderToRightShoulder, leftElbowToWrist);
+        float angle = Math.Max(0, Vector3.Angle(leftShoulderToRightShoulder, leftElbowToWrist) - 45);
+        // float angle = Vector3.Angle(leftShoulderToRightShoulder, leftElbowToWrist) - 45;
         return angle;
     }
 
