@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using System.Linq;
+
 using UnityEngine;
 
 using System.IO;
@@ -22,9 +24,15 @@ public class DataReceiver : MonoBehaviour
 
     public Vector3[] PosePositions { get; private set; } = new Vector3[POSE_LANDMARK_COUNT];
 
+    public float[] LeftHandVisibility { get; private set; } = Enumerable.Repeat(1.0f, HAND_LANDMARK_COUNT).ToArray();
+
+    public float[] RightHandVisibility { get; private set; } = Enumerable.Repeat(1.0f, HAND_LANDMARK_COUNT).ToArray();
+
+    public float[] PoseVisibility { get; private set; } = Enumerable.Repeat(1.0f, POSE_LANDMARK_COUNT).ToArray();
+
     public byte[] ImageData { get; private set; } = null;
 
-    public bool hasImageData { get; private set;} = false;
+    public bool hasImageData { get; private set; } = false;
 
     public bool HasLeftHandData { get; private set; } = false;
 
@@ -51,7 +59,7 @@ public class DataReceiver : MonoBehaviour
     private Thread imageUdpThread;
     private UdpClient dataUdpClient;
     private UdpClient imageUdpClient;
-    private int dataListenPort = 7777; 
+    private int dataListenPort = 7777;
     private int imageListenPort = 7778;
 
 
@@ -73,6 +81,7 @@ public class DataReceiver : MonoBehaviour
     private void extractData(string str)
     {
         Vector3[] positions;
+        float[] visibility;
         string[] lines = str.Split('\n');
         bool hasLeftHandData = false;
         bool hasRightHandData = false;
@@ -80,43 +89,86 @@ public class DataReceiver : MonoBehaviour
         long timeStamp = System.DateTimeOffset.Now.ToUnixTimeMilliseconds();
         foreach (string l in lines)
         {
+            if (l.Trim().Length == 0) continue;
             try
             {
                 string[] s = l.Split('|');
-                if (s.Length < 5) continue;
+                
                 int i;
                 float multiplier;
                 bool isPoseData = false;
-                if (s[0] == "Left")
+                if (s[0].StartsWith("Visibility"))
                 {
-                    positions = LeftHandPositions;
-                    hasLeftHandData = true;
-                    multiplier = handScale;
-                }
-                else if (s[0] == "Right")
-                {
-                    positions = RightHandPositions;
-                    hasRightHandData = true;
-                    multiplier = handScale;
-                }
-                else if (s[0] == "Pose")
-                {
-                    positions = PosePositions;
-                    hasPoseData = true;
-                    multiplier = bodyScale;
-                    isPoseData = true;
+                    if (s[0] == "VisibilityLeft")
+                    {
+                        visibility = LeftHandVisibility;
+                        isPoseData = false;
+                    }
+                    else if (s[0] == "VisibilityRight")
+                    {
+                        visibility = RightHandVisibility;
+                        isPoseData = false;
+                    }
+                    else if (s[0] == "VisibilityPose")
+                    {
+                        visibility = PoseVisibility;
+                        isPoseData = true;
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Invalid data type: " + s[0]);
+                        continue;
+                    }
+                    if (isPoseData && s.Length < POSE_LANDMARK_COUNT + 1 || !isPoseData && s.Length < HAND_LANDMARK_COUNT + 1)
+                    {
+                        Debug.LogWarning("Invalid landmark count");
+                        continue;
+                    }
+                    for (i = 0; i < (isPoseData ? POSE_LANDMARK_COUNT : HAND_LANDMARK_COUNT); i++)
+                    {
+                        if (!float.TryParse(s[i + 1], out visibility[i]) || visibility[i] < 0 || visibility[i] > 1)
+                        {
+                            Debug.LogWarning("Invalid visibility value: " + s[i + 1]);
+                            visibility[i] = 1.0f;
+                            continue;
+                        }
+                    }
                 }
                 else
                 {
-                    Debug.LogWarning("Invalid data type: " + s[0]);
-                    break;
+                    if (s.Length < 5) continue;
+                    if (s[0] == "Left")
+                    {
+                        positions = LeftHandPositions;
+                        hasLeftHandData = true;
+                        multiplier = handScale;
+                    }
+                    else if (s[0] == "Right")
+                    {
+                        positions = RightHandPositions;
+                        hasRightHandData = true;
+                        multiplier = handScale;
+                    }
+                    else if (s[0] == "Pose")
+                    {
+                        positions = PosePositions;
+                        hasPoseData = true;
+                        multiplier = bodyScale;
+                        isPoseData = true;
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Invalid data type: " + s[0]);
+                        continue;
+                    }
+                    if (!int.TryParse(s[1], out i) || i < 0 || isPoseData ? i >= POSE_LANDMARK_COUNT : i >= HAND_LANDMARK_COUNT)
+                    {
+                        Debug.LogWarning("Invalid landmark index");
+                        continue;
+                    }
+                    positions[i] = new Vector3(float.Parse(s[2]), float.Parse(s[3]), float.Parse(s[4])) * multiplier;
                 }
-                if (!int.TryParse(s[1], out i) || i < 0 || isPoseData ? i >= POSE_LANDMARK_COUNT : i >= HAND_LANDMARK_COUNT)
-                {
-                    Debug.LogWarning("Invalid landmark index");
-                    break;
-                }
-                positions[i] = new Vector3(float.Parse(s[2]), float.Parse(s[3]), float.Parse(s[4])) * multiplier;
+
             }
             catch (System.Exception e)
             {
@@ -140,6 +192,7 @@ public class DataReceiver : MonoBehaviour
         if (hasPoseData)
         {
             this.PoseDataTimeStamp = timeStamp;
+            Debug.Log(string.Join('|', PoseVisibility.Select(x => x.ToString()).ToArray()));
         }
     }
 
