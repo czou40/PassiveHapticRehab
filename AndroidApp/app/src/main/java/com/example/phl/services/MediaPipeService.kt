@@ -369,11 +369,16 @@ class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerList
             for (i in worldLandmarks.indices) {
                 val landmarks = worldLandmarks[i]
                 val handedness = handednesses[i][0]
+                val visibilities = ArrayList<Float>()
                 for (j in landmarks.indices) {
                     val landmark = landmarks[j]
                     val dataForJoint = handedness.categoryName() + "|" + j + "|" + landmark.x() + "|" + landmark.y() + "|" + landmark.z()
                     data.add(dataForJoint)
+                    val landmarkVisibility: Float = landmark.visibility().orElse(1.0f)
+                    visibilities.add(landmarkVisibility)
                 }
+                Log.d("MediaPipeService", "VisibilityHand: $visibilities")
+                data.add("Visibility" + handedness.categoryName() + "|" + visibilities.joinToString("|"))
             }
             val dataString = data.joinToString("\n")
             sendData(dataString)
@@ -390,11 +395,16 @@ class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerList
         if (poseDetected) {
             val worldLandmarks = result.worldLandmarks()[0]
             val data = ArrayList<String>()
+            val visibilities = ArrayList<Float>()
             for (j in worldLandmarks.indices) {
                 val landmark = worldLandmarks[j]
                 val dataForJoint = "Pose|" + j + "|" + landmark.x() + "|" + landmark.y() + "|" + landmark.z()
+                val landmarkVisibility: Float = landmark.visibility().orElse(1.0f)
+                visibilities.add(landmarkVisibility)
                 data.add(dataForJoint)
             }
+            Log.d("MediaPipeService", "VisibilityPose: $visibilities")
+            data.add("VisibilityPose|" + visibilities.joinToString("|"))
             val dataString = data.joinToString("\n")
             sendData(dataString)
         }
@@ -416,7 +426,12 @@ class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerList
         // Send the image data via UDP
         DatagramSocket().use { socket ->
             val packet = DatagramPacket(imageBytes, imageBytes.size, InetAddress.getByName(serverAddress), serverPort)
-            socket.send(packet)
+            try {
+                socket.send(packet)
+            } catch (e: Exception) {
+                Log.e("MediaPipeService", "Error sending image data: ${e.message}")
+                e.printStackTrace()
+            }
         }
 
     }
