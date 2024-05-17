@@ -8,7 +8,8 @@ import mediapipe as mp
 import mediapipe.python.solutions.drawing_utils as mp_drawing
 import mediapipe.python.solutions.pose as mp_pose
 import mediapipe.python.solutions.hands as mp_hands
-
+from queue import Queue 
+import os
 
 # Toggle this in order to view how your WebCam is being interpreted (reduces performance).
 DEBUG = False
@@ -96,10 +97,19 @@ class HandThread(threading.Thread):
                                     hand_world_landmarks.landmark[i].y,
                                     hand_world_landmarks.landmark[i].z,
                                 )
+                            
+                            # visibility for hand landmarks is always 0.0, so commented out
+                            # self.data += 'Visibility{}|'.format(hand_results.multi_handedness[j].classification[0].label)
+                            # self.data += '|'.join([str(v) for v in [hand_world_landmarks.landmark[i].visibility for i in range(0, 21)]])
+                            # self.data += '\n'
 
                     if pose_results.pose_world_landmarks:
                         for i in range(0,33):
                             self.data += "Pose|{}|{}|{}|{}\n".format(i, pose_results.pose_world_landmarks.landmark[i].x, pose_results.pose_world_landmarks.landmark[i].y, pose_results.pose_world_landmarks.landmark[i].z)
+                        self.data += 'VisibilityPose|'
+                        self.data += '|'.join([str(v) for v in [pose_results.pose_world_landmarks.landmark[i].visibility for i in range(0, 33)]])
+                        self.data += '\n'
+
 
                     self.dirty = True
                     if hand_results.multi_hand_landmarks:
@@ -137,7 +147,8 @@ if __name__ == "__main__":
         hand_thread.start()
         while hand_thread.is_alive():
             if hand_thread.dirty:
-                data = hand_thread.data.encode("utf-8")
+                data_unencoded = hand_thread.data
+                data = data_unencoded.encode("utf-8")
                 # TODO: send data to server 127.0.0.1:7777 using udp
                 data_client_socket.sendto(data, data_server_address)
                 hand_thread.dirty = False
@@ -151,9 +162,14 @@ if __name__ == "__main__":
                 # Encode image as JPEG with lower quality
                 _, buffer = cv2.imencode('.jpg', image, [int(cv2.IMWRITE_JPEG_QUALITY), 10])  # Adjust quality here
                 image_data = buffer.tobytes()
-                # print size of data in kb
+                # clear screen
+                os.system('cls' if os.name == 'nt' else 'clear')
                 print(f"Size of image data: {len(image_data)/1024} KB")
-                image_client_socket.sendto(image_data, image_server_address)
+                print(data_unencoded)
+                try:
+                    image_client_socket.sendto(image_data, image_server_address)
+                except Exception as e:
+                    print(f"Failed to send image data: {e}")
                 if DEBUG:
                     cv2.imshow("Hand and Body Tracking", image)
                     if cv2.waitKey(5) & 0xFF == ord("q"):
