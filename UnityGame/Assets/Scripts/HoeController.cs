@@ -40,8 +40,8 @@ public class HoeController : MonoBehaviour
 
 
 
-    private void OnCollisionEnter2D(Collision2D collision){
-        long currentTime = System.DateTimeOffset.Now.ToUnixTimeMilliseconds();
+    private void  OnTriggerEnter2D(Collider2D collision) {
+                long currentTime = System.DateTimeOffset.Now.ToUnixTimeMilliseconds();
         if (currentTime - lastCutTime < 1000) {
             canCut = prevCanCut;
             lastCutTime = currentTime;
@@ -51,7 +51,6 @@ public class HoeController : MonoBehaviour
             lastCutTime = currentTime;
         }
 
-        Debug.Log(collision.gameObject.name);
         if (!canCut) {
             return;
         }
@@ -103,11 +102,8 @@ public class HoeController : MonoBehaviour
         }
         if (dataReceiver.HasPoseData) {
             float angle = dataReceiver.getLeftShoulderExtensionAngle();
-            canCut = angle > 100;
-            prevCanCut = angle > 100;
-            Debug.Log("STATE"+canCut+" "+angle); 
-
-            Debug.Log("POSI"+transform.position);
+            canCut = canCut || angle > 100;
+            prevCanCut = prevCanCut || angle > 100;
             transform.rotation = Quaternion.Euler(0, 0, -angle+90);
             text.text = "Left Shoulder Angle: " + angle;
         }

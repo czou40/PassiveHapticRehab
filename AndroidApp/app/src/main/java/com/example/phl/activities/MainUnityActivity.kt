@@ -27,7 +27,8 @@ import com.unity3d.player.UnityPlayerActivity
 class MainUnityActivity : UnityPlayerActivity() {
     enum class Scene {
         GAME_1,
-        GAME_2
+        GAME_2,
+        GAME_4
     }
 
     private var serviceBinder: MediaPipeService.LocalBinder? = null
@@ -105,12 +106,17 @@ class MainUnityActivity : UnityPlayerActivity() {
             when (scene) {
                 Scene.GAME_1 -> {
                     UnityPlayer.UnitySendMessage(
-                        "Control", "ReceiveCommand", "load Game1"
+                        "Control", "ReceiveCommand", "load StartScene1"
                     )
                 }
                 Scene.GAME_2 -> {
                     UnityPlayer.UnitySendMessage(
-                        "Control", "ReceiveCommand", "load Game2"
+                        "Control", "ReceiveCommand", "load StartScene2"
+                    )
+                }
+                Scene.GAME_4 -> {
+                    UnityPlayer.UnitySendMessage(
+                        "Control", "ReceiveCommand", "load Game4"
                     )
                 }
             }

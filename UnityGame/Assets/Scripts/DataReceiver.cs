@@ -128,7 +128,6 @@ public class DataReceiver : MonoBehaviour
                     {
                         if (!float.TryParse(s[i + 1], out visibility[i]) || visibility[i] < 0 || visibility[i] > 1)
                         {
-                            Debug.LogWarning("Invalid visibility value: " + s[i + 1]);
                             visibility[i] = 1.0f;
                             continue;
                         }

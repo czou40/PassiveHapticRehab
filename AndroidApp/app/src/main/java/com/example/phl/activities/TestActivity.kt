@@ -53,6 +53,13 @@ fun Greeting(modifier: Modifier = Modifier) {
         }) {
             Text(text = "Load Game 2")
         }
+        Button(onClick = {
+            val intent = Intent(context, MainUnityActivity::class.java)
+            intent.putExtra("loadScene", "GAME_4")
+            context.startActivity(intent)
+        }) {
+            Text(text = "Load Game 4")
+        }
     }
 }
 
