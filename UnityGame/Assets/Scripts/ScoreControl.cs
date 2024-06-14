@@ -18,13 +18,13 @@ public class ScoreControl : MonoBehaviour
     void Start()
     {
         SceneManager.sceneLoaded += onSceneLoaded;
-        score = 10;
+        score = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (dataReceiver.HasPoseData) {
+        if (dataReceiver.isUpperBodyVisible) {
             if (SceneManager.GetActiveScene().name == "Game1"){
                 angle = dataReceiver.getLeftShoulderExtensionAngle();
             } else {

@@ -211,9 +211,11 @@ class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerList
 
                     val mpImage = convertToMPImage(bitmapBuffer)
                     val frameTime = SystemClock.uptimeMillis()
-                    sendImage(bitmapBuffer)
                     detectHand(mpImage, frameTime)
                     detectPose(mpImage, frameTime)
+                    // Sending images causes memory leak even if I explicitly recycle the bitmap. I don't know why.
+                    // But since we use the image preview view on top of the Unity view, we don't need to send images to Unity. Commenting out.
+                    // sendImage(bitmapBuffer)
                 }
             }
 
@@ -377,7 +379,6 @@ class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerList
                     val landmarkVisibility: Float = landmark.visibility().orElse(1.0f)
                     visibilities.add(landmarkVisibility)
                 }
-                Log.d("MediaPipeService", "VisibilityHand: $visibilities")
                 data.add("Visibility" + handedness.categoryName() + "|" + visibilities.joinToString("|"))
             }
             val dataString = data.joinToString("\n")
@@ -403,7 +404,6 @@ class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerList
                 visibilities.add(landmarkVisibility)
                 data.add(dataForJoint)
             }
-            Log.d("MediaPipeService", "VisibilityPose: $visibilities")
             data.add("VisibilityPose|" + visibilities.joinToString("|"))
             val dataString = data.joinToString("\n")
             sendData(dataString)
@@ -415,25 +415,33 @@ class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerList
         val serverAddress = "127.0.0.1"
         val serverPort = 7778
 
-        // Compress the bitmap to JPEG and convert to byte array
-        val stream = ByteArrayOutputStream()
-        bitmapBuffer.compress(Bitmap.CompressFormat.JPEG, 50, stream) // Compress quality is 50
-        val imageBytes = stream.toByteArray()
+        var stream: ByteArrayOutputStream? = null
 
-        // Print the size of the compressed image data
-        println("Size of image data: ${imageBytes.size / 1024} KB")
+        try {
+            // Compress the bitmap to JPEG and convert to byte array
+            stream = ByteArrayOutputStream()
+            bitmapBuffer.compress(Bitmap.CompressFormat.JPEG, 50, stream) // Compress quality is 50
+            val imageBytes = stream.toByteArray()
 
-        // Send the image data via UDP
-        DatagramSocket().use { socket ->
-            val packet = DatagramPacket(imageBytes, imageBytes.size, InetAddress.getByName(serverAddress), serverPort)
-            try {
-                socket.send(packet)
-            } catch (e: Exception) {
-                Log.e("MediaPipeService", "Error sending image data: ${e.message}")
-                e.printStackTrace()
+            // Print the size of the compressed image data
+            println("Size of image data: ${imageBytes.size / 1024} KB")
+
+            // Send the image data via UDP
+            DatagramSocket().use { socket ->
+                val packet = DatagramPacket(imageBytes, imageBytes.size, InetAddress.getByName(serverAddress), serverPort)
+                try {
+                    socket.send(packet)
+                } catch (e: Exception) {
+                    Log.e("MediaPipeService", "Error sending image data: ${e.message}")
+                    e.printStackTrace()
+                }
             }
+        } finally {
+            // Ensure the ByteArrayOutputStream is closed
+            stream?.close()
+            // Optionally recycle the bitmap if it's no longer needed
+            bitmapBuffer.recycle()
         }
-
     }
 
     private fun sendData(data: String) {

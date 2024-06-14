@@ -160,4 +160,5 @@
 
     <string name="game_view_content_description">Game view</string>
     <string name="title_activity_test">TestActivity</string>
+    <string name="title_activity_game_instruction">GameInstructionActivity</string>
 </resources>

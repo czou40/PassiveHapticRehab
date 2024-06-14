@@ -17,7 +17,7 @@ public class sicklePivotPoint : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (dataReceiver.HasPoseData) {
+        if (dataReceiver.isUpperBodyVisible) {
             float angle = dataReceiver.getLeftShoulderRotationAngle();
             //transform.rotation = Quaternion.Euler(0, 0, angle-90);//range: 0 to counterclockwise 180 degrees 
             //transform.RotateAround(pivotPoint.transform.position, Vector3.forward, angle-90);

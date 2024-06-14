@@ -11,25 +11,25 @@ import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.camera.core.Preview
 import androidx.camera.view.PreviewView
+import androidx.compose.ui.platform.ComposeView
 import com.example.phl.R
+import com.example.phl.activities.unity.ShoulderExtensionFlexionOverlay
 import com.example.phl.services.MediaPipeService
 import com.example.phl.utils.PermissionManager
+import com.example.phl.utils.UnityAPI
 import com.unity3d.player.IUnityPlayerSupport
 import com.unity3d.player.UnityPlayer
-import com.unity3d.player.UnityPlayerActivity
+import com.unity3d.player.UnityPlayerGameActivity
+import com.example.phl.utils.UnityAPI.Scene
 
+class MainUnityActivity : UnityPlayerGameActivity() {
 
-class MainUnityActivity : UnityPlayerActivity() {
-    enum class Scene {
-        GAME_1,
-        GAME_2,
-        GAME_4
-    }
 
     private var serviceBinder: MediaPipeService.LocalBinder? = null
     private var isBound: Boolean = false
@@ -55,9 +55,12 @@ class MainUnityActivity : UnityPlayerActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
         // Setup activity layout
 //        addControlsToUnityFrame()
         addCameraPreviewToUnityFrame()
+        addComposeViewToUnityFrame()
         val intent = intent
         handleIntent(intent)
     }
@@ -103,29 +106,13 @@ class MainUnityActivity : UnityPlayerActivity() {
 
         if (intent.extras!!.containsKey("loadScene")) {
             val scene = Scene.valueOf(intent.extras!!.getString("loadScene")!!)
-            when (scene) {
-                Scene.GAME_1 -> {
-                    UnityPlayer.UnitySendMessage(
-                        "Control", "ReceiveCommand", "load StartScene1"
-                    )
-                }
-                Scene.GAME_2 -> {
-                    UnityPlayer.UnitySendMessage(
-                        "Control", "ReceiveCommand", "load StartScene2"
-                    )
-                }
-                Scene.GAME_4 -> {
-                    UnityPlayer.UnitySendMessage(
-                        "Control", "ReceiveCommand", "load Game4"
-                    )
-                }
-            }
+            UnityAPI.loadStartScene(scene)
         }
     }
 
     override fun onUnityPlayerQuitted() {
         super.onUnityPlayerQuitted()
-        Toast.makeText(this, "UnityPlayer quitted", Toast.LENGTH_SHORT).show()
+        Log.i("MainUnityActivity", "UnityPlayer quitted")
         if (isBound) {
             unbindService(connection)
             isBound = false
@@ -135,7 +122,7 @@ class MainUnityActivity : UnityPlayerActivity() {
 
     override fun onUnityPlayerUnloaded() {
         super.onUnityPlayerUnloaded()
-        Toast.makeText(this, "UnityPlayer unloaded", Toast.LENGTH_SHORT).show()
+        Log.i("MainUnityActivity", "UnityPlayer unloaded")
         if (isBound) {
             unbindService(connection)
             isBound = false
@@ -146,20 +133,36 @@ class MainUnityActivity : UnityPlayerActivity() {
     @Suppress("unused")
     fun receiveCommand(command: String) {
         Log.d("MainUnityActivity", "Received command: $command")
-        Toast.makeText(this, "Received command: $command", Toast.LENGTH_SHORT).show()
+        runOnUiThread {
+            Toast.makeText(this, "Received command: $command", Toast.LENGTH_SHORT).show()
+        }
     }
 
     @SuppressLint("RtlHardcoded")
     private fun addCameraPreviewToUnityFrame() {
         val unityPlayer = (UnityPlayer.currentActivity as IUnityPlayerSupport).unityPlayerConnection
         val layout = unityPlayer.frameLayout
-
         previewView = PreviewView(unityPlayer.context).apply {
             layoutParams = FrameLayout.LayoutParams(cameraImageWidth, cameraImageHeight, Gravity.BOTTOM or Gravity.RIGHT)
             scaleType = PreviewView.ScaleType.FIT_START
         }
 
         layout.addView(previewView)
+    }
+
+    private fun addComposeViewToUnityFrame() {
+        val unityPlayer = (UnityPlayer.currentActivity as IUnityPlayerSupport).unityPlayerConnection
+        val layout = unityPlayer.frameLayout
+
+        val composeView = ComposeView(unityPlayer.context).apply {
+            setContent {
+                ShoulderExtensionFlexionOverlay()
+            }
+        }
+        layout.addView(composeView, FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.MATCH_PARENT
+        ))
     }
 
 
