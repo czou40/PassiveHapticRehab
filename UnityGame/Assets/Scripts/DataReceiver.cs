@@ -46,9 +46,46 @@ public class DataReceiver : MonoBehaviour
 
     public long PoseDataTimeStamp { get; private set; } = 0;
 
+    public bool isUpperBodyVisible
+    {
+        get
+        {
+            if (PoseDataTimeStamp < System.DateTimeOffset.Now.ToUnixTimeMilliseconds() - 200) // Stale data
+            {
+                return false;
+            }
+            //position 0 - 24 are upper body landmarks. their visibility should all be above the threshold
+            for (int i = 0; i < 25; i++)
+            {
+                if (PoseVisibility[i] < visibilityThreshold)
+                {
+                    Debug.Log("Not all upper body landmarks are visible");
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
+    private long lastTimeUpperBodyNotVisible = 0;
+
+    public float secondsSinceUpperBodyVisible
+    {
+        get
+        {
+            if (!isUpperBodyVisible)
+            {
+                return 0f;
+            }
+            return (System.DateTimeOffset.Now.ToUnixTimeMilliseconds() - lastTimeUpperBodyNotVisible) / 1000.0f;
+        }
+    }
+
     public float handScale = 10f;
 
     public float bodyScale = 1f;
+
+    private float visibilityThreshold = 0.7f;
 
 
     const int HAND_LANDMARK_COUNT = 21;
@@ -57,25 +94,100 @@ public class DataReceiver : MonoBehaviour
 
     private Thread dataUdpThread;
     private Thread imageUdpThread;
-    private UdpClient dataUdpClient;
-    private UdpClient imageUdpClient;
-    private int dataListenPort = 7777;
-    private int imageListenPort = 7778;
+    private static int dataListenPort = 7777;
+    private static int imageListenPort = 7778;
+
+    private volatile bool _shouldStop = false;
+
+    private void DataThreadMethod()
+    {
+        UdpClient dataUdpClient = new UdpClient(dataListenPort);
+        while (!_shouldStop)
+        {
+            try
+            {
+                if (dataUdpClient.Available <= 0) continue;
+                IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                byte[] receiveBytes = null;
+                while (dataUdpClient.Available > 0)
+                {
+                    receiveBytes = dataUdpClient.Receive(ref RemoteIpEndPoint);
+                }
+                string receivedData = Encoding.ASCII.GetString(receiveBytes);
+
+                // Handle the received data as you need
+                extractData(receivedData);
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.ToString());
+            }
+        }
+        dataUdpClient.Close();
+        Debug.Log("DataThreadMethod end");
+    }
+
+    private void ImageThreadMethod()
+    {
+        UdpClient imageUdpClient = new UdpClient(imageListenPort);
+        while (!_shouldStop)
+        {
+            try
+            {
+                if (imageUdpClient.Available <= 0) continue;
+                IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                byte[] receiveBytes = null; // Assign a default value to receiveBytes
+                while (imageUdpClient.Available > 0)
+                {
+                    receiveBytes = imageUdpClient.Receive(ref RemoteIpEndPoint);
+                }
+                this.hasImageData = true;
+                this.ImageData = receiveBytes;
+
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.ToString());
+            }
+        }
+        imageUdpClient.Close();
+        Debug.Log("ImageThreadMethod end");
+    }
 
 
+    public void RequestStop()
+    {
+        _shouldStop = true;
+    }
     private void Start()
     {
-        dataUdpThread = new Thread(new ThreadStart(DataThreadMethod))
-        {
-            IsBackground = true
-        };
-        dataUdpThread.Start();
+        //     dataUdpThread = new Thread(new ThreadStart(DataThreadMethod))
+        //     {
+        //         IsBackground = true
+        //     };
+        //     dataUdpThread.Start();
 
-        imageUdpThread = new Thread(new ThreadStart(ImageThreadMethod))
+        //     imageUdpThread = new Thread(new ThreadStart(ImageThreadMethod))
+        //     {
+        //         IsBackground = true
+        //     };
+        //     imageUdpThread.Start();
+    }
+
+    private void OnEnable()
+    {
+        // _shouldStop = false;
+        if (dataUdpThread == null || !dataUdpThread.IsAlive)
         {
-            IsBackground = true
-        };
-        imageUdpThread.Start();
+            dataUdpThread = new Thread(DataThreadMethod);
+            dataUdpThread.Start();
+        }
+
+        if (imageUdpThread == null || !imageUdpThread.IsAlive)
+        {
+            imageUdpThread = new Thread(ImageThreadMethod);
+            imageUdpThread.Start();
+        }
     }
 
     private void extractData(string str)
@@ -93,7 +205,7 @@ public class DataReceiver : MonoBehaviour
             try
             {
                 string[] s = l.Split('|');
-                
+
                 int i;
                 float multiplier;
                 bool isPoseData = false;
@@ -177,9 +289,9 @@ public class DataReceiver : MonoBehaviour
                 hasPoseData = false;
             }
         }
-        this.HasLeftHandData = hasLeftHandData;
-        this.HasRightHandData = hasRightHandData;
-        this.HasPoseData = hasPoseData;
+        this.HasLeftHandData = this.HasLeftHandData || hasLeftHandData;
+        this.HasRightHandData = this.HasRightHandData || hasRightHandData;
+        this.HasPoseData = this.HasPoseData || hasPoseData;
         if (hasLeftHandData)
         {
             this.LeftHandDataTimeStamp = timeStamp;
@@ -191,78 +303,34 @@ public class DataReceiver : MonoBehaviour
         if (hasPoseData)
         {
             this.PoseDataTimeStamp = timeStamp;
-            Debug.Log(string.Join('|', PoseVisibility.Select(x => x.ToString()).ToArray()));
+        }
+        if (!isUpperBodyVisible)
+        {
+            lastTimeUpperBodyNotVisible = timeStamp;
         }
     }
 
-    private void DataThreadMethod()
+
+    private void OnDisable()
     {
-        if (dataUdpClient != null)
-        {
-            dataUdpClient.Close();
-        }
-        dataUdpClient = new UdpClient(dataListenPort);
-        while (true)
-        {
-            try
-            {
-                IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
-                byte[] receiveBytes = dataUdpClient.Receive(ref RemoteIpEndPoint);
-                string receivedData = Encoding.ASCII.GetString(receiveBytes);
-
-                // Handle the received data as you need
-                extractData(receivedData);
-            }
-            catch (Exception e)
-            {
-                Debug.Log(e.ToString());
-            }
-        }
-    }
-
-    private void ImageThreadMethod()
-    {
-        imageUdpClient = new UdpClient(imageListenPort);
-        while (true)
-        {
-            try
-            {
-                IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
-                byte[] receiveBytes = imageUdpClient.Receive(ref RemoteIpEndPoint);
-
-                this.hasImageData = true;
-                this.ImageData = receiveBytes;
-
-            }
-            catch (Exception e)
-            {
-                Debug.Log(e.ToString());
-            }
-        }
-    }
-
-    void OnDestroy()
-    {
-        if (dataUdpThread != null && dataUdpThread.IsAlive)
-        {
-            dataUdpThread.Abort();
-        }
-
-        if (dataUdpClient != null)
-        {
-            dataUdpClient.Close();
-        }
+        Debug.Log("OnDisable");
+        _shouldStop = true;
 
         if (imageUdpThread != null && imageUdpThread.IsAlive)
         {
-            imageUdpThread.Abort();
+            imageUdpThread.Join();
         }
-
-        if (imageUdpClient != null)
+        if (dataUdpThread != null && dataUdpThread.IsAlive)
         {
-            imageUdpClient.Close();
+            dataUdpThread.Join();
         }
+        Debug.Log("OnDisable end");
     }
+
+    // private bool checkIfUpperBodyVisible()
+    // {
+
+    // }
 
     public float getLeftShoulderExtensionAngle()
     {

@@ -8,7 +8,6 @@ import mediapipe as mp
 import mediapipe.python.solutions.drawing_utils as mp_drawing
 import mediapipe.python.solutions.pose as mp_pose
 import mediapipe.python.solutions.hands as mp_hands
-from queue import Queue 
 import os
 
 # Toggle this in order to view how your WebCam is being interpreted (reduces performance).
@@ -26,8 +25,6 @@ HEIGHT = 240
 # [0, 2] Higher numbers are more precise, but also cost more performance. Good environment conditions = 1, otherwise 2.
 MODEL_COMPLEXITY = 0
 
-q = Queue()
-
 
 class HandThread(threading.Thread):
     def __init__(self):
@@ -37,6 +34,7 @@ class HandThread(threading.Thread):
         self.dirty = False
         self.isRunning = False
         self.cap = None
+        self.image = None
 
     def stop(self):
         self.isRunning = False
@@ -129,7 +127,7 @@ class HandThread(threading.Thread):
                                 color=(255, 255, 255), thickness=5, circle_radius=4
                             ),
                         )
-                    q.put(image)
+                    self.image = image
         print("HandThread stopped")
 
 
@@ -149,10 +147,9 @@ if __name__ == "__main__":
             if hand_thread.dirty:
                 data_unencoded = hand_thread.data
                 data = data_unencoded.encode("utf-8")
-                # TODO: send data to server 127.0.0.1:7777 using udp
                 data_client_socket.sendto(data, data_server_address)
                 hand_thread.dirty = False
-                image = q.get()
+                image = hand_thread.image
                 height, width = image.shape[:2]
                 aspect_ratio = width / height
                 new_width = int(math.sqrt(100000 * aspect_ratio))

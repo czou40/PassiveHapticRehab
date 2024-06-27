@@ -8,7 +8,7 @@ public class HoeController : MonoBehaviour
 {
     [SerializeField] private DataReceiver dataReceiver;
 
-    [SerializeField] private TextMeshProUGUI text;
+    public GameObject hoe;
 
     public GameObject bottomRightCrop;
     public GameObject basket1;
@@ -41,7 +41,11 @@ public class HoeController : MonoBehaviour
 
 
     private void  OnTriggerEnter2D(Collider2D collision) {
-                long currentTime = System.DateTimeOffset.Now.ToUnixTimeMilliseconds();
+        Debug.Log("Collision detected");
+        if (GameManager.Instance.gamePaused) {
+            return;
+        }
+        long currentTime = System.DateTimeOffset.Now.ToUnixTimeMilliseconds();
         if (currentTime - lastCutTime < 1000) {
             canCut = prevCanCut;
             lastCutTime = currentTime;
@@ -94,18 +98,19 @@ public class HoeController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (GameManager.Instance.gamePaused) {
+            return;
+        }
         if (count > 0) {
             basket1.SetActive(true);
             basket2.SetActive(true);
             
         }
-        if (dataReceiver.HasPoseData) {
+        if (dataReceiver.isUpperBodyVisible) {
             float angle = dataReceiver.getLeftShoulderExtensionAngle();
-            canCut = canCut || angle > 100;
-            prevCanCut = prevCanCut || angle > 100;
-            transform.rotation = Quaternion.Euler(0, 0, -angle+90);
-            text.text = "Left Shoulder Angle: " + angle;
+            canCut = canCut || angle > 140;
+            prevCanCut = prevCanCut || angle > 140;
+            hoe.transform.rotation = Quaternion.Euler(0, 0, -angle+90);
         }
 
         counterText.text = "Crops Cut: " + count.ToString();

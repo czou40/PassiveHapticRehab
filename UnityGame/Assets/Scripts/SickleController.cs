@@ -130,7 +130,7 @@ public class SickleController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (dataReceiver.HasPoseData) {
+        if (dataReceiver.isUpperBodyVisible) {
             float angle = dataReceiver.getLeftShoulderRotationAngle();
             Quaternion rot = Quaternion.AngleAxis(360-angle, rotationAxis);
             Debug.Log("A: " + rotationPoint.transform.position + rot * direction);

@@ -22,7 +22,7 @@ public class ScoreControl : MonoBehaviour
     void Start()
     {
         SceneManager.sceneLoaded += onSceneLoaded;
-        score = 10;
+        score = 0;
     }
 
     // Update is called once per frame
