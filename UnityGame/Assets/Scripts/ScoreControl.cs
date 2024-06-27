@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static Score;
+using System.Timers;
 
 public class ScoreControl : MonoBehaviour
 {
@@ -26,7 +27,7 @@ public class ScoreControl : MonoBehaviour
     {
         if (dataReceiver.HasPoseData) {
             if (SceneManager.GetActiveScene().name == "Game1"){
-                angle = dataReceiver.getLeftShoulderExtensionAngle();
+                angle = pollAverageAngle(100, 5000);
             } else {
                 angle = dataReceiver.getLeftShoulderRotationAngle();
                 min_target = 70;//make target more lenient for game 2 for better results
@@ -47,12 +48,7 @@ public class ScoreControl : MonoBehaviour
     }
 
     public void displayScore(){
-
         SceneManager.LoadScene("Score1");
-        
-
-
-
     }
 
     void onSceneLoaded(Scene scene, LoadSceneMode mode){
@@ -72,6 +68,33 @@ public class ScoreControl : MonoBehaviour
                 //scoreText.GetComponent<Score>().displayScore(score);
             }
         }
+
+    }
+    float pollAverageAngle(interval int, duration int){
+        Timer timer = new Timer(interval);
+        int elapsedCount = 0;
+        float anglesSum = 0.0;
+        int anglesCount = 0;
+        timer.Elapsed += (source, e) =>
+        {
+            anglesSum += dataReceiver.getLeftShoulderExtensionAngle();
+            anglesCount += 1;
+            elapsedCount += interval;
+
+            if (elapsedCount >= duration)
+            {
+                timer.Stop();
+                timer.Dispose();
+            }
+        };
+
+        timer.Start();
+
+        System.Threading.Thread.Sleep(duration + interval);
+
+        float avgAngle = anglesSum / (float)anglesCount;
+
+        return avgAngle;
 
     }
 }
