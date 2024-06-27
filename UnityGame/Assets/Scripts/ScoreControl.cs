@@ -15,6 +15,9 @@ public class ScoreControl : MonoBehaviour
     private float max_target = 100;
     private bool min_exceeded = false;
     private bool max_exceeded = false;
+
+    private int max_retries = 3;
+    private int curr_num_tries = 0;
     [SerializeField] private DataReceiver dataReceiver;
     void Start()
     {
@@ -25,26 +28,46 @@ public class ScoreControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (dataReceiver.HasPoseData) {
-            if (SceneManager.GetActiveScene().name == "Game1"){
-                angle = pollAverageAngle(100, 5000);
-            } else {
-                angle = dataReceiver.getLeftShoulderRotationAngle();
-                min_target = 70;//make target more lenient for game 2 for better results
+        while (curr_num_tries < max_retries){
+            checkScore();
+
+            if (max_exceeded && min_exceeded){
+                //condition reached, increment score
+                score += 5;
+                //reset the exceed flags
+                max_exceeded = false;
+                min_exceeded = false;
+                break;
             }
+            curr_num_tries++;
+        }
+
+    }
+
+    void checkScore(){
+        if (dataReceiver.HasPoseData) {
+            angle = getGameAngle(SceneManager.GetActiveScene().name);
+            min_target = getGameMinTarget(SceneManager.GetActiveScene().name);
+            
             if (angle > max_target){
                 max_exceeded = true;
             } else if (angle < min_target) {
                 min_exceeded = true;
             }
         }
-        if (max_exceeded&&min_exceeded){
-            //condition reached, increment score
-            score += 5;
-            //reset the exceed flags
-            max_exceeded = false;
-            min_exceeded = false;
+    }
+    float getGameAngle(string game){
+        if game == "Game1" {
+            return dataReceiver.getLeftShoulderExtensionAngle();
         }
+        return dataReceiver.getLeftShoulderRotationAngle();
+    }
+
+    float getGameMinTarget(string game){
+        if game == "Game1" {
+            return min_target;
+        }
+        return min_target + 20;
     }
 
     public void displayScore(){
@@ -68,33 +91,6 @@ public class ScoreControl : MonoBehaviour
                 //scoreText.GetComponent<Score>().displayScore(score);
             }
         }
-
-    }
-    float pollAverageAngle(interval int, duration int){
-        Timer timer = new Timer(interval);
-        int elapsedCount = 0;
-        float anglesSum = 0.0;
-        int anglesCount = 0;
-        timer.Elapsed += (source, e) =>
-        {
-            anglesSum += dataReceiver.getLeftShoulderExtensionAngle();
-            anglesCount += 1;
-            elapsedCount += interval;
-
-            if (elapsedCount >= duration)
-            {
-                timer.Stop();
-                timer.Dispose();
-            }
-        };
-
-        timer.Start();
-
-        System.Threading.Thread.Sleep(duration + interval);
-
-        float avgAngle = anglesSum / (float)anglesCount;
-
-        return avgAngle;
 
     }
 }
