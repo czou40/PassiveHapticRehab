@@ -45,7 +45,7 @@ public class ScoreControl : MonoBehaviour
     }
 
     void checkScore(){
-        if (dataReceiver.HasPoseData) {
+        if (dataReceiver.isUpperBodyVisible) {
             angle = getGameAngle(SceneManager.GetActiveScene().name);
             min_target = getGameMinTarget(SceneManager.GetActiveScene().name);
             
