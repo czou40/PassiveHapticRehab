@@ -126,4 +126,11 @@ public class PoseVisibilityWarner : MonoBehaviour
             warningObject.SetActive(true);
         }
     }
+
+    public void ResetTriggers()
+    {
+        canVisibilityGainedEventTrigger = true;
+        canVisibilityCountDownEndEventTrigger = true;
+        canVisibilityLostEventTrigger = true;
+    }
 }

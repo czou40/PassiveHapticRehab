@@ -3,22 +3,32 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Timers;
 
-public class ScoreControl1 : MonoBehaviour
+public class Game1Workflow : MonoBehaviour
 {
     // Start is called before the first frame update
-    private int Score;
+    private int NumWavings;
     private float Angle;
+
+    private float MaxAngle = -99999;
+    private float MinAngle = 99999;
     //minimum and maximum angle needed to reach to increment score
     private float MinAngleThreshold = 50;
     private float MaxAngleThreshold = 100;
     private bool MinAngleExceeded = false;
     private bool MaxAngleExceeded = false;
 
+    private ArrayList MinAngles = new ArrayList();
+    private ArrayList MaxAngles = new ArrayList();
+
+    private ArrayList Scores = new ArrayList();
+
     private int MaxAttempts = 3;
     private int CurrentAttempt = 0;
     private DataReceiver DataReceiver;
     private GameStepInstructionShower GameStepInstructionShower;
-    private GameStage CurrentStage = GameStage.SHOULDER_UP_INSTRUCTION;
+    private PoseVisibilityWarner PoseVisibilityWarner;
+    private Timer Timer;
+    private GameStage CurrentStage = GameStage.PRE_GAME;
 
     private enum GameStage
     {
@@ -35,30 +45,27 @@ public class ScoreControl1 : MonoBehaviour
 
     void Start()
     {
-        Score = 0;
+        NumWavings = 0;
+        CurrentStage = GameStage.PRE_GAME;
         DataReceiver = GameManager.Instance.DataReceiver;
         GameStepInstructionShower = GetComponent<GameStepInstructionShower>();
+        PoseVisibilityWarner = GetComponent<PoseVisibilityWarner>();
+        Timer = GetComponent<Timer>();
+        initializeCurrentStage();
     }
 
     // Update is called once per frame
     void Update()
     {
-        while (CurrentAttempt < MaxAttempts)
+        checkScore();
+        if (MaxAngleExceeded && MinAngleExceeded)
         {
-            checkScore();
-            Debug.Log("Number of tries: " + CurrentAttempt);
-            if (MaxAngleExceeded && MinAngleExceeded)
-            {
-                //condition reached, increment score
-                Score += 5;
-                //reset the exceed flags
-                MaxAngleExceeded = false;
-                MinAngleExceeded = false;
-                break;
-            }
-            CurrentAttempt++;
+            //condition reached, increment score
+            NumWavings += 1;
+            //reset the exceed flags
+            MaxAngleExceeded = false;
+            MinAngleExceeded = false;
         }
-        Debug.Log("Score: " + Score);
     }
 
     void checkScore()
@@ -66,7 +73,16 @@ public class ScoreControl1 : MonoBehaviour
         if (DataReceiver.isUpperBodyVisible)
         {
             Angle = DataReceiver.getLeftShoulderExtensionAngle();
-            MinAngleThreshold = getGameMinTarget();
+
+            if (Angle > MaxAngle)
+            {
+                MaxAngle = Angle;
+            }
+
+            if (Angle < MinAngle)
+            {
+                MinAngle = Angle;
+            }
 
             if (Angle > MaxAngleThreshold)
             {
@@ -79,14 +95,10 @@ public class ScoreControl1 : MonoBehaviour
         }
     }
 
-    float getGameMinTarget()
-    {
-        return MinAngleThreshold;
-    }
 
     public void displayScore()
     {
-        GameManager.Instance.DisplayScore(Game.Game1, Score);
+        GameManager.Instance.DisplayScore(Game.Game1, NumWavings);
     }
 
     public void onVisibilityLost()
@@ -104,6 +116,9 @@ public class ScoreControl1 : MonoBehaviour
         Debug.Log("Prev Stage: " + CurrentStage);
         switch (CurrentStage)
         {
+            case GameStage.PRE_GAME:
+                CurrentStage = GameStage.SHOULDER_UP_INSTRUCTION;
+                break;
             case GameStage.SHOULDER_UP_INSTRUCTION:
                 CurrentStage = GameStage.SHOULDER_UP_GAME;
                 break;
@@ -115,9 +130,12 @@ public class ScoreControl1 : MonoBehaviour
                 break;
             case GameStage.SHOULDER_DOWN_GAME:
                 CurrentAttempt += 1;
+                Scores.Add(NumWavings);
+                MinAngles.Add(MinAngle);
+                MaxAngles.Add(MaxAngle);
                 if (CurrentAttempt < MaxAttempts)
                 {
-                    CurrentStage = GameStage.SHOULDER_UP_INSTRUCTION;
+                    CurrentStage = GameStage.PRE_GAME;
                 }
                 else
                 {
@@ -137,13 +155,45 @@ public class ScoreControl1 : MonoBehaviour
     {
         switch (CurrentStage)
         {
+            case GameStage.PRE_GAME:
+                GameManager.Instance.PauseGame();
+                PoseVisibilityWarner.ResetTriggers();
+                GameStepInstructionShower.SetInstructionText("Attempt " + (CurrentAttempt + 1) + " out of " + MaxAttempts + ". Get ready to start the game!");
+                GameStepInstructionShower.ShowInstruction();
+                GameStepInstructionShower.StartCountdown(5);
+                break;
             case GameStage.SHOULDER_UP_INSTRUCTION:
+                GameManager.Instance.PauseGame();
+                PoseVisibilityWarner.ResetTriggers();
                 GameStepInstructionShower.SetInstructionText("First, you need to flex your shoulder as high as you can to gather more power. Ready?");
                 GameStepInstructionShower.ShowInstruction();
                 break;
+            case GameStage.SHOULDER_UP_GAME:
+            GameManager.Instance.PauseGame();
+                PoseVisibilityWarner.ResetTriggers();
+                resetScores();
+                GameStepInstructionShower.HideInstruction();
+                Timer.StartTimer(10);
+                break;
             case GameStage.SHOULDER_DOWN_INSTRUCTION:
+                GameManager.Instance.PauseGame();
+                PoseVisibilityWarner.ResetTriggers();
                 GameStepInstructionShower.SetInstructionText("Great! Now you can extend your shoulder and push back your arm to harvest!");
                 GameStepInstructionShower.ShowInstruction();
+                break;
+            case GameStage.SHOULDER_DOWN_GAME:
+                GameManager.Instance.PauseGame();
+                PoseVisibilityWarner.ResetTriggers();
+                resetScores();
+                GameStepInstructionShower.HideInstruction();
+                Timer.StartTimer(10);
+                break;
+            case GameStage.FINISHED:
+                Debug.Log("Game Finished");
+                Debug.Log("Scores: " + string.Join(",", Scores.ToArray()));
+                Debug.Log("Min Angles: " + string.Join(",", MinAngles.ToArray()));
+                Debug.Log("Max Angles: " +  string.Join(",", MaxAngles.ToArray()));
+                displayScore();
                 break;
             default:
                 GameStepInstructionShower.HideInstruction();
@@ -151,19 +201,34 @@ public class ScoreControl1 : MonoBehaviour
         }
     }
 
+    private void resetScores()
+    {
+        NumWavings = 0;
+        Angle = 0;
+        MaxAngle = -99999;
+        MinAngle = 99999;
+        MaxAngleExceeded = false;
+        MinAngleExceeded = false;
+    } 
+
     public void onVisibilityEndured()
     {
         switch (CurrentStage)
         {
             case GameStage.SHOULDER_UP_INSTRUCTION:
-                GameStepInstructionShower.StartCountdown();
+                GameStepInstructionShower.StartCountdown(3);
                 break;
             case GameStage.SHOULDER_DOWN_INSTRUCTION:
-                GameStepInstructionShower.StartCountdown();
+                GameStepInstructionShower.StartCountdown(3);
                 break;
             default:
                 //do nothing
                 break;
         }
+    }
+
+    public void onCropCut()
+    {
+        
     }
 }

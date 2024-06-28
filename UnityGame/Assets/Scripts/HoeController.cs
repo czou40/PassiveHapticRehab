@@ -33,6 +33,9 @@ public class HoeController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        count = 0;
+        canCut = false;
+        prevCanCut = false;
         counterText.text = "Crops cut: " + count.ToString();
         basket1.SetActive(false);
         basket2.SetActive(false);

@@ -47,10 +47,12 @@ public class GameStepInstructionShower : MonoBehaviour
 
     private TextMeshProUGUI CountdownText;
     private TextMeshProUGUI InstructionText;
-    public float countdownTime = 5f;
+    private float CountdownTime = 5f;
 
     private float timeRemaining;
     private bool isCountingDown = false;
+
+    private string instructionTextString = "";
 
     void Start()
     {
@@ -86,12 +88,16 @@ public class GameStepInstructionShower : MonoBehaviour
 
     public void SetInstructionText(string text)
     {
-        InstructionText.text = text;
+        this.instructionTextString = text;
     }
 
-    public void StartCountdown()
+    public void StartCountdown(int countdownTime = -1)
     {
-        timeRemaining = countdownTime;
+        if (countdownTime > 0)
+        {
+            CountdownTime = countdownTime;
+        }
+        timeRemaining = CountdownTime;
         isCountingDown = true;
     }
 
@@ -107,6 +113,8 @@ public class GameStepInstructionShower : MonoBehaviour
 
     void Update()
     {
+        Debug.Log("Is counting down: " + isCountingDown);
+        InstructionText.text = instructionTextString;
         if (isCountingDown)
         {
             Countdown.SetActive(true);
