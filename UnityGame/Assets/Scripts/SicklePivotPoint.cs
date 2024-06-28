@@ -6,12 +6,12 @@ public class sicklePivotPoint : MonoBehaviour
 {
     // Start is called before the first frame update
 
-   [SerializeField] private DataReceiver dataReceiver;
+   private DataReceiver dataReceiver;
     //[SerializeField] private GameObject pivotPoint;
     // Start is called before the first frame update
     void Start()
     {
-        
+        dataReceiver = GameManager.Instance.DataReceiver;
     }
 
     // Update is called once per frame

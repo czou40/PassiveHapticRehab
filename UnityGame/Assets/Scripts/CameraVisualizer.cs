@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class CameraVisualizer : MonoBehaviour
 {
 
-    [SerializeField] private DataReceiver dataReceiver;
+    private DataReceiver dataReceiver;
 
     private RawImage rawImage;
 
@@ -18,6 +18,7 @@ public class CameraVisualizer : MonoBehaviour
         rawImage = GetComponent<RawImage>();
         rawImageSize = 90000; // rawImage.rectTransform.rect.width * rawImage.rectTransform.rect.height;
         AdjustRectTransform();
+        dataReceiver = GameManager.Instance.DataReceiver;
     }
 
     void AdjustRectTransform()

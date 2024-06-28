@@ -3,7 +3,7 @@ using TMPro;
 using System;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using static ScoreControl;
+using static ScoreControl1;
 
 public class Timer : MonoBehaviour
 {
@@ -11,7 +11,7 @@ public class Timer : MonoBehaviour
     public bool TimerOn = false;
     public TMP_Text timerText;
 
-    public ScoreControl scoreControl;
+    public ScoreControl1 scoreControl;
 
 
     public 

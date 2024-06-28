@@ -315,6 +315,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e90626a6d07623346addc839fa668d05, type: 3}
+--- !u!114 &330877309 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7723990442482964776, guid: 043019fa335fa124dbf0e7c40bca4ec4, type: 3}
+  m_PrefabInstance: {fileID: 4599790714270682326}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 303d0a44e29c1ed4198d608d9250f1d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &363789012
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1054,7 +1065,7 @@ PrefabInstance:
     - target: {fileID: 2904862464477464452, guid: 206f07d2a9edf6549aaffb73aaea67dd, type: 3}
       propertyPath: dataReceiver
       value: 
-      objectReference: {fileID: 1661111939}
+      objectReference: {fileID: 330877309}
     - target: {fileID: 2904862464477464472, guid: 206f07d2a9edf6549aaffb73aaea67dd, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1371,17 +1382,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1925961457}
   m_SourcePrefab: {fileID: 100100000, guid: e90626a6d07623346addc839fa668d05, type: 3}
---- !u!114 &1661111939 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1976219717264178781, guid: efd117038e7bef94a81a431678791aeb, type: 3}
-  m_PrefabInstance: {fileID: 6515405738470461089}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 303d0a44e29c1ed4198d608d9250f1d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1817261730 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6543096861753819943, guid: e90626a6d07623346addc839fa668d05, type: 3}
@@ -1876,6 +1876,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 577431228433007234, guid: efd117038e7bef94a81a431678791aeb, type: 3}
+      propertyPath: dataReceiver
+      value: 
+      objectReference: {fileID: 330877309}
+    - target: {fileID: 577431228433007234, guid: efd117038e7bef94a81a431678791aeb, type: 3}
       propertyPath: warningObject
       value: 
       objectReference: {fileID: 4497854}
@@ -1923,7 +1927,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Control
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1976219717264178781, guid: efd117038e7bef94a81a431678791aeb, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

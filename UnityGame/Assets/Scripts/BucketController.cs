@@ -3,7 +3,7 @@ using UnityEngine;
 public class BuckerController : MonoBehaviour
 {
 
-    [SerializeField] private DataReceiver dataReceiver;
+    private DataReceiver dataReceiver;
     [SerializeField] private GameObject bucketHighestPoint;
     [SerializeField] private GameObject bucketLowestPoint;
 
@@ -16,6 +16,7 @@ public class BuckerController : MonoBehaviour
     {
         lowestPointY = bucketLowestPoint.transform.position.y;   
         highestPointY = bucketHighestPoint.transform.position.y;
+        dataReceiver = GameManager.Instance.DataReceiver;
     }
 
     // Update is called once per frame

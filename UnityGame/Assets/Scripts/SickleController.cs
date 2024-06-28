@@ -6,7 +6,7 @@ using TMPro;
 
 public class SickleController : MonoBehaviour
 {
-    [SerializeField] private DataReceiver dataReceiver;
+    private DataReceiver dataReceiver;
 
     [SerializeField] private TextMeshProUGUI text;
 
@@ -42,6 +42,7 @@ public class SickleController : MonoBehaviour
         Vector3 curr = transform.position;
         curr.y = 3.06f;
         transform.position = curr;
+        dataReceiver = GameManager.Instance.DataReceiver;
     }
 
 

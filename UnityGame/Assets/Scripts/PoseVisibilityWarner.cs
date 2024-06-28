@@ -6,7 +6,7 @@ using UnityEngine.Events;
 public class PoseVisibilityWarner : MonoBehaviour
 {
 
-    [SerializeField] private DataReceiver dataReceiver;
+    private DataReceiver dataReceiver;
 
     [SerializeField] private GameObject warningObject;
 
@@ -18,9 +18,11 @@ public class PoseVisibilityWarner : MonoBehaviour
 
     public bool shouldPauseWhenNotVisible = false;
 
-    private float countDownTimeBeforeGameStart = 5.0f;
+    public bool shouldShowWarningWhenNotVisible = true;
 
-    private float countDownTimeBeforeGameResume = 3.0f;
+    public float countDownTimeBeforeGameStart = 5.0f;
+
+    public float countDownTimeBeforeGameResume = 3.0f;
 
     public UnityEvent onVisibilityLost;
     public UnityEvent onVisibilityGained;
@@ -37,6 +39,7 @@ public class PoseVisibilityWarner : MonoBehaviour
     {
         warningText = warningObject.GetComponentInChildren<TextMeshProUGUI>();
         warningText.text = WarningMessage;
+        dataReceiver = GameManager.Instance.DataReceiver;
     }
 
     // Update is called once per frame
@@ -115,6 +118,12 @@ public class PoseVisibilityWarner : MonoBehaviour
 
     private void ShowWarning()
     {
-        warningObject.SetActive(true);
+        if (!shouldShowWarningWhenNotVisible)
+        {
+            warningObject.SetActive(false);
+        } else
+        {
+            warningObject.SetActive(true);
+        }
     }
 }

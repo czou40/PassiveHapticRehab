@@ -14,18 +14,23 @@ class UnityAPI {
             when (scene) {
                 Scene.GAME_1 -> {
                     UnityPlayer.UnitySendMessage(
-                        "Control", "ReceiveCommand", if (pause) "pload StartScene1" else "load StartScene1"
+                        "GameManager",
+                        "ReceiveCommand",
+                        if (pause) "pload StartScene1" else "load StartScene1"
                     )
                 }
+
                 Scene.GAME_2 -> {
                     UnityPlayer.UnitySendMessage(
-                        "Control", "ReceiveCommand", if (pause) "pload StartScene2" else "load StartScene2"
+                        "GameManager",
+                        "ReceiveCommand",
+                        if (pause) "pload StartScene2" else "load StartScene2"
                     )
                 }
+
                 Scene.GAME_4 -> {
                     UnityPlayer.UnitySendMessage(
-                        "Control", "ReceiveCommand", if (pause) "pload Game4" else "load Game4"
-                    )
+                        "GameManager", "ReceiveCommand", if (pause) "pload Game4" else "load Game4"
                 }
             }
         }
@@ -34,17 +39,19 @@ class UnityAPI {
             when (scene) {
                 Scene.GAME_1 -> {
                     UnityPlayer.UnitySendMessage(
-                        "Control", "ReceiveCommand", if (pause) "pload Game1" else "load Game1"
+                        "GameManager", "ReceiveCommand", if (pause) "pload Game1" else "load Game1"
                     )
                 }
+
                 Scene.GAME_2 -> {
                     UnityPlayer.UnitySendMessage(
-                        "Control", "ReceiveCommand", if (pause) "pload Game2" else "load Game2"
+                        "GameManager", "ReceiveCommand", if (pause) "pload Game2" else "load Game2"
                     )
                 }
+
                 Scene.GAME_4 -> {
                     UnityPlayer.UnitySendMessage(
-                        "Control", "ReceiveCommand", if (pause) "pload Game4" else "load Game4"
+                        "GameManager", "ReceiveCommand", if (pause) "pload Game4" else "load Game4"
                     )
                 }
             }
@@ -52,13 +59,13 @@ class UnityAPI {
 
         fun pauseGame() {
             UnityPlayer.UnitySendMessage(
-                "Control", "ReceiveCommand", "pause"
+                "GameManager", "ReceiveCommand", "pause"
             )
         }
 
         fun resumeGame() {
             UnityPlayer.UnitySendMessage(
-                "Control", "ReceiveCommand", "resume"
+                "GameManager", "ReceiveCommand", "resume"
             )
         }
     }
