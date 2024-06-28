@@ -31,6 +31,7 @@ class UnityAPI {
                 Scene.GAME_4 -> {
                     UnityPlayer.UnitySendMessage(
                         "GameManager", "ReceiveCommand", if (pause) "pload Game4" else "load Game4"
+                    )
                 }
             }
         }
