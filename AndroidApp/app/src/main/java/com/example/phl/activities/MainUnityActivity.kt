@@ -61,6 +61,11 @@ class MainUnityActivity : UnityPlayerGameActivity() {
 //        addControlsToUnityFrame()
         addCameraPreviewToUnityFrame()
         addComposeViewToUnityFrame()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
         val intent = intent
         handleIntent(intent)
     }

@@ -14,11 +14,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import com.chaquo.python.Python
-import com.chaquo.python.android.AndroidPlatform
 import com.example.phl.R
-import com.example.phl.activities.MasActivity
-import com.example.phl.activities.ProgressActivity
 import com.example.phl.services.RemoteControlService
 import com.example.phl.utils.QRCodeGenerator
 
@@ -126,7 +122,7 @@ class MainActivity : MyBaseActivity() {
             }
         }
         button7.setOnClickListener { v: View? ->
-            val intent = Intent(this, TestActivity::class.java)
+            val intent = Intent(this, TestListActivity::class.java)
             startActivity(intent)
         }
         val settingsIcon = findViewById<ImageView>(R.id.settings_icon)
