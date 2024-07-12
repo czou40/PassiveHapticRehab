@@ -3,21 +3,23 @@ using TMPro;
 using System;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using static ScoreControl;
+using static Game1Workflow;
 
 public class Timer : MonoBehaviour
 {
-    public float TimeLeft;
+    private float TotalTime;
+    private float RemainingTime;
     public bool TimerOn = false;
     public TMP_Text timerText;
 
-    public ScoreControl scoreControl;
+    public Game1Workflow Game1Workflow;
 
 
     public 
     void Start()
     {
-        TimerOn = true;
+        RemainingTime = TotalTime;
+        TimerOn = false;
     }
 
 
@@ -26,23 +28,23 @@ public class Timer : MonoBehaviour
     {
         if (TimerOn)
         {
-            if (TimeLeft > 0)
+            if (RemainingTime > 0)
             {
-                TimeLeft -= Time.deltaTime;
-                updateTimer(TimeLeft);
+                RemainingTime -= Time.deltaTime;
+                updateTimer(RemainingTime);
             }
             else
             {
                 Debug.Log("Time is up");
-                TimeLeft = 0;
+                RemainingTime = 0;
                 TimerOn = false;
 
-                scoreControl.displayScore();
+                Game1Workflow.moveToNextStage();
                 
             }
         }
     }
-    void updateTimer(float currentTime)
+    private void updateTimer(float currentTime)
     {
         currentTime += 1;
 
@@ -51,4 +53,14 @@ public class Timer : MonoBehaviour
 
         timerText.text = string.Format("{0:00} : {1:00}", minutes, seconds);
     }
+
+    public void StartTimer(float totalTime = -1f)
+    {
+        if (totalTime > 0) {
+            TotalTime = totalTime;
+        }
+        RemainingTime = TotalTime;
+        TimerOn = true;
+    }
+    
 }

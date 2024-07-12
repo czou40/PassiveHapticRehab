@@ -3,9 +3,14 @@ using TMPro;
 
 public class ShoulderAngleDisplay : MonoBehaviour
 {
-    [SerializeField] private DataReceiver dataReceiver;
+    private DataReceiver dataReceiver;
     [SerializeField] private TextMeshProUGUI angleDisplayText;
     [SerializeField] private GameObject pivotPointObject;
+
+    void Start()
+    {
+        dataReceiver = GameManager.Instance.DataReceiver;
+    }
 
     void Update()
     {

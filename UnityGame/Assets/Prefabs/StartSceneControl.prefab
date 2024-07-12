@@ -9,8 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3423314951000992344}
-  - component: {fileID: 1976219717264178781}
-  - component: {fileID: 7744929729979898410}
   - component: {fileID: 577431228433007234}
   m_Layer: 0
   m_Name: StartSceneControl
@@ -34,32 +32,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1976219717264178781
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6248376677808611685}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 303d0a44e29c1ed4198d608d9250f1d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  handScale: 10
-  bodyScale: 1
---- !u!114 &7744929729979898410
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6248376677808611685}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d6bcd5a34f2984e4bb653ac7ad4fb257, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &577431228433007234
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72,7 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74da5ce6593b21d46ad3811cbbb078e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dataReceiver: {fileID: 1976219717264178781}
   warningObject: {fileID: 0}
   WarningMessage: 'Please adjust your position so that your entire upper body is
     visible. '

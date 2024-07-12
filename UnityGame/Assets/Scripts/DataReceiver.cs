@@ -38,6 +38,7 @@ public class DataReceiver : MonoBehaviour
 
     public bool HasRightHandData { get; private set; } = false;
 
+    [Obsolete("Use isUpperBodyVisible instead")]
     public bool HasPoseData { get; private set; } = false;
 
     public long LeftHandDataTimeStamp { get; private set; } = 0;
@@ -85,7 +86,7 @@ public class DataReceiver : MonoBehaviour
 
     public float bodyScale = 1f;
 
-    private float visibilityThreshold = 0.7f;
+    private float visibilityThreshold = 0.0f;
 
 
     const int HAND_LANDMARK_COUNT = 21;
@@ -158,20 +159,6 @@ public class DataReceiver : MonoBehaviour
     public void RequestStop()
     {
         _shouldStop = true;
-    }
-    private void Start()
-    {
-        //     dataUdpThread = new Thread(new ThreadStart(DataThreadMethod))
-        //     {
-        //         IsBackground = true
-        //     };
-        //     dataUdpThread.Start();
-
-        //     imageUdpThread = new Thread(new ThreadStart(ImageThreadMethod))
-        //     {
-        //         IsBackground = true
-        //     };
-        //     imageUdpThread.Start();
     }
 
     private void OnEnable()
@@ -342,7 +329,22 @@ public class DataReceiver : MonoBehaviour
         Vector3 leftShoulderToHip = leftHip - leftShoulder;
 
         float angle = Vector3.Angle(leftShoulderToWrist, leftShoulderToHip);
+        
+        Vector3 rightShoulder = PosePositions[12];
+        Vector3 leftShoulderToRightShoulder = rightShoulder - leftShoulder;
 
+        float determinant = Vector3.Dot(Vector3.Cross(leftShoulderToRightShoulder, leftShoulderToHip),leftShoulderToWrist);
+        if (determinant < 0)
+        {
+            if (angle > 135)
+            {
+                angle = 360 - angle;
+            }
+            else
+            {
+                angle = -angle;
+            }
+        }
         return angle;
     }
 

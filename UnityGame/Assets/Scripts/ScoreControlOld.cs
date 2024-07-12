@@ -18,11 +18,12 @@ public class ScoreControl : MonoBehaviour
 
     private int max_retries = 3;
     private int curr_num_tries = 0;
-    [SerializeField] private DataReceiver dataReceiver;
+    private DataReceiver dataReceiver;
     void Start()
     {
         SceneManager.sceneLoaded += onSceneLoaded;
         score = 0;
+        dataReceiver = GameManager.Instance.DataReceiver;
     }
 
     // Update is called once per frame
@@ -57,14 +58,14 @@ public class ScoreControl : MonoBehaviour
         }
     }
     float getGameAngle(string game){
-        if game == "Game1" {
+        if (game == "Game1") {
             return dataReceiver.getLeftShoulderExtensionAngle();
         }
         return dataReceiver.getLeftShoulderRotationAngle();
     }
 
     float getGameMinTarget(string game){
-        if game == "Game1" {
+        if (game == "Game1") {
             return min_target;
         }
         return min_target + 20;
@@ -91,6 +92,5 @@ public class ScoreControl : MonoBehaviour
                 //scoreText.GetComponent<Score>().displayScore(score);
             }
         }
-
     }
 }

@@ -6,7 +6,7 @@ using TMPro;
 
 public class HoeController : MonoBehaviour
 {
-    [SerializeField] private DataReceiver dataReceiver;
+    private DataReceiver dataReceiver;
 
     public GameObject hoe;
 
@@ -33,9 +33,13 @@ public class HoeController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        count = 0;
+        canCut = false;
+        prevCanCut = false;
         counterText.text = "Crops cut: " + count.ToString();
         basket1.SetActive(false);
         basket2.SetActive(false);
+        dataReceiver = GameManager.Instance.DataReceiver;
     }
 
 
