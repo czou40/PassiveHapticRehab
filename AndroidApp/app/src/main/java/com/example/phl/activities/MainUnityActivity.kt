@@ -9,16 +9,11 @@ import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.Toast
-import androidx.camera.core.Preview
 import androidx.camera.view.PreviewView
 import androidx.compose.ui.platform.ComposeView
-import com.example.phl.R
 import com.example.phl.activities.unity.ShoulderExtensionFlexionOverlay
 import com.example.phl.services.MediaPipeService
 import com.example.phl.utils.PermissionManager
@@ -96,17 +91,19 @@ class MainUnityActivity : UnityPlayerGameActivity() {
         setIntent(intent)
     }
 
+    fun doQuit() {
+        if (isBound) {
+            unbindService(connection)
+            isBound = false
+        }
+        finish()
+    }
+
     fun handleIntent(intent: Intent?) {
         if (intent == null || intent.extras == null) return
 
         if (intent.extras!!.containsKey("doQuit")) {
-            if (mUnityPlayer != null) {
-                if (isBound) {
-                    unbindService(connection)
-                    isBound = false
-                }
-                finish()
-            }
+            doQuit()
         }
 
         if (intent.extras!!.containsKey("loadScene")) {
@@ -138,6 +135,45 @@ class MainUnityActivity : UnityPlayerGameActivity() {
     @Suppress("unused")
     fun receiveCommand(command: String) {
         Log.d("MainUnityActivity", "Received command: $command")
+        UnityAPI.processCommand(applicationContext, command, object : UnityAPI.CommandCallback {
+            override fun onSuccess(message: String, operation: UnityAPI.CallBackOperation) {
+                Log.d("UnityAPI", "Command processed successfully: $message")
+                when (operation) {
+                    UnityAPI.CallBackOperation.LOAD_PROGRESS_VISUALIZATION -> {
+                        val intent = Intent(
+                            this@MainUnityActivity,
+                            ProgressVisualizationActivity::class.java
+                        )
+                        startActivity(intent)
+                        doQuit()
+                    }
+
+                    UnityAPI.CallBackOperation.QUIT -> {
+                        doQuit()
+                    }
+                    UnityAPI.CallBackOperation.NONE -> {}
+                }
+            }
+
+            override fun onFailure(error: String, operation: UnityAPI.CallBackOperation) {
+                Log.e("UnityAPI", "Command processing failed: $error")
+                when (operation) {
+                    UnityAPI.CallBackOperation.LOAD_PROGRESS_VISUALIZATION -> {
+                        val intent = Intent(
+                            this@MainUnityActivity,
+                            ProgressVisualizationActivity::class.java
+                        )
+                        startActivity(intent)
+                        doQuit()
+                    }
+
+                    UnityAPI.CallBackOperation.QUIT -> {
+                        doQuit()
+                    }
+                    UnityAPI.CallBackOperation.NONE -> {}
+                }
+            }
+        })
         runOnUiThread {
             Toast.makeText(this, "Received command: $command", Toast.LENGTH_SHORT).show()
         }

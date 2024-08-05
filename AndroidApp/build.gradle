@@ -15,7 +15,7 @@ plugins {
     id 'de.undercouch.download' version '4.1.2'
     id 'com.android.application' version '8.3.0' apply false
     id 'com.android.library' version '8.3.0' apply false
-    id 'org.jetbrains.kotlin.android' version '1.8.10' apply false
+    alias(libs.plugins.compose.compiler) apply false
     id 'com.chaquo.python' version '14.0.2' apply false
     id 'com.google.relay' version '0.3.12' apply false
 }

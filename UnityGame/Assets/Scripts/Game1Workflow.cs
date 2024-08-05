@@ -6,7 +6,7 @@ using System.Timers;
 public class Game1Workflow : MonoBehaviour
 {
     // Start is called before the first frame update
-    private int NumWavings;
+    private int NumWavings; // Currently unused
     private float Angle;
 
     private float MaxAngle = -99999;
@@ -14,13 +14,16 @@ public class Game1Workflow : MonoBehaviour
     //minimum and maximum angle needed to reach to increment score
     private float MinAngleThreshold = 50;
     private float MaxAngleThreshold = 100;
+    private int PreGameCountdown = 3;
+    private int InstructionCountdown = 3;
+    private int TimerDuration = 5;
     private bool MinAngleExceeded = false;
     private bool MaxAngleExceeded = false;
 
-    private ArrayList MinAngles = new ArrayList();
-    private ArrayList MaxAngles = new ArrayList();
+    // private ArrayList MinAngles = new ArrayList();
+    // private ArrayList MaxAngles = new ArrayList();
 
-    private ArrayList Scores = new ArrayList();
+    private Game1Score Score;
 
     private int MaxAttempts = 3;
     private int CurrentAttempt = 0;
@@ -47,6 +50,8 @@ public class Game1Workflow : MonoBehaviour
     {
         NumWavings = 0;
         CurrentStage = GameStage.PRE_GAME;
+        Score = new Game1Score();
+        Score.MarkStartTime();
         DataReceiver = GameManager.Instance.DataReceiver;
         GameStepInstructionShower = GetComponent<GameStepInstructionShower>();
         PoseVisibilityWarner = GetComponent<PoseVisibilityWarner>();
@@ -74,12 +79,12 @@ public class Game1Workflow : MonoBehaviour
         {
             Angle = DataReceiver.getLeftShoulderExtensionAngle();
 
-            if (Angle > MaxAngle)
+            if (Angle > MaxAngle && CurrentStage == GameStage.SHOULDER_UP_GAME)
             {
                 MaxAngle = Angle;
             }
 
-            if (Angle < MinAngle)
+            if (Angle < MinAngle && CurrentStage == GameStage.SHOULDER_DOWN_GAME)
             {
                 MinAngle = Angle;
             }
@@ -98,7 +103,7 @@ public class Game1Workflow : MonoBehaviour
 
     public void displayScore()
     {
-        GameManager.Instance.DisplayScore(Game.Game1, NumWavings);
+        GameManager.Instance.sendCompoundScore(Score);
     }
 
     public void onVisibilityLost()
@@ -130,15 +135,16 @@ public class Game1Workflow : MonoBehaviour
                 break;
             case GameStage.SHOULDER_DOWN_GAME:
                 CurrentAttempt += 1;
-                Scores.Add(NumWavings);
-                MinAngles.Add(MinAngle);
-                MaxAngles.Add(MaxAngle);
+                // MinAngles.Add(MinAngle);
+                // MaxAngles.Add(MaxAngle);
+                Score.AddRound(MinAngle, MaxAngle);
                 if (CurrentAttempt < MaxAttempts)
                 {
                     CurrentStage = GameStage.PRE_GAME;
                 }
                 else
                 {
+                    Score.MarkEndTime();
                     CurrentStage = GameStage.FINISHED;
                 }
                 break;
@@ -158,9 +164,10 @@ public class Game1Workflow : MonoBehaviour
             case GameStage.PRE_GAME:
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
+                resetScores();
                 GameStepInstructionShower.SetInstructionText("Attempt " + (CurrentAttempt + 1) + " out of " + MaxAttempts + ". Get ready to start the game!");
                 GameStepInstructionShower.ShowInstruction();
-                GameStepInstructionShower.StartCountdown(5);
+                GameStepInstructionShower.StartCountdown(PreGameCountdown);
                 break;
             case GameStage.SHOULDER_UP_INSTRUCTION:
                 GameManager.Instance.PauseGame();
@@ -169,11 +176,10 @@ public class Game1Workflow : MonoBehaviour
                 GameStepInstructionShower.ShowInstruction();
                 break;
             case GameStage.SHOULDER_UP_GAME:
-            GameManager.Instance.PauseGame();
+                GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
-                resetScores();
                 GameStepInstructionShower.HideInstruction();
-                Timer.StartTimer(10);
+                Timer.StartTimer(TimerDuration);
                 break;
             case GameStage.SHOULDER_DOWN_INSTRUCTION:
                 GameManager.Instance.PauseGame();
@@ -184,15 +190,11 @@ public class Game1Workflow : MonoBehaviour
             case GameStage.SHOULDER_DOWN_GAME:
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
-                resetScores();
                 GameStepInstructionShower.HideInstruction();
-                Timer.StartTimer(10);
+                Timer.StartTimer(TimerDuration);
                 break;
             case GameStage.FINISHED:
                 Debug.Log("Game Finished");
-                Debug.Log("Scores: " + string.Join(",", Scores.ToArray()));
-                Debug.Log("Min Angles: " + string.Join(",", MinAngles.ToArray()));
-                Debug.Log("Max Angles: " +  string.Join(",", MaxAngles.ToArray()));
                 displayScore();
                 break;
             default:
@@ -209,17 +211,17 @@ public class Game1Workflow : MonoBehaviour
         MinAngle = 99999;
         MaxAngleExceeded = false;
         MinAngleExceeded = false;
-    } 
+    }
 
     public void onVisibilityEndured()
     {
         switch (CurrentStage)
         {
             case GameStage.SHOULDER_UP_INSTRUCTION:
-                GameStepInstructionShower.StartCountdown(3);
+                GameStepInstructionShower.StartCountdown(InstructionCountdown);
                 break;
             case GameStage.SHOULDER_DOWN_INSTRUCTION:
-                GameStepInstructionShower.StartCountdown(3);
+                GameStepInstructionShower.StartCountdown(InstructionCountdown);
                 break;
             default:
                 //do nothing
@@ -229,6 +231,18 @@ public class Game1Workflow : MonoBehaviour
 
     public void onCropCut()
     {
-        
+
+    }
+
+    public void onCheatActivated()
+    {
+        while (CurrentAttempt < MaxAttempts)
+        {
+            CurrentAttempt += 1;
+            Score.AddRound(0f, 180f);
+        }
+        Score.MarkEndTime();
+        CurrentStage = GameStage.FINISHED;
+        initializeCurrentStage();
     }
 }

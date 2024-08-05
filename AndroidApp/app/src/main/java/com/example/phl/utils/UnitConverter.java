@@ -8,5 +8,4 @@ public class UnitConverter {
     public static double ouncesToNewtons(double ounces) {
         return ounces * 0.2780136822;
     }
-
 }

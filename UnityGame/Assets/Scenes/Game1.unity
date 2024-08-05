@@ -544,6 +544,7 @@ GameObject:
   - component: {fileID: 410530258}
   - component: {fileID: 410530260}
   - component: {fileID: 410530259}
+  - component: {fileID: 410530261}
   m_Layer: 5
   m_Name: counterText
   m_TagString: Untagged
@@ -671,6 +672,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 410530257}
   m_CullTransparentMesh: 1
+--- !u!225 &410530261
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 410530257}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &445269088
 GameObject:
   m_ObjectHideFlags: 0
@@ -685,6 +698,7 @@ GameObject:
   - component: {fileID: 445269095}
   - component: {fileID: 445269096}
   - component: {fileID: 445269097}
+  - component: {fileID: 445269098}
   m_Layer: 0
   m_Name: Control
   m_TagString: Untagged
@@ -832,6 +846,33 @@ MonoBehaviour:
       - m_Target: {fileID: 445269096}
         m_TargetAssemblyTypeName: ScoreControl1, Assembly-CSharp
         m_MethodName: moveToNextStage
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &445269098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 445269088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fc9bc303a35e664a83cc39063c7a7a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onCheatActivated:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 445269096}
+        m_TargetAssemblyTypeName: Game1Workflow, Assembly-CSharp
+        m_MethodName: onCheatActivated
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

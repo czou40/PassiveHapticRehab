@@ -41,20 +41,31 @@
         android:theme="@style/Theme.PHL"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activities.ProgressVisualizationActivity"
+            android:exported="true"
+            android:label="@string/title_activity_progress_visualization"
+            android:theme="@style/Theme.PHL" />
+        <activity
+            android:name=".activities.unity.DashboardActivity"
+            android:exported="true"
+            android:label="@string/title_activity_dashboard"
+            android:theme="@style/Theme.PHL" />
+        <activity
             android:name=".activities.GameInstructionActivity"
             android:exported="true"
             android:label="@string/title_activity_game_instruction"
-            android:theme="@style/Theme.PHL" ></activity>
+            android:theme="@style/Theme.PHL" />
         <activity
             android:name=".activities.TestListActivity"
             android:exported="true"
             android:label="@string/title_activity_test"
-            android:theme="@style/Theme.PHL"
-            android:screenOrientation="landscape"><intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter></activity>
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.PHL">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".activities.MainUnityActivity"
             android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|fontScale|layoutDirection|density"
@@ -62,16 +73,8 @@
             android:hardwareAccelerated="false"
             android:label="@string/title_activity_main_unity"
             android:process=":Unity"
-            android:theme="@style/Theme.PHL"
-            android:screenOrientation="landscape">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.PHL" />
 
         <service
             android:name=".services.MediaPipeService"
@@ -84,15 +87,7 @@
             android:name=".activities.MediaPipeDemoActivity"
             android:exported="true"
             android:label="Unity Rehab Game"
-            android:process=":Unity">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
+            android:process=":Unity" />
         <activity
             android:name=".activities.SettingsActivity"
             android:exported="false"
@@ -122,11 +117,11 @@
             android:name=".activities.MainActivity"
             android:exported="true"
             android:label="Passive Haptic Rehab"
-            android:screenOrientation="portrait"><intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".activities.TactileSensationActivity"

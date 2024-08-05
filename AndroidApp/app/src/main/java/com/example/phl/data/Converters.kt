@@ -3,6 +3,7 @@ package com.example.phl.data
 import androidx.room.TypeConverter
 import com.example.phl.data.ball.BallTestRaw
 import com.example.phl.data.mas.MasTestRaw
+import com.example.phl.utils.UnityAPI
 import java.time.LocalDate
 import java.util.Date
 import java.time.LocalDateTime
@@ -74,6 +75,27 @@ object Converters {
     @TypeConverter
     fun stringToStageLabel(value: String): MasTestRaw.Companion.StageLabel {
         return MasTestRaw.Companion.StageLabel.valueOf(value)
+    }
+
+    @TypeConverter
+    fun unityGameTypeToString(unityGameType: UnityAPI.Scene): String {
+        return unityGameType.name
+    }
+
+    @TypeConverter
+    fun stringToUnityGameType(value: String): UnityAPI.Scene {
+        return UnityAPI.Scene.valueOf(value)
+    }
+
+    @TypeConverter
+    fun fromDoubleList(value: List<Double>): String {
+        return Gson().toJson(value)
+    }
+
+    @TypeConverter
+    fun toDoubleList(value: String): List<Double> {
+        val listType = object : TypeToken<List<Double>>() {}.type
+        return Gson().fromJson(value, listType)
     }
 
 }

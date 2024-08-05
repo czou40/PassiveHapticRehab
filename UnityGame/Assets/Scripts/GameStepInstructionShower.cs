@@ -113,7 +113,6 @@ public class GameStepInstructionShower : MonoBehaviour
 
     void Update()
     {
-        Debug.Log("Is counting down: " + isCountingDown);
         InstructionText.text = instructionTextString;
         if (isCountingDown)
         {

@@ -1,5 +1,6 @@
 package com.example.phl.data
 
+import com.example.phl.data.unity.ShoulderExtensionFlexionResultDao
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room.databaseBuilder
@@ -17,10 +18,19 @@ import com.example.phl.data.spasticity.Spasticity
 import com.example.phl.data.spasticity.SpasticityDao
 import com.example.phl.data.tilt.TiltTestResult
 import com.example.phl.data.tilt.TiltTestResultDao
+import com.example.phl.data.unity.ShoulderExtensionFlexionResult
 
 @Database(
-    entities = [TactileSensation::class, Spasticity::class, BallTestRaw::class, BallTestResult::class, TiltTestResult::class, MasTestRaw::class],
-    version = 10
+    entities = [
+        TactileSensation::class,
+        Spasticity::class,
+        BallTestRaw::class,
+        BallTestResult::class,
+        TiltTestResult::class,
+        MasTestRaw::class,
+        ShoulderExtensionFlexionResult::class
+    ],
+    version = 11
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -30,9 +40,10 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun ballTestResultDao(): BallTestResultDao
     abstract fun tiltTestResultDao(): TiltTestResultDao
     abstract fun masTestRawDao(): MasTestRawDao
+    abstract fun shoulderExtensionFlexionResultDao(): ShoulderExtensionFlexionResultDao
 
     companion object {
-        private var db: AppDatabase?= null
+        private var db: AppDatabase? = null
         fun getInstance(context: Context?): AppDatabase {
             if (db == null) {
                 db = databaseBuilder(
