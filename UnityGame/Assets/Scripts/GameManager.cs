@@ -131,6 +131,23 @@ public class Game1Score : GameScore
         s += "\nScore: " + Score.ToString();
         return s;
     }
+
+    public string GetResultForRound(int round)
+    {
+        if (round < 0 || round >= NumRounds)
+        {
+            throw new ArgumentOutOfRangeException("round", "Round index out of range");
+        }
+        double min = MinAngles[round];
+        double max = MaxAngles[round];
+        // one decimal place
+        return $"Round {round + 1}\nMin Angle: {min:F1}\nMax Angle: {max:F1}\nScore: {max - min:F1}";
+    }
+
+    public string GetResultForRound()
+    {
+        return GetResultForRound(NumRounds - 1);
+    }
 }
 
 public class GameManager : MonoBehaviour

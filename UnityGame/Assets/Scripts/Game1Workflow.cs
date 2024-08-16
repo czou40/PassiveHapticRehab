@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Timers;
+using JetBrains.Annotations;
 
 public class Game1Workflow : MonoBehaviour
 {
@@ -15,8 +16,9 @@ public class Game1Workflow : MonoBehaviour
     private float MinAngleThreshold = 50;
     private float MaxAngleThreshold = 100;
     private int PreGameCountdown = 3;
-    private int InstructionCountdown = 3;
-    private int TimerDuration = 5;
+    private int InstructionCountdown = 5;
+    private int InstructionCountdownFirstTime = 10;
+    private int TimerDuration = 8;
     private bool MinAngleExceeded = false;
     private bool MaxAngleExceeded = false;
 
@@ -30,6 +32,8 @@ public class Game1Workflow : MonoBehaviour
     private DataReceiver DataReceiver;
     private GameStepInstructionShower GameStepInstructionShower;
     private PoseVisibilityWarner PoseVisibilityWarner;
+    private RoundResultShower RoundResultShower;
+    private ShoulderAnimationControl ShoulderAnimationControl;
     private Timer Timer;
     private GameStage CurrentStage = GameStage.PRE_GAME;
 
@@ -43,6 +47,8 @@ public class Game1Workflow : MonoBehaviour
 
         SHOULDER_DOWN_GAME,
 
+        ROUND_RESULT,
+
         FINISHED
     }
 
@@ -55,6 +61,8 @@ public class Game1Workflow : MonoBehaviour
         DataReceiver = GameManager.Instance.DataReceiver;
         GameStepInstructionShower = GetComponent<GameStepInstructionShower>();
         PoseVisibilityWarner = GetComponent<PoseVisibilityWarner>();
+        RoundResultShower = GetComponent<RoundResultShower>();
+        ShoulderAnimationControl = GetComponent<ShoulderAnimationControl>();
         Timer = GetComponent<Timer>();
         initializeCurrentStage();
     }
@@ -138,6 +146,9 @@ public class Game1Workflow : MonoBehaviour
                 // MinAngles.Add(MinAngle);
                 // MaxAngles.Add(MaxAngle);
                 Score.AddRound(MinAngle, MaxAngle);
+                CurrentStage = GameStage.ROUND_RESULT;
+                break;
+            case GameStage.ROUND_RESULT: 
                 if (CurrentAttempt < MaxAttempts)
                 {
                     CurrentStage = GameStage.PRE_GAME;
@@ -167,18 +178,23 @@ public class Game1Workflow : MonoBehaviour
                 resetScores();
                 GameStepInstructionShower.SetInstructionText("Attempt " + (CurrentAttempt + 1) + " out of " + MaxAttempts + ". Get ready to start the game!");
                 GameStepInstructionShower.ShowInstruction();
+                RoundResultShower.Hide();
                 GameStepInstructionShower.StartCountdown(PreGameCountdown);
+                ShoulderAnimationControl.HideAnimations();
                 break;
             case GameStage.SHOULDER_UP_INSTRUCTION:
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
                 GameStepInstructionShower.SetInstructionText("First, you need to flex your shoulder as high as you can to gather more power. Ready?");
                 GameStepInstructionShower.ShowInstruction();
+                GameStepInstructionShower.SetDisplayedContent(0);
                 break;
             case GameStage.SHOULDER_UP_GAME:
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
+                GameStepInstructionShower.HideDisplayedContent();
                 GameStepInstructionShower.HideInstruction();
+                ShoulderAnimationControl.ShowAnimation1();
                 Timer.StartTimer(TimerDuration);
                 break;
             case GameStage.SHOULDER_DOWN_INSTRUCTION:
@@ -186,14 +202,30 @@ public class Game1Workflow : MonoBehaviour
                 PoseVisibilityWarner.ResetTriggers();
                 GameStepInstructionShower.SetInstructionText("Great! Now you can extend your shoulder and push back your arm to harvest!");
                 GameStepInstructionShower.ShowInstruction();
+                GameStepInstructionShower.SetDisplayedContent(1);
+                ShoulderAnimationControl.HideAnimations();
                 break;
             case GameStage.SHOULDER_DOWN_GAME:
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
+                GameStepInstructionShower.HideDisplayedContent();
                 GameStepInstructionShower.HideInstruction();
+                ShoulderAnimationControl.ShowAnimation2();
                 Timer.StartTimer(TimerDuration);
                 break;
+            case GameStage.ROUND_RESULT:
+                GameManager.Instance.PauseGame();
+                PoseVisibilityWarner.ResetTriggers();
+                GameStepInstructionShower.HideInstruction();
+                RoundResultShower.SetResultText(Score.GetResultForRound());
+                bool isLastAttempt = CurrentAttempt == MaxAttempts;
+                RoundResultShower.SetNextButtonText(isLastAttempt ? "View Results" : "Jump to Round " + (CurrentAttempt + 1));
+                RoundResultShower.Show();
+                ShoulderAnimationControl.HideAnimations();
+                break;
             case GameStage.FINISHED:
+                RoundResultShower.Hide();
+                ShoulderAnimationControl.HideAnimations();
                 Debug.Log("Game Finished");
                 displayScore();
                 break;
@@ -218,10 +250,10 @@ public class Game1Workflow : MonoBehaviour
         switch (CurrentStage)
         {
             case GameStage.SHOULDER_UP_INSTRUCTION:
-                GameStepInstructionShower.StartCountdown(InstructionCountdown);
+                GameStepInstructionShower.StartCountdown(CurrentAttempt == 0 ? InstructionCountdownFirstTime : InstructionCountdown);
                 break;
             case GameStage.SHOULDER_DOWN_INSTRUCTION:
-                GameStepInstructionShower.StartCountdown(InstructionCountdown);
+                GameStepInstructionShower.StartCountdown(CurrentAttempt == 0 ? InstructionCountdownFirstTime : InstructionCountdown);
                 break;
             default:
                 //do nothing

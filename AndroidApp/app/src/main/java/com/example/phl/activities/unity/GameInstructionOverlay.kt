@@ -4,6 +4,7 @@ package com.example.phl.activities.unity
 import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -68,8 +69,12 @@ fun ShoulderExtensionFlexionOverlay() {
                     Icon(
                         painter = painterResource(id = R.drawable.baseline_arrow_back_24),
                         contentDescription = null,
-                        Modifier.size(32.dp),
-                        tint = Color.White
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clickable {
+                                activity?.finish()
+                            },
+                        tint = Color.White,
                     )
                     Spacer(modifier = Modifier.width(24.dp))
                     Text(

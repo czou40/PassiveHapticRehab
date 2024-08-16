@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -15,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -36,8 +38,11 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.lifecycleScope
 import com.example.phl.R
+import com.example.phl.activities.unity.getCurrentActivity
 import com.example.phl.data.AppDatabase
 import com.example.phl.data.unity.IUnityGameResult
 import com.example.phl.data.unity.ShoulderExtensionFlexionResult
@@ -184,6 +189,7 @@ class ProgressVisualizationActivity : ComponentActivity() {
     @Composable
     fun ProgressVisualizationList(cards: List<ProgressVisualizationCardViewModel>) {
         var displayRange by remember { mutableStateOf(DisplayRange.MONTH) }
+        val activity = getCurrentActivity()
         Log.d("Display Type", displayRange.toString())
         Column (
             modifier = Modifier
@@ -191,6 +197,30 @@ class ProgressVisualizationActivity : ComponentActivity() {
                 .background(Color(0xFF20A086))
                 .padding(16.dp)
         ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(0.dp, 24.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_arrow_back_24),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clickable {
+                            activity?.finish()
+                        },
+                    tint = Color.White,
+                )
+                Spacer(modifier = Modifier.width(24.dp))
+                Text(
+                    text = "My Progress",
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                )
+            }
             Row (
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center

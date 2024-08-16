@@ -93,7 +93,7 @@ class MainActivity : MyBaseActivity() {
         }
         button3.setOnClickListener { v: View? ->
             // navigate to progress
-            val intent = Intent(this, ProgressActivity::class.java)
+            val intent = Intent(this, ProgressVisualizationActivity::class.java)
             startActivity(intent)
         }
         button4.setOnClickListener { v: View? ->

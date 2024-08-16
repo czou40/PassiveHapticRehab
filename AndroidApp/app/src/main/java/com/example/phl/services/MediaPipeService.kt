@@ -1,8 +1,10 @@
 package com.example.phl.services
 
+import android.app.Activity
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.graphics.Bitmap
@@ -33,6 +35,9 @@ import androidx.lifecycle.LifecycleService
 import com.example.phl.R
 import com.example.phl.utils.HandLandmarkerHelper
 import com.example.phl.utils.PoseLandmarkerHelper
+import com.example.phl.views.HandLandmarkerOverlayView
+import com.example.phl.views.HolisticOverlayView
+import com.example.phl.views.PoseLandmarkerOverlayView
 import com.google.mediapipe.framework.image.BitmapImageBuilder
 import com.google.mediapipe.framework.image.MPImage
 import java.util.concurrent.Executors
@@ -62,6 +67,10 @@ class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerList
 
     private var configuration: Configuration = Configuration()
 
+    private var overlayView: HolisticOverlayView? = null
+
+    private lateinit var activityContext: Activity
+
     // Class used for the client Binder.
     inner class LocalBinder : Binder() {
 
@@ -71,18 +80,21 @@ class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerList
 //        fun getConfiguration(): Configuration = configuration
 
         private var previewView: PreviewView? = null
+
         private var width: Int = 352
         private var height: Int = 288
 
-        fun setStartStreamingWhenReady(start: Boolean,previewView: PreviewView? = null, width: Int? = null, height: Int? = null) {
+        fun setStartStreamingWhenReady(start: Boolean,previewView: PreviewView? = null, width: Int? = null, height: Int? = null, overlayView: HolisticOverlayView? = null) {
             startStreamingWhenReady = start
             this.previewView = previewView
             this.width = width ?: this.width
             this.height = height ?: this.height
+            this@MediaPipeService.overlayView = overlayView
         }
 
-        fun startStreaming(previewView: PreviewView? = null, width: Int? = null, height: Int? = null) {
+        fun startStreaming(previewView: PreviewView? = null, width: Int? = null, height: Int? = null, overlayView: HolisticOverlayView? = null) {
             this.previewView = previewView ?: this.previewView
+            this@MediaPipeService.overlayView = overlayView ?: this@MediaPipeService.overlayView
             this.width = width ?: this.width
             this.height = height ?: this.height
             if (isCameraReady.get()) {
@@ -110,6 +122,10 @@ class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerList
                 Toast.makeText(applicationContext, "Streaming not started", Toast.LENGTH_SHORT)
                     .show()
             }
+        }
+
+        fun setActivityContext(activity: Activity) {
+            activityContext = activity
         }
     }
 
@@ -384,6 +400,10 @@ class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerList
             val dataString = data.joinToString("\n")
             sendData(dataString)
         }
+
+        activityContext.runOnUiThread {
+            updateOverlayView(null, resultBundle)
+        }
     }
 
     override fun onPoseLandmarkerError(error: String, errorCode: Int) {
@@ -399,7 +419,8 @@ class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerList
             val visibilities = ArrayList<Float>()
             for (j in worldLandmarks.indices) {
                 val landmark = worldLandmarks[j]
-                val dataForJoint = "Pose|" + j + "|" + landmark.x() + "|" + landmark.y() + "|" + landmark.z()
+                val dataForJoint =
+                    "Pose|" + j + "|" + landmark.x() + "|" + landmark.y() + "|" + landmark.z()
                 val landmarkVisibility: Float = landmark.visibility().orElse(1.0f)
                 visibilities.add(landmarkVisibility)
                 data.add(dataForJoint)
@@ -408,6 +429,24 @@ class MediaPipeService : LifecycleService(), HandLandmarkerHelper.LandmarkerList
             val dataString = data.joinToString("\n")
             sendData(dataString)
         }
+
+        activityContext.runOnUiThread {
+            updateOverlayView(resultBundle, null)
+        }
+    }
+
+    private fun updateOverlayView(poseResultBundle: PoseLandmarkerHelper.ResultBundle?, handResultBundle: HandLandmarkerHelper.ResultBundle?) {
+        // Pass necessary information to HandLandmarkerOverlayView for drawing on the canvas
+        assert(poseResultBundle != null || handResultBundle != null) { "Both pose and hand results are null" }
+        val imageHeight = poseResultBundle?.inputImageHeight ?: handResultBundle?.inputImageHeight ?: 0
+        val imageWidth = poseResultBundle?.inputImageWidth ?: handResultBundle?.inputImageWidth ?: 0
+        overlayView?.setResults(
+            poseResultBundle?.results?.first(),
+            handResultBundle?.results?.first(),
+            imageHeight,
+            imageWidth,
+            RunningMode.LIVE_STREAM
+        )
     }
 
     private fun sendImage(bitmapBuffer: Bitmap) {

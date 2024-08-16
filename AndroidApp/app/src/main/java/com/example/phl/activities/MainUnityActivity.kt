@@ -22,6 +22,9 @@ import com.unity3d.player.IUnityPlayerSupport
 import com.unity3d.player.UnityPlayer
 import com.unity3d.player.UnityPlayerGameActivity
 import com.example.phl.utils.UnityAPI.Scene
+import com.example.phl.views.HandLandmarkerOverlayView
+import com.example.phl.views.HolisticOverlayView
+import com.example.phl.views.PoseLandmarkerOverlayView
 
 class MainUnityActivity : UnityPlayerGameActivity() {
 
@@ -29,16 +32,18 @@ class MainUnityActivity : UnityPlayerGameActivity() {
     private var serviceBinder: MediaPipeService.LocalBinder? = null
     private var isBound: Boolean = false
     private var previewView: PreviewView? = null
+    private var overlayView: HolisticOverlayView? = null
 
-    private val cameraImageHeight = 288
-    private val cameraImageWidth = 352
+    private val cameraImageHeight = 480
+    private val cameraImageWidth = 640
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
             val binder = service as MediaPipeService.LocalBinder
             this@MainUnityActivity.serviceBinder = binder
             isBound = true
-            binder.setStartStreamingWhenReady(true, previewView, cameraImageWidth, cameraImageHeight)
+            binder.setActivityContext(this@MainUnityActivity)
+            binder.setStartStreamingWhenReady(true, previewView, cameraImageWidth, cameraImageHeight, overlayView)
         }
 
         override fun onServiceDisconnected(arg0: ComponentName) {
@@ -79,9 +84,11 @@ class MainUnityActivity : UnityPlayerGameActivity() {
 
     override fun onStop() {
         super.onStop()
-        if (isBound) {
-            unbindService(connection)
-            isBound = false
+        if (isFinishing) {
+            if (isBound) {
+                unbindService(connection)
+                isBound = false
+            }
         }
     }
 
@@ -188,7 +195,12 @@ class MainUnityActivity : UnityPlayerGameActivity() {
             scaleType = PreviewView.ScaleType.FIT_START
         }
 
+        overlayView = HolisticOverlayView(unityPlayer.context, null).apply {
+            layoutParams = FrameLayout.LayoutParams(cameraImageWidth, cameraImageHeight, Gravity.BOTTOM or Gravity.RIGHT)
+        }
+
         layout.addView(previewView)
+        layout.addView(overlayView)
     }
 
     private fun addComposeViewToUnityFrame() {

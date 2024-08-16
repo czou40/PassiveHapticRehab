@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
 using System.Collections;
+using System.Collections.Generic;
 
 
 [RequireComponent(typeof(CanvasRenderer))]
@@ -47,6 +48,12 @@ public class GameStepInstructionShower : MonoBehaviour
 
     private TextMeshProUGUI CountdownText;
     private TextMeshProUGUI InstructionText;
+    private GameObject ContentHolder;
+
+    public List<GameObject> ContentObjects = new List<GameObject>();
+
+    private int displayedContentIndex = -1;
+    
     private float CountdownTime = 5f;
 
     private float timeRemaining;
@@ -60,6 +67,7 @@ public class GameStepInstructionShower : MonoBehaviour
         Countdown = Instruction.transform.Find("Countdown").gameObject;
         CountdownCircle = Countdown.transform.Find("CountdownCircle").gameObject;
         CountdownText = Countdown.transform.Find("CountdownText").GetComponent<TextMeshProUGUI>();
+        ContentHolder = Instruction.transform.Find("ContentHolder").gameObject;
         if (CountdownCircle != null)
         {
             RectTransform countdownRect = CountdownCircle.GetComponent<RectTransform>();
@@ -72,6 +80,8 @@ public class GameStepInstructionShower : MonoBehaviour
         {
             Debug.LogWarning("CountdownCircle not found. Ensure it is named correctly and is a child of the Instruction object.");
         }
+
+        ContentObjects.ForEach(contentObject => contentObject.SetActive(false));
     }
 
     void CreateCircle(string name, float diameter, Color color)
@@ -111,12 +121,39 @@ public class GameStepInstructionShower : MonoBehaviour
         Instruction.SetActive(false);
     }
 
+    public void SetDisplayedContent(int index) 
+    {
+        if (displayedContentIndex >= 0)
+        {
+            ContentObjects[displayedContentIndex].SetActive(false);
+        }
+        if (index < 0 || index >= ContentObjects.Count)
+        {
+            Debug.LogWarning("Invalid index for content object. Ensure the index is within the range of the ContentObjects list.");
+            displayedContentIndex = -1;
+            return;
+        }
+        ContentObjects[index].SetActive(true);
+        displayedContentIndex = index;
+    }
+
+    public void HideDisplayedContent()
+    {
+        if (displayedContentIndex >= 0)
+        {
+            ContentObjects[displayedContentIndex].SetActive(false);
+            displayedContentIndex = -1;
+        }
+    }
+        
+
     void Update()
     {
-        InstructionText.text = instructionTextString;
+        bool shouldDisplayCountdownCircle = isCountingDown && displayedContentIndex < 0;
+        InstructionText.text = instructionTextString + (isCountingDown && !shouldDisplayCountdownCircle ? "\n"+ Mathf.Ceil(timeRemaining).ToString() : "");
         if (isCountingDown)
         {
-            Countdown.SetActive(true);
+            Countdown.SetActive(shouldDisplayCountdownCircle);
             timeRemaining -= Time.deltaTime;
             if (timeRemaining <= 0)
             {
