@@ -145,7 +145,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      shoulder_back_animation_background_0: 5226210119505835477
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

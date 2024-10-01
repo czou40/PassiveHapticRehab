@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 911c4a76f2d5b724d988241f368b01d0
+guid: 29671599b7c7a456e9af6e9008f4d4e4
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -9051907839236250324
-    second: shoulder_up_animation_background_0
+      213: 2484601183152103202
+    second: ContinueButton_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: shoulder_up_animation_background_0
+      name: ContinueButton_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 357
-        height: 444
+        width: 200
+        height: 57
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c25efbe77c9216280800000000000000
-      internalID: -9051907839236250324
+      spriteID: 22fdb42bc931b7220800000000000000
+      internalID: 2484601183152103202
       vertices: []
       indices: 
       edges: []
@@ -145,8 +145,7 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable:
-      shoulder_up_animation_background_0: -9051907839236250324
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
