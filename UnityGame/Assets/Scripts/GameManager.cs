@@ -13,7 +13,8 @@ public enum Game
 {
     None=0,
     Game1=1,
-    Game2=2
+    Game2=2,
+    FingerToNose=3
 }
 
 public abstract class GameScore
@@ -147,6 +148,36 @@ public class Game1Score : GameScore
     public string GetResultForRound()
     {
         return GetResultForRound(NumRounds - 1);
+    }
+}
+
+public class FingerToNoseScore : GameScore
+{
+    public override int Score
+    {
+        get
+        {
+            return 0;
+        }
+    }
+
+    public FingerToNoseScore()
+    {
+        Game = Game.FingerToNose;
+        
+    }
+
+
+    public override string ToString()
+    {
+        string s = "Game: " + Game.ToString() + "\n";
+        s += "\nScore: " + Score.ToString();
+        return s;
+    }
+
+    public string GetResultForRound()
+    {
+        return "Result here";
     }
 }
 
