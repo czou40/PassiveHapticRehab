@@ -9,9 +9,8 @@ The Unity project is independent of the Android app and can run on its own (Howe
 2. pip install mediapipe==0.10.9 (we recommend creating a virtual environment and installing mediapipe in it, using either the native venv, conda, or poetry.)
 3. Run the Unity project and mediapipe_hand_tracking_main.py. (If running mediapipe_hand_tracking_main.py fails and you are using a Mac, then change WEBCAM_INDEX from 0 to 1).
 4. For MacOS users. If you unity game runs successfully, but the game does not fit the whole screen (game view is stuck at 2x scale), then disable low resolution aspect ratios.
-
 ![Disable Low Resolution Aspect Ratios](/screenshots%20and%20photos/setup/disable_ratios.png)
-
+5. For all users, our game targets Pixel Tablet (2560x1600 resolution). In the same menu as above, click the + button, and manually set the screen size to 2560x1600.
 ## Tips
 * You can set the DEBUG flag True in hands.py to visualize what is being seen and how your hands are being interpreted.
 * Improve the accuracy of the model by setting MODEL_COMPLEXITY to 1 inside hands.py
