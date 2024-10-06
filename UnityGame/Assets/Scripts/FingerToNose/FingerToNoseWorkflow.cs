@@ -51,7 +51,7 @@ public class FingerToNoseWorkflow : MonoBehaviour
                 CurrentStage = GameStage.PHONE_HORIZONTAL_INSTRUCTION;
                 break;
             case GameStage.PHONE_HORIZONTAL_INSTRUCTION:
-                CurrentStage = GameStage.FACE_WITHIN_FRAME;
+                CurrentStage = GameStage.FINGER_TO_NOSE_INSTRUCTION;
                 break;
             case GameStage.FACE_WITHIN_FRAME:
                 CurrentStage = GameStage.FINGER_TO_NOSE_INSTRUCTION;
