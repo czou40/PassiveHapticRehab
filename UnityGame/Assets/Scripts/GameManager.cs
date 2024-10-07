@@ -13,8 +13,7 @@ public enum Game
 {
     None=0,
     Game1=1,
-    Game2=2,
-    FingerToNose=3
+    Game2=2
 }
 
 public abstract class GameScore
@@ -151,36 +150,6 @@ public class Game1Score : GameScore
     }
 }
 
-public class FingerToNoseScore : GameScore
-{
-    public override int Score
-    {
-        get
-        {
-            return 0;
-        }
-    }
-
-    public FingerToNoseScore()
-    {
-        Game = Game.FingerToNose;
-        
-    }
-
-
-    public override string ToString()
-    {
-        string s = "Game: " + Game.ToString() + "\n";
-        s += "\nScore: " + Score.ToString();
-        return s;
-    }
-
-    public string GetResultForRound()
-    {
-        return "Result here";
-    }
-}
-
 public class GameManager : MonoBehaviour
 {
 
@@ -188,6 +157,17 @@ public class GameManager : MonoBehaviour
     public bool gamePaused { get; private set; } = false;
     public DataReceiver DataReceiver { get; private set; }
 
+    public Text countdownText;
+    public Text scoreText;
+    public GameObject crowPrefab;
+    public Transform[] spawnLocations;
+    public Animator scarecrowAnimator;
+
+    private int score = 0;
+    private float countdown = 30.0f;
+    private bool gameActive = false;
+
+    
     private GameScore CurrentScore;
 
     private Game CurrentGame = Game.None;
@@ -215,9 +195,91 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void Start() 
+    {
+        if (countdownText != null) countdownText.gameObject.SetActive(false);
+        if (scoreText != null) scoreText.gameObject.SetActive(false);
+    }
+
+    void Update()
+    {
+        if (gameActive)
+        {
+            UpdateCountdown();
+        }
+    }
+
     public void StartGame1()
     {
         SceneManager.LoadScene("Game1"); // Load the game scene
+    }
+
+    IEnumerator StartGameSequence()
+    {
+        yield return new WaitForSeconds(1f);
+
+        gameActive = true;
+
+        countdownText.gameObject.SetActive(true);
+        scoreText.gameObject.SetActive(true);
+        score = 0;
+        UpdateScoreText();
+
+        if (scarecrowAnimator != null) 
+        {
+            scarecrowAnimator.SetTrigger("Smile");
+        }
+
+        InvokeRepeating("SpawnCrow", 1.0f, Random.Range(1.0f, 3.0f));
+
+    }
+
+    private void UpdateCountdown()
+    {
+        countdown -= Time.deltaTime;
+        countdownText.text = "Time: " + Mathf.CeilToInt(countdown).ToString();
+
+        if (countdown <= 0) 
+        {
+            EndGame();
+        }
+    }
+
+    private void SpawnCrow()
+    {
+        if (spawnLocations.Length > 0 && crowPrefab != null)
+        {
+            int randomIndex = Random.Range(0, spawnLocations.Length);
+            Instantiate(crowPrefab, spawnLocations[randomIndex].position, Quaternion.identity);
+        }
+    }
+
+    private void EndGame()
+    {
+        gameActive = false;
+        CancelInvoke("SpawnCrow");
+
+        countdownText.gameObject.SetActive(false);
+        scoreText.gameObject.SetActive(false);
+
+        Debug.Log("Game Over! Final Score: " + score);
+    }
+
+    public void AddScore()
+    {
+        if (gameActive)
+        {
+            score++;
+            UpdateScoreText();
+        }
+    }
+
+    private void UpdateScoreText()
+    {
+        if (scoreText != null)
+        {
+            scoreText.text = "Score: " + score.ToString();
+        }
     }
 
     public void StartGame1Instructions()
@@ -360,6 +422,10 @@ public class GameManager : MonoBehaviour
                     comp.DisplayCompoundScore(CurrentScore);
                 }
             }
+        }
+        else if (scene.name == "Game1")
+        {
+            StartCoroutine(StartGameSequence());
         }
     }
 }
