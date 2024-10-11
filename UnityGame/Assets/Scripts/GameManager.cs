@@ -230,7 +230,7 @@ public class GameManager : MonoBehaviour
             scarecrowAnimator.SetTrigger("Smile");
         }
 
-        InvokeRepeating("SpawnCrow", 1.0f, Random.Range(1.0f, 3.0f));
+        InvokeRepeating("SpawnCrow", 1.0f, UnityEngine.Random.Range(1.0f, 3.0f));
 
     }
 
@@ -249,7 +249,7 @@ public class GameManager : MonoBehaviour
     {
         if (spawnLocations.Length > 0 && crowPrefab != null)
         {
-            int randomIndex = Random.Range(0, spawnLocations.Length);
+            int randomIndex = UnityEngine.Random.Range(0, spawnLocations.Length);
             Instantiate(crowPrefab, spawnLocations[randomIndex].position, Quaternion.identity);
         }
     }
