@@ -184,7 +184,7 @@ public class Game3Workflow : MonoBehaviour
             case GameStage.UNFURL_INSTRUCTION:
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
-                GameStepInstructionShower.SetInstructionText("First, you need to flex your shoulder as high as you can to gather more power. Ready?");
+                GameStepInstructionShower.SetInstructionText("First, you need to unfurl your fingers to the maximum to harvest more fruits. Ready?");
                 GameStepInstructionShower.ShowInstruction();
                 GameStepInstructionShower.SetDisplayedContent(0);
                 break;
@@ -199,7 +199,7 @@ public class Game3Workflow : MonoBehaviour
             case GameStage.CLENCH_INSTRUCTION:
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
-                GameStepInstructionShower.SetInstructionText("Great! Now you can extend your shoulder and push back your arm to harvest!");
+                GameStepInstructionShower.SetInstructionText("Now, you need to clench your fingers tightly to collect more fruits. Ready?");
                 GameStepInstructionShower.ShowInstruction();
                 GameStepInstructionShower.SetDisplayedContent(1);
                 HandMovementControl.HideInstruction();
