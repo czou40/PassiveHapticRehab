@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 247775bee7d38684f82166d8d9f90124
+guid: 93976930e48364145b7204ab9a445191
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5226210119505835477
-    second: shoulder_back_animation_background_0
+      213: -1673732733077124514
+    second: trees_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: shoulder_back_animation_background_0
+      name: trees_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 357
-        height: 444
+        width: 2688
+        height: 1242
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5d572bef96a378840800000000000000
-      internalID: 5226210119505835477
+      spriteID: e5a8ef372f4b5c8e0800000000000000
+      internalID: -1673732733077124514
       vertices: []
       indices: 
       edges: []
@@ -158,8 +158,7 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable:
-      shoulder_back_animation_background_0: 5226210119505835477
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
