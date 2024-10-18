@@ -21,6 +21,7 @@ public class Game3Workflow : MonoBehaviour
     private int TimerDuration = 8;
     private bool MinAngleExceeded = false;
     private bool MaxAngleExceeded = false;
+    private HandMovementControl HandMovementControl;
 
     // private ArrayList MinAngles = new ArrayList();
     // private ArrayList MaxAngles = new ArrayList();
@@ -178,6 +179,7 @@ public class Game3Workflow : MonoBehaviour
                 GameStepInstructionShower.ShowInstruction();
                 RoundResultShower.Hide();
                 GameStepInstructionShower.StartCountdown(PreGameCountdown);
+                HandMovementControl.HideInstruction();
                 break;
             case GameStage.UNFURL_INSTRUCTION:
                 GameManager.Instance.PauseGame();
@@ -191,6 +193,7 @@ public class Game3Workflow : MonoBehaviour
                 PoseVisibilityWarner.ResetTriggers();
                 GameStepInstructionShower.HideDisplayedContent();
                 GameStepInstructionShower.HideInstruction();
+                HandMovementControl.ShowInstruction1();
                 Timer.StartTimer(TimerDuration);
                 break;
             case GameStage.CLENCH_INSTRUCTION:
@@ -199,6 +202,7 @@ public class Game3Workflow : MonoBehaviour
                 GameStepInstructionShower.SetInstructionText("Great! Now you can extend your shoulder and push back your arm to harvest!");
                 GameStepInstructionShower.ShowInstruction();
                 GameStepInstructionShower.SetDisplayedContent(1);
+                HandMovementControl.HideInstruction();
                 break;
             case GameStage.CLENCH_GAME:
                 GameManager.Instance.PauseGame();
@@ -206,6 +210,7 @@ public class Game3Workflow : MonoBehaviour
                 GameStepInstructionShower.HideDisplayedContent();
                 GameStepInstructionShower.HideInstruction();
                 Timer.StartTimer(TimerDuration);
+                HandMovementControl.ShowInstruction2();
                 break;
             case GameStage.ROUND_RESULT:
                 GameManager.Instance.PauseGame();
@@ -215,9 +220,11 @@ public class Game3Workflow : MonoBehaviour
                 bool isLastAttempt = CurrentAttempt == MaxAttempts;
                 RoundResultShower.SetNextButtonText(isLastAttempt ? "View Results" : "Jump to Round " + (CurrentAttempt + 1));
                 RoundResultShower.Show();
+                HandMovementControl.HideInstruction();
                 break;
             case GameStage.FINISHED:
                 RoundResultShower.Hide();
+                HandMovementControl.HideInstruction();
                 Debug.Log("Game Finished");
                 displayScore();
                 break;
@@ -253,7 +260,7 @@ public class Game3Workflow : MonoBehaviour
         }
     }
 
-    public void onCropCut()
+    public void onGrabFruit()
     {
 
     }
