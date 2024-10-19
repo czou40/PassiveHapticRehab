@@ -148,7 +148,7 @@ public class Game1Workflow : MonoBehaviour
                 Score.AddRound(MinAngle, MaxAngle);
                 CurrentStage = GameStage.ROUND_RESULT;
                 break;
-            case GameStage.ROUND_RESULT: 
+            case GameStage.ROUND_RESULT:
                 if (CurrentAttempt < MaxAttempts)
                 {
                     CurrentStage = GameStage.PRE_GAME;
