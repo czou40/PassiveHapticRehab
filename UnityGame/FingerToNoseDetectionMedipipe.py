@@ -36,14 +36,12 @@ class HandThread(threading.Thread):
         self.cap = None
         self.image = None
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # Create UDP socket
-        print(f"Socket created: {self.sock}")  # Debug output
 
     def stop(self):
         self.isRunning = False
         if self.cap:
             self.cap.release()
         self.sock.close()  # Close the socket when stopping the thread
-        print("Socket closed")  # Debug output
 
     def run(self):
         print("HandThread started")
