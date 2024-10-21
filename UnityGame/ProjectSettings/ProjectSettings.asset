@@ -164,6 +164,7 @@ PlayerSettings:
   androidMinAspectRatio: 1
   applicationIdentifier:
     Android: com.DefaultCompany.UnityMediaPipeHands
+    Standalone: com.DefaultCompany.UnityMediaPipeHands
   buildNumber:
     Standalone: 0
     VisionOS: 0
