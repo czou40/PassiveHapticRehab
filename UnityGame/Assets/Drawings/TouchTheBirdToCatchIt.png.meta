@@ -145,7 +145,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      TouchTheBirdToCatchIt_0: 4147152072274298699
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
