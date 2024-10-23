@@ -284,7 +284,36 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogError("Failed to load Crow.png from Resources");
         }
+
+        if (timerText == null)
+        {
+            Debug.LogWarning("Timer text not found, creating dynamically.");
+            CreateTimerTextUI();
+        }
+
         timeRemaining = gameDuration;
+    }
+
+    private void CreateTimerTextUI()
+    {
+        GameObject canvasGO = new GameObject("TimerCanvas");
+        Canvas canvas = canvasGO.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        CanvasScaler canvasScaler = canvasGO.AddComponent<CanvasScaler>();
+        canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        canvasScaler.referenceResolution = new Vector2(1920, 1080);
+
+        GameObject timerTextGO = new GameObject("TimerText");
+        timerTextGO.transform.parent = canvasGO.transform;
+
+        timerText = timerTextGO.AddComponent<Text>();
+        timerText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+        timerText.fontSize = 40;
+        timerText.alignment = TextAnchor.MiddleCenter;
+
+        RectTransform rectTransform = timerText.GetComponent<RectTransform>();
+        rectTransform.sizeDelta = new Vector2(200, 80);
+        rectTransform.anchoredPosition = new Vector2(0, 400);
     }
 
     public void StartGame1()
@@ -328,6 +357,7 @@ public class GameManager : MonoBehaviour
             renderer.sprite = crowSprite;
 
             crow.transform.position = randomPosition;
+            Debug.Log($"Spawned crow at {randomPosition}");
         }
     }
 
