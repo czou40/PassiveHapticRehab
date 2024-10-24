@@ -69,6 +69,8 @@ public class Game4Workflow : MonoBehaviour
                 GameStepInstructionShower.HideDisplayedContent();
                 GameStepInstructionShower.HideInstruction();
                 Timer.StartTimer(TimerDuration);
+                GameManager.Instance.ResumeGame(); //Added - Yash T
+                GameManager.Instance.StartGameplay(); //Added - Yash T
                 break;
             case GameStage.ROUND_RESULT:
                 GameManager.Instance.PauseGame();
@@ -97,6 +99,11 @@ public class Game4Workflow : MonoBehaviour
     public void displayScore()
     {
         GameManager.Instance.sendCompoundScore(Score);
+    }
+
+    public void IncrementCrowClicks()
+    {
+        CrowClicksThisRound++;
     }
 
     public void moveToNextStage()

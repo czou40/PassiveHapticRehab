@@ -232,6 +232,8 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
     public bool gamePaused { get; private set; } = false;
     public DataReceiver DataReceiver { get; private set; }
+    public DataReceiverGame4 DataReceiverGame4 { get; private set; }
+
 
     private GameScore CurrentScore;
 
@@ -269,6 +271,7 @@ public class GameManager : MonoBehaviour
             SceneManager.sceneLoaded += onSceneLoaded;
 
             DataReceiver = gameObject.AddComponent<DataReceiver>();
+            DataReceiverGame4 = gameObject.AddComponent<DataReceiverGame4>();
         }
         else
         {
@@ -285,35 +288,31 @@ public class GameManager : MonoBehaviour
             Debug.LogError("Failed to load Crow.png from Resources");
         }
 
-        if (timerText == null)
-        {
-            Debug.LogWarning("Timer text not found, creating dynamically.");
-            CreateTimerTextUI();
-        }
-
-        timeRemaining = gameDuration;
     }
 
-    private void CreateTimerTextUI()
+
+    public void IncrementCrowClicks()
     {
-        GameObject canvasGO = new GameObject("TimerCanvas");
-        Canvas canvas = canvasGO.AddComponent<Canvas>();
-        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        CanvasScaler canvasScaler = canvasGO.AddComponent<CanvasScaler>();
-        canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        canvasScaler.referenceResolution = new Vector2(1920, 1080);
-
-        GameObject timerTextGO = new GameObject("TimerText");
-        timerTextGO.transform.parent = canvasGO.transform;
-
-        timerText = timerTextGO.AddComponent<Text>();
-        timerText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
-        timerText.fontSize = 40;
-        timerText.alignment = TextAnchor.MiddleCenter;
-
-        RectTransform rectTransform = timerText.GetComponent<RectTransform>();
-        rectTransform.sizeDelta = new Vector2(200, 80);
-        rectTransform.anchoredPosition = new Vector2(0, 400);
+        Game4Score game4Score = CurrentScore as Game4Score;
+        if (game4Score != null && game4Score.CrowClicks != null)
+        {
+            Game4Workflow workflow = FindObjectOfType<Game4Workflow>();
+            if (workflow != null)
+            {
+                workflow.IncrementCrowClicks();
+            }
+            
+            if (game4Score.CrowClicks.Count == 0)
+            {
+                game4Score.CrowClicks.Add(1);
+            }
+            else
+            {
+                int lastIndex = game4Score.CrowClicks.Count - 1;
+                game4Score.CrowClicks[lastIndex]++;
+            }
+            Debug.Log($"Crow clicked! Current count for round: {game4Score.CrowClicks[game4Score.CrowClicks.Count - 1]}");
+        }
     }
 
     public void StartGame1()
@@ -334,17 +333,29 @@ public class GameManager : MonoBehaviour
     public void StartGame4()
     {
         CurrentScore = new Game4Score();
-        SceneManager.LoadScene("Game4"); // Load the Game4 scene
-        isGameActive = true;
-        StartCoroutine(SpawnCrows());
-        StartCoroutine(GameTimer());
+        SceneManager.LoadScene("NewFingerToNose"); // Loading Game4 scene
     }
 
-    IEnumerator SpawnCrows()
+    public void StartGameplay()
     {
-        while (isGameActive)
+        if (crowSprite == null)
+        {
+            Debug.LogError("Cannot start gameplay: Crow sprite not loaded!");
+            return;
+        }
+        isGameActive = true;
+        StartCoroutine(SpawnCrows());
+    }
+
+IEnumerator SpawnCrows()
+{
+    Debug.Log("Starting crow spawning...");
+    while (isGameActive)
+    {
+        if (!gamePaused)
         {
             float spawnDelay = UnityEngine.Random.Range(spawnIntervalMin, spawnIntervalMax);
+            Debug.Log($"Waiting for {spawnDelay} seconds before next spawn");
             yield return new WaitForSeconds(spawnDelay);
 
             Vector2 randomPosition = new Vector2(
@@ -353,38 +364,50 @@ public class GameManager : MonoBehaviour
             );
 
             GameObject crow = new GameObject("Crow");
+            crow.tag = "Crow";
             SpriteRenderer renderer = crow.AddComponent<SpriteRenderer>();
             renderer.sprite = crowSprite;
+            renderer.sortingOrder = 2; 
+
+            BoxCollider2D collider = crow.AddComponent<BoxCollider2D>();
+            
+            CrowClickHandler clickHandler = crow.AddComponent<CrowClickHandler>();
 
             crow.transform.position = randomPosition;
             Debug.Log($"Spawned crow at {randomPosition}");
         }
-    }
-
-    IEnumerator GameTimer()
-    {
-        while (timeRemaining > 0)
+        else
         {
-            timeRemaining -= Time.deltaTime;
-
-            if (timerText != null)
-            {
-                timerText.text = "Time Left: " + Mathf.Ceil(timeRemaining).ToString();
-            }
-
             yield return null;
         }
-
-        EndGame();
     }
+}
+
+public class CrowClickHandler : MonoBehaviour
+{
+    private void OnMouseDown()
+    {
+        if (GameManager.Instance != null && GameManager.Instance.DataReceiverGame4 != null)
+        {
+            GameManager.Instance.DataReceiverGame4.OnCrowClicked();
+            GameManager.Instance.IncrementCrowClicks();
+            Destroy(gameObject);
+        }
+    }
+}
 
     public void EndGame()
     {
         isGameActive = false;
         StopAllCoroutines();
-        Debug.Log("Game Over!");
 
-        DisplayCompoundScore(CurrentScore);
+        GameObject[] crows = GameObject.FindGameObjectsWithTag("Crow");
+        foreach(GameObject crow in crows)
+        {
+            Destroy(crow);
+        }
+
+        Debug.Log("Game Over!");
     }
 
     // Function to pause the game.
