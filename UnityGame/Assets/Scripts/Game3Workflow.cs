@@ -12,9 +12,9 @@ public class Game3Workflow : MonoBehaviour
 
     private float MaxAngle = -99999;
     private float MinAngle = 99999;
-    //minimum and maximum angle needed to reach to increment score
-    private float MinAngleThreshold = 50;
-    private float MaxAngleThreshold = 100;
+    // //minimum and maximum angle needed to reach to increment score
+    private float MinAngleThreshold = 100.0f;
+    private float MaxAngleThreshold = 170.0f;
     private int PreGameCountdown = 3;
     private int InstructionCountdown = 5;
     private int InstructionCountdownFirstTime = 10;
@@ -86,7 +86,7 @@ public class Game3Workflow : MonoBehaviour
     {
         if (DataReceiver.isUpperBodyVisible)
         {
-            Angle = DataReceiver.getLeftShoulderExtensionAngle();
+            Angle = DataReceiver.getLeftAverageFingerExtensionAngle();
 
             if (Angle > MaxAngle && CurrentStage == GameStage.UNFURL_GAME)
             {

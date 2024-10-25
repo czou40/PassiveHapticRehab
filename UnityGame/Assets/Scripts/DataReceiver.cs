@@ -375,4 +375,38 @@ public class DataReceiver : MonoBehaviour
 
         return angle;
     }
+
+    public float getLeftAverageFingerExtensionAngle()
+    {
+        int[,] anglesToCalculate = {{1, 2, 3},
+                                    {2, 3, 4},
+                                    {0, 5, 6},
+                                    {5, 6, 7},
+                                    {6, 7, 8},
+                                    {0, 9, 10},
+                                    {9, 10, 11},
+                                    {10, 11, 12},
+                                    {0, 13, 14},
+                                    {13, 14, 15},
+                                    {14, 15, 16},
+                                    {0, 17, 18},
+                                    {17, 18, 19},
+                                    {18, 19, 20}};
+        float angleSum = 0.0f;
+        for (int i = 0; i < anglesToCalculate.GetLength(0); ++i)
+        {
+            Vector3 lowerJoint  = LeftHandPositions[anglesToCalculate[i, 0]];
+            Vector3 middleJoint = LeftHandPositions[anglesToCalculate[i, 1]];
+            Vector3 upperJoint  = LeftHandPositions[anglesToCalculate[i, 2]];
+
+            Vector3 middleToLower = lowerJoint - middleJoint;
+            Vector3 middleToUpper = upperJoint - middleJoint;
+
+            float angle = Vector3.Angle(middleToLower, middleToUpper);
+
+            angleSum += angle;
+        }
+
+        return angleSum / anglesToCalculate.GetLength(0);
+    }
 }
