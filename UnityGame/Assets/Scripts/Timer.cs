@@ -3,7 +3,7 @@ using TMPro;
 using System;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using static Game1Workflow;
+using static Game3Workflow;
 
 public class Timer : MonoBehaviour
 {
@@ -12,7 +12,7 @@ public class Timer : MonoBehaviour
     public bool TimerOn = false;
     public TMP_Text timerText;
 
-    public Game1Workflow Game1Workflow;
+    public Game3Workflow Game3Workflow;
 
 
     public 
@@ -39,7 +39,7 @@ public class Timer : MonoBehaviour
                 RemainingTime = 0;
                 TimerOn = false;
 
-                Game1Workflow.moveToNextStage();
+                Game3Workflow.moveToNextStage();
                 
             }
         }

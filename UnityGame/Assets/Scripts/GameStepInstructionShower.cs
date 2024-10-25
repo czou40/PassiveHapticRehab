@@ -155,6 +155,7 @@ public class GameStepInstructionShower : MonoBehaviour
         {
             Countdown.SetActive(shouldDisplayCountdownCircle);
             timeRemaining -= Time.deltaTime;
+            Debug.Log("Time left: " + timeRemaining);
             if (timeRemaining <= 0)
             {
                 isCountingDown = false;

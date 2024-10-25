@@ -172,6 +172,7 @@ public class Game3Workflow : MonoBehaviour
         switch (CurrentStage)
         {
             case GameStage.PRE_GAME:
+                Debug.Log("Pre-game Start");
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
                 resetScores();
@@ -180,8 +181,10 @@ public class Game3Workflow : MonoBehaviour
                 RoundResultShower.Hide();
                 GameStepInstructionShower.StartCountdown(PreGameCountdown);
                 HandMovementControl.HideInstruction();
+                Debug.Log("Pre-game End");
                 break;
             case GameStage.UNFURL_INSTRUCTION:
+                Debug.Log("UNFURL_INSTRUCTION");
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
                 GameStepInstructionShower.SetInstructionText("First, you need to unfurl your fingers to the maximum to harvest more fruits. Ready?");
@@ -189,6 +192,7 @@ public class Game3Workflow : MonoBehaviour
                 GameStepInstructionShower.SetDisplayedContent(0);
                 break;
             case GameStage.UNFURL_GAME:
+                Debug.Log("UNFURL_GAME");
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
                 GameStepInstructionShower.HideDisplayedContent();
@@ -197,6 +201,7 @@ public class Game3Workflow : MonoBehaviour
                 Timer.StartTimer(TimerDuration);
                 break;
             case GameStage.CLENCH_INSTRUCTION:
+                Debug.Log("CLENCH_INSTRUCTION");
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
                 GameStepInstructionShower.SetInstructionText("Now, you need to clench your fingers tightly to collect more fruits. Ready?");
@@ -205,6 +210,7 @@ public class Game3Workflow : MonoBehaviour
                 HandMovementControl.HideInstruction();
                 break;
             case GameStage.CLENCH_GAME:
+                Debug.Log("CLENCH_GAME");
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
                 GameStepInstructionShower.HideDisplayedContent();
@@ -213,6 +219,7 @@ public class Game3Workflow : MonoBehaviour
                 HandMovementControl.ShowInstruction2();
                 break;
             case GameStage.ROUND_RESULT:
+                Debug.Log("ROUND_RESULT");
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
                 GameStepInstructionShower.HideInstruction();
@@ -223,6 +230,7 @@ public class Game3Workflow : MonoBehaviour
                 HandMovementControl.HideInstruction();
                 break;
             case GameStage.FINISHED:
+                Debug.Log("FINISHED");
                 RoundResultShower.Hide();
                 HandMovementControl.HideInstruction();
                 Debug.Log("Game Finished");
