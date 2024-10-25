@@ -1,22 +1,10 @@
 fileFormatVersion: 2
-guid: 759691068407a4b87985f032e187c052
+guid: d5169f5759f644bb19c734d621d29627
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5060255366449352598
-    second: apples_0
-  - first:
-      213: 5771673372727919015
-    second: apples_1
-  - first:
-      213: -3127675373411066466
-    second: apples_2
-  - first:
-      213: 3934609266080112296
-    second: apples_3
-  - first:
-      213: 6634186711609811936
-    second: apples_4
+      213: -5100498255715658500
+    second: mainApple_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -121,30 +109,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: iOS
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: apples_0
+      name: mainApple_0
       rect:
         serializedVersion: 2
-        x: 442
-        y: 641
-        width: 123
-        height: 183
+        x: 196
+        y: 90
+        width: 437
+        height: 657
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -153,96 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a60b50afd8c56c9b0800000000000000
-      internalID: -5060255366449352598
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: apples_1
-      rect:
-        serializedVersion: 2
-        x: 37
-        y: 348
-        width: 126
-        height: 176
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 7a147055a5a191050800000000000000
-      internalID: 5771673372727919015
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: apples_2
-      rect:
-        serializedVersion: 2
-        x: 1909
-        y: 240
-        width: 126
-        height: 176
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: e9d981ba1d34894d0800000000000000
-      internalID: -3127675373411066466
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: apples_3
-      rect:
-        serializedVersion: 2
-        x: 2311
-        y: 410
-        width: 123
-        height: 183
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 8ae5aa2f74a8a9630800000000000000
-      internalID: 3934609266080112296
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: apples_4
-      rect:
-        serializedVersion: 2
-        x: 145
-        y: 26
-        width: 123
-        height: 183
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 0e3ae1f2aad511c50800000000000000
-      internalID: 6634186711609811936
+      spriteID: cf4919a2cd36739b0800000000000000
+      internalID: -5100498255715658500
       vertices: []
       indices: 
       edges: []
@@ -258,12 +145,7 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable:
-      apples_0: -5060255366449352598
-      apples_1: 5771673372727919015
-      apples_2: -3127675373411066466
-      apples_3: 3934609266080112296
-      apples_4: 6634186711609811936
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
