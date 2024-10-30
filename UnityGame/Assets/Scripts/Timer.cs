@@ -14,6 +14,8 @@ public class Timer : MonoBehaviour
 
     public Game1Workflow Game1Workflow;
 
+    public Game4Workflow Game4Workflow;
+
 
     public 
     void Start()
@@ -31,7 +33,7 @@ public class Timer : MonoBehaviour
             if (RemainingTime > 0)
             {
                 RemainingTime -= Time.deltaTime;
-                updateTimer(RemainingTime);
+                updateTimerUI();
             }
             else
             {
@@ -40,10 +42,11 @@ public class Timer : MonoBehaviour
                 TimerOn = false;
 
                 Game1Workflow.moveToNextStage();
-                
+                Game4Workflow.moveToNextStage();
             }
         }
     }
+
     private void updateTimer(float currentTime)
     {
         currentTime += 1;
@@ -54,12 +57,16 @@ public class Timer : MonoBehaviour
         timerText.text = string.Format("{0:00} : {1:00}", minutes, seconds);
     }
 
-    public void StartTimer(float totalTime = -1f)
+    private void updateTimerUI() 
     {
-        if (totalTime > 0) {
-            TotalTime = totalTime;
-        }
-        RemainingTime = TotalTime;
+        int minutes = Mathf.FloorToInt(RemainingTime / 60);
+        int seconds = Mathf.FloorToInt(RemainingTime % 60);
+        timerText.text = $"{minutes:00}:{seconds:00}";
+    }
+
+    public void StartTimer(float duration)
+    {
+        RemainingTime = duration;
         TimerOn = true;
     }
     

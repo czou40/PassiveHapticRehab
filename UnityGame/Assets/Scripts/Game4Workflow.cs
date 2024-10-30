@@ -17,10 +17,12 @@ public class Game4Workflow : MonoBehaviour
 
     private int PreGameCountdown = 3;  // seconds before the game begins
     private DataReceiver DataReceiver;
-    private GameStepInstructionShower GameStepInstructionShower;
+    public GameStepInstructionShower GameStepInstructionShower;
     private Timer Timer;
     private GameStage CurrentStage;
-    private RoundResultShower RoundResultShower;
+    public RoundResultShower RoundResultShower;
+    public Timer gameTimer;
+    private GameManager gameManager;
 
     private enum GameStage
     {
@@ -36,6 +38,7 @@ public class Game4Workflow : MonoBehaviour
     void Start()
     {
         // PRE_GAME - This stage will give an initial few seconds before the game begins, and game timer starts counting down from 30 seconds
+        gameManager = GameManager.Instance;
         CurrentStage = GameStage.PRE_GAME;
         Score = new Game4Score();
         Score.MarkStartTime();
@@ -65,12 +68,11 @@ public class Game4Workflow : MonoBehaviour
                 GameStepInstructionShower.SetDisplayedContent(0);
                 break;
             case GameStage.FINGER_TO_NOSE_GAME:
+                gameTimer.StartTimer(TimerDuration);
+                gameManager.StartGameplay();
                 GameManager.Instance.PauseGame();
                 GameStepInstructionShower.HideDisplayedContent();
                 GameStepInstructionShower.HideInstruction();
-                Timer.StartTimer(TimerDuration);
-                GameManager.Instance.ResumeGame(); //Added - Yash T
-                GameManager.Instance.StartGameplay(); //Added - Yash T
                 break;
             case GameStage.ROUND_RESULT:
                 GameManager.Instance.PauseGame();
@@ -81,6 +83,7 @@ public class Game4Workflow : MonoBehaviour
                 RoundResultShower.Show();
                 break;
             case GameStage.FINISHED:
+                gameManager.EndGame();
                 RoundResultShower.Hide();
                 Debug.Log("Game Finished");
                 displayScore();

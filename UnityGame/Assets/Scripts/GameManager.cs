@@ -375,12 +375,28 @@ IEnumerator SpawnCrows()
 
             crow.transform.position = randomPosition;
             Debug.Log($"Spawned crow at {randomPosition}");
+
+            SpawnCrow(randomPosition);
         }
         else
         {
             yield return null;
         }
     }
+}
+
+private void SpawnCrow(Vector2 position)
+{
+    GameObject crow = new GameObject("Crow");
+    crow.tag = "Crow";
+    SpriteRenderer renderer = crow.AddComponent<SpriteRenderer>();
+    renderer.sprite = crowSprite;
+    renderer.sortingOrder = 2; 
+
+    crow.AddComponent<BoxCollider2D>();
+    crow.AddComponent<CrowClickHandler>();
+
+    crow.transform.position = position;
 }
 
 public class CrowClickHandler : MonoBehaviour
