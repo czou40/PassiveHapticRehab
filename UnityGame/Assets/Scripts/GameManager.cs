@@ -237,21 +237,7 @@ public class GameManager : MonoBehaviour
 
     private Game CurrentGame = Game.None;
 
-    // Timer and crow-related variables
-    public float gameDuration = 30f;
-    public float spawnIntervalMin = 1f;  // Min interval between spawns
-    public float spawnIntervalMax = 3f;  // Max interval between spawns
-    public Vector2 spawnRangeX = new Vector2(-5f, 5f);  // X-axis range for spawning crows
-    public Vector2 spawnRangeY = new Vector2(-3f, 3f);  // Y-axis range for spawning crows
-    private Sprite crowSprite;  // Crow sprite dynamically loaded
-    private float timeRemaining;
     private bool isGameActive = false;
-
-    // Timer UI Text
-    public Text timerText;
-
-    // UI Elements for Game4
-    //public TextMeshProUGUI crowClickText; // Assigned in unity editor
 
 
     void Awake()
@@ -267,7 +253,6 @@ public class GameManager : MonoBehaviour
 
             // Subscribe to the sceneLoaded event
             SceneManager.sceneLoaded += onSceneLoaded;
-
             DataReceiver = gameObject.AddComponent<DataReceiver>();
         }
         else
@@ -279,42 +264,9 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        crowSprite = Resources.Load<Sprite>("Crow");
-        if (crowSprite == null)
-        {
-            Debug.LogError("Failed to load Crow.png from Resources");
-        }
 
-        if (timerText == null)
-        {
-            Debug.LogWarning("Timer text not found, creating dynamically.");
-            CreateTimerTextUI();
-        }
-
-        timeRemaining = gameDuration;
     }
 
-    private void CreateTimerTextUI()
-    {
-        GameObject canvasGO = new GameObject("TimerCanvas");
-        Canvas canvas = canvasGO.AddComponent<Canvas>();
-        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        CanvasScaler canvasScaler = canvasGO.AddComponent<CanvasScaler>();
-        canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        canvasScaler.referenceResolution = new Vector2(1920, 1080);
-
-        GameObject timerTextGO = new GameObject("TimerText");
-        timerTextGO.transform.parent = canvasGO.transform;
-
-        timerText = timerTextGO.AddComponent<Text>();
-        timerText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
-        timerText.fontSize = 40;
-        timerText.alignment = TextAnchor.MiddleCenter;
-
-        RectTransform rectTransform = timerText.GetComponent<RectTransform>();
-        rectTransform.sizeDelta = new Vector2(200, 80);
-        rectTransform.anchoredPosition = new Vector2(0, 400);
-    }
 
     public void StartGame1()
     {
@@ -336,54 +288,12 @@ public class GameManager : MonoBehaviour
         CurrentScore = new Game4Score();
         SceneManager.LoadScene("Game4"); // Load the Game4 scene
         isGameActive = true;
-        StartCoroutine(SpawnCrows());
-        StartCoroutine(GameTimer());
-    }
-
-    IEnumerator SpawnCrows()
-    {
-        while (isGameActive)
-        {
-            float spawnDelay = UnityEngine.Random.Range(spawnIntervalMin, spawnIntervalMax);
-            yield return new WaitForSeconds(spawnDelay);
-
-            Vector2 randomPosition = new Vector2(
-                UnityEngine.Random.Range(spawnRangeX.x, spawnRangeX.y),
-                UnityEngine.Random.Range(spawnRangeY.x, spawnRangeY.y)
-            );
-
-            GameObject crow = new GameObject("Crow");
-            SpriteRenderer renderer = crow.AddComponent<SpriteRenderer>();
-            renderer.sprite = crowSprite;
-
-            crow.transform.position = randomPosition;
-            Debug.Log($"Spawned crow at {randomPosition}");
-        }
-    }
-
-    IEnumerator GameTimer()
-    {
-        while (timeRemaining > 0)
-        {
-            timeRemaining -= Time.deltaTime;
-
-            if (timerText != null)
-            {
-                timerText.text = "Time Left: " + Mathf.Ceil(timeRemaining).ToString();
-            }
-
-            yield return null;
-        }
-
-        EndGame();
     }
 
     public void EndGame()
     {
         isGameActive = false;
-        StopAllCoroutines();
         Debug.Log("Game Over!");
-
         DisplayCompoundScore(CurrentScore);
     }
 

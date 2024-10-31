@@ -1,28 +1,21 @@
 using UnityEngine;
 using TMPro;
-using System;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using static Game1Workflow;
 
 public class Timer : MonoBehaviour
 {
-    private float TotalTime;
+    private float TotalTime = 30f; // Set the default total time to 30 seconds
     private float RemainingTime;
     public bool TimerOn = false;
     public TMP_Text timerText;
 
-    public Game1Workflow Game1Workflow;
+    public Game1Workflow game1Workflow;
+    public Game4Workflow game4Workflow;
 
-
-    public 
     void Start()
     {
         RemainingTime = TotalTime;
         TimerOn = false;
     }
-
-
 
     private void Update()
     {
@@ -31,7 +24,7 @@ public class Timer : MonoBehaviour
             if (RemainingTime > 0)
             {
                 RemainingTime -= Time.deltaTime;
-                updateTimer(RemainingTime);
+                UpdateTimer(RemainingTime);
             }
             else
             {
@@ -39,28 +32,32 @@ public class Timer : MonoBehaviour
                 RemainingTime = 0;
                 TimerOn = false;
 
-                Game1Workflow.moveToNextStage();
-                
+                if (game1Workflow != null)
+                {
+                    game1Workflow.moveToNextStage();
+                }
+                else if (game4Workflow != null)
+                {
+                    game4Workflow.moveToNextStage();
+                }
             }
         }
     }
-    private void updateTimer(float currentTime)
-    {
-        currentTime += 1;
 
+    private void UpdateTimer(float currentTime)
+    {
         float minutes = Mathf.FloorToInt(currentTime / 60);
         float seconds = Mathf.FloorToInt(currentTime % 60);
-
-        timerText.text = string.Format("{0:00} : {1:00}", minutes, seconds);
+        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 
     public void StartTimer(float totalTime = -1f)
     {
-        if (totalTime > 0) {
+        if (totalTime > 0)
+        {
             TotalTime = totalTime;
         }
         RemainingTime = TotalTime;
         TimerOn = true;
     }
-    
 }
