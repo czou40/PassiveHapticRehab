@@ -929,6 +929,7 @@ GameObject:
   - component: {fileID: 445269099}
   - component: {fileID: 445269101}
   - component: {fileID: 445269102}
+  - component: {fileID: 445269103}
   m_Layer: 0
   m_Name: Control
   m_TagString: Untagged
@@ -974,8 +975,8 @@ MonoBehaviour:
   onVisibilityLost:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 445269101}
-        m_TargetAssemblyTypeName: Game3Workflow, Assembly-CSharp
+      - m_Target: {fileID: 445269103}
+        m_TargetAssemblyTypeName: Game5Workflow, Assembly-CSharp
         m_MethodName: onVisibilityLost
         m_Mode: 1
         m_Arguments:
@@ -989,8 +990,8 @@ MonoBehaviour:
   onVisibilityGained:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 445269101}
-        m_TargetAssemblyTypeName: Game3Workflow, Assembly-CSharp
+      - m_Target: {fileID: 445269103}
+        m_TargetAssemblyTypeName: Game5Workflow, Assembly-CSharp
         m_MethodName: onVisibilityGained
         m_Mode: 1
         m_Arguments:
@@ -1004,8 +1005,8 @@ MonoBehaviour:
   onVisibilityCountDownEnd:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 445269101}
-        m_TargetAssemblyTypeName: Game3Workflow, Assembly-CSharp
+      - m_Target: {fileID: 445269103}
+        m_TargetAssemblyTypeName: Game5Workflow, Assembly-CSharp
         m_MethodName: onVisibilityEndured
         m_Mode: 1
         m_Arguments:
@@ -1061,8 +1062,8 @@ MonoBehaviour:
   onInstructionCountdownEnd:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 445269101}
-        m_TargetAssemblyTypeName: Game3Workflow, Assembly-CSharp
+      - m_Target: {fileID: 445269103}
+        m_TargetAssemblyTypeName: Game5Workflow, Assembly-CSharp
         m_MethodName: moveToNextStage
         m_Mode: 1
         m_Arguments:
@@ -1091,8 +1092,8 @@ MonoBehaviour:
   onCheatActivated:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 445269101}
-        m_TargetAssemblyTypeName: Game3Workflow, Assembly-CSharp
+      - m_Target: {fileID: 445269103}
+        m_TargetAssemblyTypeName: Game5Workflow, Assembly-CSharp
         m_MethodName: onCheatActivated
         m_Mode: 1
         m_Arguments:
@@ -1125,7 +1126,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 445269088}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5a75ec16181a44c5ea1b25744b732100, type: 3}
   m_Name: 
@@ -1144,6 +1145,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   InstructionObject1: {fileID: 741866141}
   InstructionObject2: {fileID: 669850930}
+--- !u!114 &445269103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 445269088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 820274d3520b7da42aa725d27f4d2e2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &445452707
 GameObject:
   m_ObjectHideFlags: 0

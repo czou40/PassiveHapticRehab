@@ -14,7 +14,8 @@ public enum Game
     None=0,
     Game1=1,
     Game2=2,
-    Game3=3
+    Game3=3,
+    Game5=5
 }
 
 public abstract class GameScore
@@ -188,6 +189,88 @@ public class Game3Score : GameScore
         MaxAngles = new List<float>();
     }
 
+        public void AddRound(float minAngle, float maxAngle)
+    {
+        MinAngles.Add(minAngle);
+        MaxAngles.Add(maxAngle);
+        NumRounds++;
+    }
+
+    public override string ToString()
+    {
+        string s = "Game: " + Game.ToString() + "\n";
+        s += "NumRounds: " + NumRounds.ToString() + "\n";
+        s += "MinAngles: ";
+        foreach (float f in MinAngles)
+        {
+            s += f.ToString() + ", ";
+        }
+        s += "\nMaxAngles: ";
+        foreach (float f in MaxAngles)
+        {
+            s += f.ToString() + ", ";
+        }
+        s += "\nScore: " + Score.ToString();
+        return s;
+    }
+
+    public string GetResultForRound(int round)
+    {
+        if (round < 0 || round >= NumRounds)
+        {
+            throw new ArgumentOutOfRangeException("round", "Round index out of range");
+        }
+        double min = MinAngles[round];
+        double max = MaxAngles[round];
+        // one decimal place
+        return $"Round {round + 1}\nMin Angle: {min:F1}\nMax Angle: {max:F1}\nScore: {max - min:F1}";
+    }
+
+    public string GetResultForRound()
+    {
+        return GetResultForRound(NumRounds - 1);
+    }
+}
+
+
+
+public class Game5Score : GameScore
+{
+    public List<float> MinAngles { get; private set; }
+
+    public List<float> MaxAngles { get; private set; }
+
+    public override int Score
+    {
+        get
+        {
+            if (NumRounds == 0)
+            {
+                return 0;
+            }
+            else
+            {
+                float averageMin = 0;
+                float averageMax = 0;
+                for (int i = 0; i < NumRounds; i++)
+                {
+                    averageMin += MinAngles[i];
+                    averageMax += MaxAngles[i];
+                }
+                averageMin /= NumRounds;
+                averageMax /= NumRounds;
+                return (int)(averageMax - averageMin);
+            }
+        }
+    }
+
+    public Game5Score()
+    {
+        Game = Game.Game3;
+        MinAngles = new List<float>();
+        MaxAngles = new List<float>();
+    }
+
     public void AddRound(float minAngle, float maxAngle)
     {
         MinAngles.Add(minAngle);
@@ -276,19 +359,23 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("StartScene1"); // Load the game scene
     }
 
-    public void StartGame3()
-    {
-        SceneManager.LoadScene("Game3"); // Load the game scene
-    }
 
-
-    public void StartGame2()
+        public void StartGame2()
     {
         SceneManager.LoadScene("Game2"); // Load the game scene
     }
 
-    // Function to pause the game.
-    public void PauseGame()
+        public void StartGame3()
+    {
+            SceneManager.LoadScene("Game3"); // Load the game scene
+    }
+        public void StartGame5()
+    {
+            SceneManager.LoadScene("Game3"); // Load the game scene
+    }
+
+        // Function to pause the game.
+        public void PauseGame()
     {
         Time.timeScale = 0; // This pauses the game.
         gamePaused = true; // Set the flag to true.
