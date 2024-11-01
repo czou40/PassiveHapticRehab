@@ -215,8 +215,8 @@ public class Game3Workflow : MonoBehaviour
                 PoseVisibilityWarner.ResetTriggers();
                 GameStepInstructionShower.HideDisplayedContent();
                 GameStepInstructionShower.HideInstruction();
-                Timer.StartTimer(TimerDuration);
                 HandMovementControl.ShowInstruction2();
+                Timer.StartTimer(TimerDuration);
                 break;
             case GameStage.ROUND_RESULT:
                 Debug.Log("ROUND_RESULT");
@@ -257,9 +257,11 @@ public class Game3Workflow : MonoBehaviour
         switch (CurrentStage)
         {
             case GameStage.UNFURL_INSTRUCTION:
+                Debug.Log("RESETTING COUNTDOWN - UNFURL");
                 GameStepInstructionShower.StartCountdown(CurrentAttempt == 0 ? InstructionCountdownFirstTime : InstructionCountdown);
                 break;
             case GameStage.CLENCH_INSTRUCTION:
+                Debug.Log("RESETTING COUNTDOWN - CLENCH");
                 GameStepInstructionShower.StartCountdown(CurrentAttempt == 0 ? InstructionCountdownFirstTime : InstructionCountdown);
                 break;
             default:

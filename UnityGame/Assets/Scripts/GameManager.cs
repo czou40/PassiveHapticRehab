@@ -293,6 +293,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0; // This pauses the game.
         gamePaused = true; // Set the flag to true.
         // Disable your gameplay mechanics or movement here.
+        Debug.Log("Game Paused");
     }
 
     // Function to start the game.
@@ -300,6 +301,7 @@ public class GameManager : MonoBehaviour
     {
         gamePaused = false; // Set the flag to false.
         Time.timeScale = 1; // This unpauses the game.
+        Debug.Log("Game Resumed");
     }
 
     public void Exit()
