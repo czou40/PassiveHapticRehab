@@ -22,7 +22,7 @@ public class CaterpillarController : MonoBehaviour
         if (!goalReached)
         {
             transform.position -= new Vector3(0, currSpeed * Time.deltaTime, 0);
-        }
+        } 
     }
 
     public void slowMovement()

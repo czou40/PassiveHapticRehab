@@ -4,6 +4,8 @@ using UnityEngine;
 using System.Timers;
 using JetBrains.Annotations;
 using TMPro;
+using UnityEngine.Events;
+
 
 public class Game5Workflow : MonoBehaviour
 {
@@ -40,7 +42,8 @@ public class Game5Workflow : MonoBehaviour
     private GameStage CurrentStage = GameStage.PRE_GAME;
 
     [SerializeField] private TMP_Text ScoreText;
-    [SerializeField] private GameObject caterpillar;
+    //[SerializeField] private GameObject caterpillar;
+    public UnityEvent gameEvent;
 
     public List<GameObject> Game5Score = new List<GameObject>();
 
@@ -113,8 +116,12 @@ public class Game5Workflow : MonoBehaviour
     void updateCaterpillar()
     {
         float percentSize = 0.0f;
-        if (CurrentStage == GameStage.INDEX_GAME)
+        float avg = 0;
+
+        if (CurrentStage == GameStage.INDEX_GAME || CurrentStage == GameStage.MIDDLE_GAME || CurrentStage == GameStage.RING_GAME || CurrentStage == GameStage.PINKIE_GAME)
         {
+            gameEvent.Invoke();
+            /*
             if (MaxAngle >= MaxAngleThreshold)
             {
                 caterpillar.transform.localScale = new Vector3(MAX_SCALE, MAX_SCALE, 1.0f);
@@ -128,15 +135,12 @@ public class Game5Workflow : MonoBehaviour
             {
                 percentSize = 0.0f;
             }
-        }
-        else if (CurrentStage == GameStage.MIDDLE_GAME)
-        {
-           
+            */
         }
 
-        float scale = ((MAX_SCALE - MIN_SCALE) * percentSize) + MIN_SCALE;
+        //float scale = ((MAX_SCALE - MIN_SCALE) * percentSize) + MIN_SCALE;
 
-        caterpillar.transform.localScale = new Vector3(scale, scale, 1.0f);
+        //caterpillar.transform.localScale = new Vector3(scale, scale, 1.0f);
     }
 
     void checkScore()
@@ -163,7 +167,6 @@ public class Game5Workflow : MonoBehaviour
                 updateCaterpillar();
             }
         }
-
 
         ScoreText.text = string.Format("Score: {0:0.##}", Score.Score);
 
