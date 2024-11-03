@@ -3,24 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Timers;
 using JetBrains.Annotations;
+using TMPro;
 
 public class Game5Workflow : MonoBehaviour
 {
     // Start is called before the first frame update
-    private int NumClenching; // Currently unused
+    private int FingerTapCount; // Currently unused
     private float Angle;
 
     private float MaxAngle = -99999;
     private float MinAngle = 99999;
     // //minimum and maximum angle needed to reach to increment score
-    private float MinAngleThreshold = 100.0f;
-    private float MaxAngleThreshold = 170.0f;
+    private float MinAngleThreshold = 110.0f;
+    private float MaxAngleThreshold = 160.0f;
     private int PreGameCountdown = 3;
     private int InstructionCountdown = 5;
     private int InstructionCountdownFirstTime = 10;
     private int TimerDuration = 8;
-    private bool MinAngleExceeded = false;
-    private bool MaxAngleExceeded = false;
+    //private bool MinAngleExceeded = false;
+    private bool fingerTouching = false;
+
     private HandMovementControl HandMovementControl;
 
     // private ArrayList MinAngles = new ArrayList();
@@ -37,15 +39,41 @@ public class Game5Workflow : MonoBehaviour
     private Timer Timer;
     private GameStage CurrentStage = GameStage.PRE_GAME;
 
+    [SerializeField] private TMP_Text ScoreText;
+    [SerializeField] private GameObject caterpillar;
+
+    public List<GameObject> Game5Score = new List<GameObject>();
+
+    private const float MAX_SCALE = 0.9f;
+    private const float MIN_SCALE = 0.1f;
+
     private enum GameStage
     {
         PRE_GAME,
-        UNFURL_INSTRUCTION,
-        UNFURL_GAME,
 
-        CLENCH_INSTRUCTION,
+        INDEX_INSTRUCTION,
 
-        CLENCH_GAME,
+        INDEX_GAME,
+
+        ROUND_RESULT_INDEX,
+
+        MIDDLE_INSTRUCTION,
+
+        MIDDLE_GAME,
+
+        ROUND_RESULT_MIDDLE,
+
+        RING_INSTRUCTION,
+
+        RING_GAME,
+
+        ROUND_RESULT_RING,
+
+        PINKIE_INSTRUCTION,
+
+        PINKIE_GAME,
+
+        ROUND_RESULT_PINKIE,
 
         ROUND_RESULT,
 
@@ -54,13 +82,13 @@ public class Game5Workflow : MonoBehaviour
 
     void Start()
     {
-        NumClenching = 0;
+        FingerTapCount = 0;
         CurrentStage = GameStage.PRE_GAME;
         Score = new Game5Score();
         Score.MarkStartTime();
         DataReceiver = GameManager.Instance.DataReceiver;
         GameStepInstructionShower = GetComponent<GameStepInstructionShower>();
-        // game 3 requires hand in position. TODO: change for game 5
+        // game 3 requires hand in position
         PoseVisibilityWarner = GetComponent<PoseVisibilityWarner>();
         RoundResultShower = GetComponent<RoundResultShower>();
         HandMovementControl = GetComponent<HandMovementControl>();
@@ -72,41 +100,73 @@ public class Game5Workflow : MonoBehaviour
     void Update()
     {
         checkScore();
-        if (MaxAngleExceeded && MinAngleExceeded)
+
+        if (fingerTouching)
         {
             //condition reached, increment score
-            NumClenching += 1;
+            FingerTapCount += 1;
             //reset the exceed flags
-            MaxAngleExceeded = false;
-            MinAngleExceeded = false;
+            fingerTouching = false;
         }
+    }
+
+    void updateCaterpillar()
+    {
+        float percentSize = 0.0f;
+        if (CurrentStage == GameStage.INDEX_GAME)
+        {
+            if (MaxAngle >= MaxAngleThreshold)
+            {
+                caterpillar.transform.localScale = new Vector3(MAX_SCALE, MAX_SCALE, 1.0f);
+                return;
+            }
+            else if (MaxAngle >= MinAngleThreshold)
+            {
+                percentSize = (float)(MaxAngle - MinAngleThreshold) / (MaxAngleThreshold - MinAngleThreshold);
+            }
+            else
+            {
+                percentSize = 0.0f;
+            }
+        }
+        else if (CurrentStage == GameStage.MIDDLE_GAME)
+        {
+           
+        }
+
+        float scale = ((MAX_SCALE - MIN_SCALE) * percentSize) + MIN_SCALE;
+
+        caterpillar.transform.localScale = new Vector3(scale, scale, 1.0f);
     }
 
     void checkScore()
     {
         if (DataReceiver.isUpperBodyVisible)
         {
-            Angle = DataReceiver.getLeftAverageFingerExtensionAngle();
-
-            if (Angle > MaxAngle && CurrentStage == GameStage.UNFURL_GAME)
+            if (CurrentStage == GameStage.INDEX_GAME)
             {
-                MaxAngle = Angle;
+                Angle = DataReceiver.getLeftAverageFingerExtensionAngle();
+            } else if (CurrentStage == GameStage.MIDDLE_GAME)
+            {
+                Angle = DataReceiver.getLeftAverageFingerExtensionAngle();
+            } else if (CurrentStage == GameStage.RING_GAME)
+            {
+                Angle = DataReceiver.getLeftAverageFingerExtensionAngle();
+            } else if (CurrentStage == GameStage.PINKIE_GAME)
+            {
+                Angle = DataReceiver.getLeftAverageFingerExtensionAngle();
             }
 
-            if (Angle < MinAngle && CurrentStage == GameStage.CLENCH_GAME)
+            if (Angle < MaxAngleThreshold)
             {
-                MinAngle = Angle;
-            }
-
-            if (Angle > MaxAngleThreshold)
-            {
-                MaxAngleExceeded = true;
-            }
-            else if (Angle < MinAngleThreshold)
-            {
-                MinAngleExceeded = true;
+                fingerTouching = true;
+                updateCaterpillar();
             }
         }
+
+
+        ScoreText.text = string.Format("Score: {0:0.##}", Score.Score);
+
     }
 
 
@@ -131,23 +191,56 @@ public class Game5Workflow : MonoBehaviour
         switch (CurrentStage)
         {
             case GameStage.PRE_GAME:
-                CurrentStage = GameStage.UNFURL_INSTRUCTION;
+                CurrentStage = GameStage.INDEX_INSTRUCTION;
                 break;
-            case GameStage.UNFURL_INSTRUCTION:
-                CurrentStage = GameStage.UNFURL_GAME;
+            case GameStage.INDEX_INSTRUCTION:
+                CurrentStage = GameStage.INDEX_GAME;
                 break;
-            case GameStage.UNFURL_GAME:
-                CurrentStage = GameStage.CLENCH_INSTRUCTION;
-                break;
-            case GameStage.CLENCH_INSTRUCTION:
-                CurrentStage = GameStage.CLENCH_GAME;
-                break;
-            case GameStage.CLENCH_GAME:
+            case GameStage.INDEX_GAME:
                 CurrentAttempt += 1;
                 Score.AddRound(MinAngle, MaxAngle);
-                CurrentStage = GameStage.ROUND_RESULT;
+                CurrentStage = GameStage.ROUND_RESULT_INDEX;
                 break;
-            case GameStage.ROUND_RESULT: 
+            case GameStage.ROUND_RESULT_INDEX:
+                CurrentAttempt += 1;
+                Score.AddRound(MinAngle, MaxAngle);
+                CurrentStage = GameStage.MIDDLE_INSTRUCTION;
+                break;
+            case GameStage.MIDDLE_INSTRUCTION:
+                CurrentStage = GameStage.MIDDLE_GAME;
+                break;
+            case GameStage.MIDDLE_GAME:
+                CurrentAttempt += 1;
+                Score.AddRound(MinAngle, MaxAngle);
+                CurrentStage = GameStage.ROUND_RESULT_MIDDLE;
+                break;
+            case GameStage.ROUND_RESULT_MIDDLE:
+                CurrentAttempt += 1;
+                Score.AddRound(MinAngle, MaxAngle);
+                CurrentStage = GameStage.RING_INSTRUCTION;
+                break;
+            case GameStage.RING_INSTRUCTION:
+                CurrentStage = GameStage.RING_GAME;
+                break;
+            case GameStage.RING_GAME:
+                CurrentAttempt += 1;
+                Score.AddRound(MinAngle, MaxAngle);
+                CurrentStage = GameStage.ROUND_RESULT_RING;
+                break;
+            case GameStage.ROUND_RESULT_RING:
+                CurrentAttempt += 1;
+                Score.AddRound(MinAngle, MaxAngle);
+                CurrentStage = GameStage.PINKIE_INSTRUCTION;
+                break;
+            case GameStage.PINKIE_INSTRUCTION:
+                CurrentStage = GameStage.PINKIE_GAME;
+                break;
+            case GameStage.PINKIE_GAME:
+                CurrentAttempt += 1;
+                Score.AddRound(MinAngle, MaxAngle);
+                CurrentStage = GameStage.ROUND_RESULT_PINKIE;
+                break;
+            case GameStage.ROUND_RESULT:
                 if (CurrentAttempt < MaxAttempts)
                 {
                     CurrentStage = GameStage.PRE_GAME;
@@ -183,16 +276,17 @@ public class Game5Workflow : MonoBehaviour
                 HandMovementControl.HideInstruction();
                 Debug.Log("Pre-game End");
                 break;
-            case GameStage.UNFURL_INSTRUCTION:
-                Debug.Log("UNFURL_INSTRUCTION");
+            case GameStage.INDEX_INSTRUCTION:
+                Debug.Log("INDEX_INSTRUCTION");
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
-                GameStepInstructionShower.SetInstructionText("There is a long caterpillar coming to your farm! Tap your finger as quickly and widely as you can to stop it!");
+                GameStepInstructionShower.SetInstructionText("You have 30 seconds to tap as quickly as you can. Let¡¯s first start with your index finger. Ready?");
                 GameStepInstructionShower.ShowInstruction();
+                // GameStepInstructionShower.StartCountdown(InstructionCountdown);
                 GameStepInstructionShower.SetDisplayedContent(0);
                 break;
-            case GameStage.UNFURL_GAME:
-                Debug.Log("UNFURL_GAME");
+            case GameStage.INDEX_GAME:
+                Debug.Log("INDEX_GAME");
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
                 GameStepInstructionShower.HideDisplayedContent();
@@ -200,17 +294,53 @@ public class Game5Workflow : MonoBehaviour
                 HandMovementControl.ShowInstruction1();
                 Timer.StartTimer(TimerDuration);
                 break;
-            case GameStage.CLENCH_INSTRUCTION:
-                Debug.Log("CLENCH_INSTRUCTION");
+            case GameStage.MIDDLE_INSTRUCTION:
+                Debug.Log("MIDDLE_INSTRUCTION");
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
-                GameStepInstructionShower.SetInstructionText("You have 30 seconds to tap as quickly as you can. Let¡¯s first start with your index finger. Ready?");
+                GameStepInstructionShower.SetInstructionText("Now, you need to clench your fingers tightly to collect more fruits. Ready?");
                 GameStepInstructionShower.ShowInstruction();
                 GameStepInstructionShower.SetDisplayedContent(1);
                 HandMovementControl.HideInstruction();
                 break;
-            case GameStage.CLENCH_GAME:
-                Debug.Log("CLENCH_GAME");
+            case GameStage.MIDDLE_GAME:
+                Debug.Log("MIDDLE_GAME");
+                GameManager.Instance.PauseGame();
+                PoseVisibilityWarner.ResetTriggers();
+                GameStepInstructionShower.HideDisplayedContent();
+                GameStepInstructionShower.HideInstruction();
+                HandMovementControl.ShowInstruction2();
+                Timer.StartTimer(TimerDuration);
+                break;
+            case GameStage.RING_INSTRUCTION:
+                Debug.Log("RING_INSTRUCTION");
+                GameManager.Instance.PauseGame();
+                PoseVisibilityWarner.ResetTriggers();
+                GameStepInstructionShower.SetInstructionText("Now, you need to clench your fingers tightly to collect more fruits. Ready?");
+                GameStepInstructionShower.ShowInstruction();
+                GameStepInstructionShower.SetDisplayedContent(1);
+                HandMovementControl.HideInstruction();
+                break;
+            case GameStage.RING_GAME:
+                Debug.Log("RING_GAME");
+                GameManager.Instance.PauseGame();
+                PoseVisibilityWarner.ResetTriggers();
+                GameStepInstructionShower.HideDisplayedContent();
+                GameStepInstructionShower.HideInstruction();
+                HandMovementControl.ShowInstruction2();
+                Timer.StartTimer(TimerDuration);
+                break;
+            case GameStage.PINKIE_INSTRUCTION:
+                Debug.Log("PINKIE_INSTRUCTION");
+                GameManager.Instance.PauseGame();
+                PoseVisibilityWarner.ResetTriggers();
+                GameStepInstructionShower.SetInstructionText("Now, you need to clench your fingers tightly to collect more fruits. Ready?");
+                GameStepInstructionShower.ShowInstruction();
+                GameStepInstructionShower.SetDisplayedContent(1);
+                HandMovementControl.HideInstruction();
+                break;
+            case GameStage.PINKIE_GAME:
+                Debug.Log("PINKIE_GAME");
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
                 GameStepInstructionShower.HideDisplayedContent();
@@ -223,6 +353,7 @@ public class Game5Workflow : MonoBehaviour
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
                 GameStepInstructionShower.HideInstruction();
+                // RoundResultShower.SetResultText(Score.GetResultForRound());
                 RoundResultShower.SetResultText(Score.GetResultForRound());
                 bool isLastAttempt = CurrentAttempt == MaxAttempts;
                 RoundResultShower.SetNextButtonText(isLastAttempt ? "View Results" : "Jump to Round " + (CurrentAttempt + 1));
@@ -231,6 +362,8 @@ public class Game5Workflow : MonoBehaviour
                 break;
             case GameStage.FINISHED:
                 Debug.Log("FINISHED");
+                // RoundResultShower.SetResultText(Score.ToString());
+                // RoundResultShower.Show();
                 RoundResultShower.Hide();
                 HandMovementControl.HideInstruction();
                 Debug.Log("Game Finished");
@@ -244,27 +377,35 @@ public class Game5Workflow : MonoBehaviour
 
     private void resetScores()
     {
-        NumClenching = 0;
+        FingerTapCount = 0;
         Angle = 0;
         MaxAngle = -99999;
         MinAngle = 99999;
-        MaxAngleExceeded = false;
-        MinAngleExceeded = false;
+        fingerTouching = false;
+
+        // caterpillar.GetComponent<Animator>().ResetTrigger("Collected");
     }
 
     public void onVisibilityEndured()
     {
         switch (CurrentStage)
         {
-            case GameStage.UNFURL_INSTRUCTION:
-                Debug.Log("RESETTING COUNTDOWN - TAP");
+            case GameStage.INDEX_INSTRUCTION:
+                Debug.Log("RESETTING COUNTDOWN - INDEX");
                 GameStepInstructionShower.StartCountdown(CurrentAttempt == 0 ? InstructionCountdownFirstTime : InstructionCountdown);
                 break;
-            /*case GameStage.CLENCH_INSTRUCTION:
-                Debug.Log("RESETTING COUNTDOWN - CLENCH");
+            case GameStage.MIDDLE_INSTRUCTION:
+                Debug.Log("RESETTING COUNTDOWN - MIDDLE");
                 GameStepInstructionShower.StartCountdown(CurrentAttempt == 0 ? InstructionCountdownFirstTime : InstructionCountdown);
                 break;
-            */
+            case GameStage.RING_INSTRUCTION:
+                Debug.Log("RESETTING COUNTDOWN - RING");
+                GameStepInstructionShower.StartCountdown(CurrentAttempt == 0 ? InstructionCountdownFirstTime : InstructionCountdown);
+                break;
+            case GameStage.PINKIE_INSTRUCTION:
+                Debug.Log("RESETTING COUNTDOWN - PINKIE");
+                GameStepInstructionShower.StartCountdown(CurrentAttempt == 0 ? InstructionCountdownFirstTime : InstructionCountdown);
+                break;
             default:
                 //do nothing
                 break;
