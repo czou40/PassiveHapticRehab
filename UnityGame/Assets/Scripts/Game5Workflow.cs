@@ -21,7 +21,7 @@ public class Game5Workflow : MonoBehaviour
     private int PreGameCountdown = 3;
     private int InstructionCountdown = 5;
     private int InstructionCountdownFirstTime = 10;
-    private int TimerDuration = 8;
+    private int TimerDuration = 10; //TODO: change to 30
     //private bool MinAngleExceeded = false;
     private bool fingerTouching = false;
 
@@ -42,7 +42,8 @@ public class Game5Workflow : MonoBehaviour
     private GameStage CurrentStage = GameStage.PRE_GAME;
 
     [SerializeField] private TMP_Text ScoreText;
-    //[SerializeField] private GameObject caterpillar;
+    [SerializeField] private GameObject caterpillar;
+    CaterpillarController catController;
     public UnityEvent gameEvent;
 
     public List<GameObject> Game5Score = new List<GameObject>();
@@ -91,12 +92,13 @@ public class Game5Workflow : MonoBehaviour
         Score.MarkStartTime();
         DataReceiver = GameManager.Instance.DataReceiver;
         GameStepInstructionShower = GetComponent<GameStepInstructionShower>();
-        // game 3 requires hand in position
+        // game 5 requires hand in position
         PoseVisibilityWarner = GetComponent<PoseVisibilityWarner>();
         RoundResultShower = GetComponent<RoundResultShower>();
         HandMovementControl = GetComponent<HandMovementControl>();
         Timer = GetComponent<Timer>();
         initializeCurrentStage();
+        catController = caterpillar.GetComponent<CaterpillarController>();
     }
 
     // Update is called once per frame
@@ -120,7 +122,8 @@ public class Game5Workflow : MonoBehaviour
 
         if (CurrentStage == GameStage.INDEX_GAME || CurrentStage == GameStage.MIDDLE_GAME || CurrentStage == GameStage.RING_GAME || CurrentStage == GameStage.PINKIE_GAME)
         {
-            gameEvent.Invoke();
+            catController.slowMovement();
+            //gameEvent.Invoke();
             /*
             if (MaxAngle >= MaxAngleThreshold)
             {
@@ -283,7 +286,7 @@ public class Game5Workflow : MonoBehaviour
                 Debug.Log("INDEX_INSTRUCTION");
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
-                GameStepInstructionShower.SetInstructionText("You have 30 seconds to tap as quickly as you can. Let¡¯s first start with your index finger. Ready?");
+                GameStepInstructionShower.SetInstructionText("You have 30 seconds to tap as quickly as you can. Let's first start with your index finger. Ready?");
                 GameStepInstructionShower.ShowInstruction();
                 // GameStepInstructionShower.StartCountdown(InstructionCountdown);
                 GameStepInstructionShower.SetDisplayedContent(0);
@@ -301,7 +304,7 @@ public class Game5Workflow : MonoBehaviour
                 Debug.Log("MIDDLE_INSTRUCTION");
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
-                GameStepInstructionShower.SetInstructionText("Now, you need to clench your fingers tightly to collect more fruits. Ready?");
+                GameStepInstructionShower.SetInstructionText("Now, let's use your middle finger to tap with your thumb. Ready?");
                 GameStepInstructionShower.ShowInstruction();
                 GameStepInstructionShower.SetDisplayedContent(1);
                 HandMovementControl.HideInstruction();
@@ -319,7 +322,7 @@ public class Game5Workflow : MonoBehaviour
                 Debug.Log("RING_INSTRUCTION");
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
-                GameStepInstructionShower.SetInstructionText("Now, you need to clench your fingers tightly to collect more fruits. Ready?");
+                GameStepInstructionShower.SetInstructionText("It's time to move on to tapping your ring finger to tap with your thumb. Ready?");
                 GameStepInstructionShower.ShowInstruction();
                 GameStepInstructionShower.SetDisplayedContent(1);
                 HandMovementControl.HideInstruction();
@@ -337,7 +340,7 @@ public class Game5Workflow : MonoBehaviour
                 Debug.Log("PINKIE_INSTRUCTION");
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
-                GameStepInstructionShower.SetInstructionText("Now, you need to clench your fingers tightly to collect more fruits. Ready?");
+                GameStepInstructionShower.SetInstructionText("Finally, let's use your pinkie finger to tap with your thumb. Ready?");
                 GameStepInstructionShower.ShowInstruction();
                 GameStepInstructionShower.SetDisplayedContent(1);
                 HandMovementControl.HideInstruction();
@@ -386,7 +389,7 @@ public class Game5Workflow : MonoBehaviour
         MinAngle = 99999;
         fingerTouching = false;
 
-        // caterpillar.GetComponent<Animator>().ResetTrigger("Collected");
+        catController.Reset();
     }
 
     public void onVisibilityEndured()
