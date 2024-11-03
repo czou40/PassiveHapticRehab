@@ -187,7 +187,7 @@ public class Game5Workflow : MonoBehaviour
                 Debug.Log("UNFURL_INSTRUCTION");
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
-                GameStepInstructionShower.SetInstructionText("First, you need to unfurl your fingers to the maximum to harvest more fruits. Ready?");
+                GameStepInstructionShower.SetInstructionText("There is a long caterpillar coming to your farm! Tap your finger as quickly and widely as you can to stop it!");
                 GameStepInstructionShower.ShowInstruction();
                 GameStepInstructionShower.SetDisplayedContent(0);
                 break;
@@ -204,7 +204,7 @@ public class Game5Workflow : MonoBehaviour
                 Debug.Log("CLENCH_INSTRUCTION");
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
-                GameStepInstructionShower.SetInstructionText("Now, you need to clench your fingers tightly to collect more fruits. Ready?");
+                GameStepInstructionShower.SetInstructionText("You have 30 seconds to tap as quickly as you can. Let¡¯s first start with your index finger. Ready?");
                 GameStepInstructionShower.ShowInstruction();
                 GameStepInstructionShower.SetDisplayedContent(1);
                 HandMovementControl.HideInstruction();
@@ -257,13 +257,14 @@ public class Game5Workflow : MonoBehaviour
         switch (CurrentStage)
         {
             case GameStage.UNFURL_INSTRUCTION:
-                Debug.Log("RESETTING COUNTDOWN - UNFURL");
+                Debug.Log("RESETTING COUNTDOWN - TAP");
                 GameStepInstructionShower.StartCountdown(CurrentAttempt == 0 ? InstructionCountdownFirstTime : InstructionCountdown);
                 break;
-            case GameStage.CLENCH_INSTRUCTION:
+            /*case GameStage.CLENCH_INSTRUCTION:
                 Debug.Log("RESETTING COUNTDOWN - CLENCH");
                 GameStepInstructionShower.StartCountdown(CurrentAttempt == 0 ? InstructionCountdownFirstTime : InstructionCountdown);
                 break;
+            */
             default:
                 //do nothing
                 break;
