@@ -42,7 +42,6 @@ public class Game3Workflow : MonoBehaviour
     [SerializeField] private GameObject mainApple;
 
     public List<GameObject> ScoreApples = new List<GameObject>();
-    private bool currRoundAppleScored = false;
 
     private const float MAX_SCALE = 0.9f;
     private const float MIN_SCALE = 0.1f;
@@ -248,6 +247,7 @@ public class Game3Workflow : MonoBehaviour
                 PoseVisibilityWarner.ResetTriggers();
                 GameStepInstructionShower.SetInstructionText("First, you need to unfurl your fingers to the maximum to harvest more fruits. Ready?");
                 GameStepInstructionShower.ShowInstruction();
+                // GameStepInstructionShower.StartCountdown(InstructionCountdown);
                 GameStepInstructionShower.SetDisplayedContent(0);
                 break;
             case GameStage.UNFURL_GAME:
@@ -282,7 +282,8 @@ public class Game3Workflow : MonoBehaviour
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
                 GameStepInstructionShower.HideInstruction();
-                RoundResultShower.SetResultText(Score.GetResultForRound());
+                // RoundResultShower.SetResultText(Score.GetResultForRound());
+                RoundResultShower.SetResultText(Score.GetScoreForRound());
                 bool isLastAttempt = CurrentAttempt == MaxAttempts;
                 RoundResultShower.SetNextButtonText(isLastAttempt ? "View Results" : "Jump to Round " + (CurrentAttempt + 1));
                 RoundResultShower.Show();
@@ -312,7 +313,6 @@ public class Game3Workflow : MonoBehaviour
         MaxAngleExceeded = false;
         MinAngleExceeded = false;
 
-        currRoundAppleScored = false;
         // mainApple.GetComponent<Animator>().ResetTrigger("Collected");
     }
 

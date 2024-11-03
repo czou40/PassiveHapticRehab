@@ -229,6 +229,20 @@ public class Game3Score : GameScore
     {
         return GetResultForRound(NumRounds - 1);
     }
+
+    public string GetScoreForRound(int round)
+    {
+        if (round < 0 || round >= NumRounds)
+        {
+            throw new ArgumentOutOfRangeException("round", "Round index out of range");
+        }
+        return $"{(int)(MaxAngles[round] - MinAngles[round])}";
+    } 
+
+    public string GetScoreForRound()
+    {
+        return GetScoreForRound(NumRounds - 1);
+    } 
 }
 
 
