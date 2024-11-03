@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Timers;
 using JetBrains.Annotations;
+using TMPro;
 
 public class Game3Workflow : MonoBehaviour
 {
@@ -13,8 +14,8 @@ public class Game3Workflow : MonoBehaviour
     private float MaxAngle = -99999;
     private float MinAngle = 99999;
     // //minimum and maximum angle needed to reach to increment score
-    private float MinAngleThreshold = 100.0f;
-    private float MaxAngleThreshold = 170.0f;
+    private float MinAngleThreshold = 110.0f;
+    private float MaxAngleThreshold = 160.0f;
     private int PreGameCountdown = 3;
     private int InstructionCountdown = 5;
     private int InstructionCountdownFirstTime = 10;
@@ -36,6 +37,15 @@ public class Game3Workflow : MonoBehaviour
     private RoundResultShower RoundResultShower;
     private Timer Timer;
     private GameStage CurrentStage = GameStage.PRE_GAME;
+    
+    [SerializeField] private TMP_Text ScoreText; 
+    [SerializeField] private GameObject mainApple;
+
+    public List<GameObject> ScoreApples = new List<GameObject>();
+    private bool currRoundAppleScored = false;
+
+    private const float MAX_SCALE = 0.9f;
+    private const float MIN_SCALE = 0.1f;
 
     private enum GameStage
     {
@@ -82,6 +92,49 @@ public class Game3Workflow : MonoBehaviour
         }
     }
 
+    void updateAppleScale()
+    {
+        float percentSize = 0.0f;
+        if (CurrentStage == GameStage.UNFURL_GAME)
+        {
+            if (MaxAngle >= MaxAngleThreshold)
+            {
+                mainApple.transform.localScale = new Vector3(MAX_SCALE, MAX_SCALE, 1.0f);
+                return;
+            }
+            else if (MaxAngle >= MinAngleThreshold)
+            {
+                percentSize = (float) (MaxAngle - MinAngleThreshold) / (MaxAngleThreshold - MinAngleThreshold);
+            }
+            else
+            {
+                percentSize = 0.0f;
+            }
+        }
+        else if (CurrentStage == GameStage.CLENCH_GAME)
+        {
+            if (MinAngle <= MinAngleThreshold)
+            {
+                mainApple.transform.localScale = new Vector3(0.0f, 0.0f, 1.0f);
+                // mainApple.GetComponent<Animator>().SetTrigger("Collected");
+                ScoreApples[CurrentAttempt].SetActive(true);
+                return;
+            }
+            else if (MinAngle <= MaxAngleThreshold)
+            {
+                percentSize = 1.0f - ((float) (MaxAngle - MinAngle) / (MaxAngle - MinAngleThreshold));
+            }
+            else
+            {
+                percentSize = 1.0f;
+            }
+        }
+
+        float scale = ((MAX_SCALE - MIN_SCALE) * percentSize) + MIN_SCALE;
+        
+        mainApple.transform.localScale = new Vector3(scale, scale, 1.0f);
+    }
+
     void checkScore()
     {
         if (DataReceiver.isUpperBodyVisible)
@@ -91,11 +144,13 @@ public class Game3Workflow : MonoBehaviour
             if (Angle > MaxAngle && CurrentStage == GameStage.UNFURL_GAME)
             {
                 MaxAngle = Angle;
+                updateAppleScale();
             }
 
             if (Angle < MinAngle && CurrentStage == GameStage.CLENCH_GAME)
             {
                 MinAngle = Angle;
+                updateAppleScale();
             }
 
             if (Angle > MaxAngleThreshold)
@@ -107,6 +162,10 @@ public class Game3Workflow : MonoBehaviour
                 MinAngleExceeded = true;
             }
         }
+
+        
+        ScoreText.text = string.Format("Score: {0:0.##}", Score.Score);
+        
     }
 
 
@@ -231,6 +290,8 @@ public class Game3Workflow : MonoBehaviour
                 break;
             case GameStage.FINISHED:
                 Debug.Log("FINISHED");
+                // RoundResultShower.SetResultText(Score.ToString());
+                // RoundResultShower.Show();
                 RoundResultShower.Hide();
                 HandMovementControl.HideInstruction();
                 Debug.Log("Game Finished");
@@ -250,6 +311,9 @@ public class Game3Workflow : MonoBehaviour
         MinAngle = 99999;
         MaxAngleExceeded = false;
         MinAngleExceeded = false;
+
+        currRoundAppleScored = false;
+        // mainApple.GetComponent<Animator>().ResetTrigger("Collected");
     }
 
     public void onVisibilityEndured()
