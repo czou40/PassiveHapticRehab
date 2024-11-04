@@ -14,14 +14,18 @@ public class Game5Workflow : MonoBehaviour
     private float Distance;
 
     // maximum distance needed to slow down the caterpillar
-    private float MaxDistanceThreshold = 0.2f;
+    private float MaxDistanceThreshold = 0.4f;
     private int PreGameCountdown = 3;
     private int InstructionCountdown = 5;
     private int InstructionCountdownFirstTime = 8;
-    private int TimerDuration = 10; //TODO: change to 30
+    private int TimerDuration = 30; //TODO: change to 30
     //private bool MinAngleExceeded = false;
     private bool fingerTouching = false;
     private bool fingerSeparated = false;
+    
+    public float bufferTime = 0.4f;
+    private float tappingBuffer;
+    private bool buffered = false;
 
     private HandMovementControl HandMovementControl;
 
@@ -96,6 +100,8 @@ public class Game5Workflow : MonoBehaviour
         Timer = GetComponent<Timer>();
         initializeCurrentStage();
         CaterpillarController catControl = caterpillar.GetComponent<CaterpillarController>();
+
+        tappingBuffer = bufferTime;
     }
 
     // Update is called once per frame
@@ -103,44 +109,37 @@ public class Game5Workflow : MonoBehaviour
     {
         checkScore();
 
-        if (fingerTouching && fingerSeparated)
+        if (!buffered)
+        {
+            tappingBuffer -= Time.deltaTime;
+        }
+        
+        if (tappingBuffer <= 0.0f)
+        {
+            buffered = true;
+            tappingBuffer = bufferTime;
+        }
+
+        if (buffered && fingerTouching && fingerSeparated)
         {
             //condition reached, increment score
             FingerTapCount += 1;
+            Debug.Log("Count: " + FingerTapCount);
             updateCaterpillar();
             //reset the exceed flags
             fingerTouching = false;
+            fingerSeparated = false;
+            buffered = false;
+            tappingBuffer = bufferTime;
         }
     }
 
     void updateCaterpillar()
     {
-        float percentSize = 0.0f;
-       
         if (CurrentStage == GameStage.INDEX_GAME || CurrentStage == GameStage.MIDDLE_GAME || CurrentStage == GameStage.RING_GAME || CurrentStage == GameStage.PINKIE_GAME)
         {
             caterpillar.GetComponent<CaterpillarController>().slowMovement();
-            //gameEvent.Invoke();
-            /*
-            if (MaxAngle >= MaxAngleThreshold)
-            {
-                caterpillar.transform.localScale = new Vector3(MAX_SCALE, MAX_SCALE, 1.0f);
-                return;
-            }
-            else if (MaxAngle >= MinAngleThreshold)
-            {
-                percentSize = (float)(MaxAngle - MinAngleThreshold) / (MaxAngleThreshold - MinAngleThreshold);
-            }
-            else
-            {
-                percentSize = 0.0f;
-            }
-            */
         }
-
-        //float scale = ((MAX_SCALE - MIN_SCALE) * percentSize) + MIN_SCALE;
-
-        //caterpillar.transform.localScale = new Vector3(scale, scale, 1.0f);
     }
 
     void checkScore()
@@ -150,7 +149,6 @@ public class Game5Workflow : MonoBehaviour
             if (CurrentStage == GameStage.INDEX_GAME)
             {
                 Distance = DataReceiver.getLeftIndexFingerDistance();
-                Debug.Log("got angle");
             } else if (CurrentStage == GameStage.MIDDLE_GAME)
             {
                 Distance = DataReceiver.getLeftMiddleFingerDistance();
@@ -160,18 +158,21 @@ public class Game5Workflow : MonoBehaviour
             } else if (CurrentStage == GameStage.PINKIE_GAME)
             {
                 Distance = DataReceiver.getLeftPinkieFingerDistance();
+            } else
+            {
+                return;
             }
 
-            Debug.Log("Distance: " + Distance);
+            //Debug.Log("Distance: " + Distance);
 
             if (Distance < MaxDistanceThreshold)
             {
                 fingerTouching = true;
-                updateCaterpillar();
             } else
             {
                 fingerSeparated = true;
             }
+
         }
 
         ScoreText.text = string.Format("Score: {0:0.##}", Score.Score);
