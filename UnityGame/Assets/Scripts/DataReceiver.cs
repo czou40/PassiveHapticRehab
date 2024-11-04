@@ -410,7 +410,7 @@ public class DataReceiver : MonoBehaviour
         return angleSum / anglesToCalculate.GetLength(0);
     }
 
-    public float getLeftIndexFingerAngle()
+    public float getLeftIndexFingerDistance()
     {
         float distance = Vector3.Distance(LeftHandPositions[4], LeftHandPositions[8]);
         Debug.Log("4" + LeftHandPositions[4]);

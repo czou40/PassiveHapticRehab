@@ -10,14 +10,13 @@ using UnityEngine.Events;
 public class Game5Workflow : MonoBehaviour
 {
     // Start is called before the first frame update
-    private int FingerTapCount; // Currently unused
-    private float Angle;
+    private int FingerTapCount; 
+    private float Distance;
 
     private float MaxAngle = -99999;
     private float MinAngle = 99999;
-    // //minimum and maximum angle needed to reach to increment score
-    private float MinAngleThreshold = 110.0f;
-    private float MaxAngleThreshold = 10.0f;
+    // maximum distance needed to slow down the caterpillar
+    private float MaxDistanceThreshold = 10.0f;
     private int PreGameCountdown = 3;
     private int InstructionCountdown = 5;
     private int InstructionCountdownFirstTime = 10;
@@ -151,22 +150,22 @@ public class Game5Workflow : MonoBehaviour
         {
             if (CurrentStage == GameStage.INDEX_GAME)
             {
-                Angle = DataReceiver.getLeftIndexFingerAngle();
+                Distance = DataReceiver.getLeftIndexFingerDistance();
                 Debug.Log("got angle");
             } else if (CurrentStage == GameStage.MIDDLE_GAME)
             {
-                Angle = DataReceiver.getLeftAverageFingerExtensionAngle();
+                Distance = DataReceiver.getLeftIndexFingerDistance();
             } else if (CurrentStage == GameStage.RING_GAME)
             {
-                Angle = DataReceiver.getLeftAverageFingerExtensionAngle();
+                Distance = DataReceiver.getLeftIndexFingerDistance();
             } else if (CurrentStage == GameStage.PINKIE_GAME)
             {
-                Angle = DataReceiver.getLeftAverageFingerExtensionAngle();
+                Distance = DataReceiver.getLeftIndexFingerDistance();
             }
 
-            Debug.Log("Angle: " + Angle);
+            Debug.Log("Distance: " + Distance);
 
-            if (Angle < MaxAngleThreshold)
+            if (Distance < MaxDistanceThreshold)
             {
                 fingerTouching = true;
                 updateCaterpillar();
@@ -206,12 +205,12 @@ public class Game5Workflow : MonoBehaviour
                 break;
             case GameStage.INDEX_GAME:
                 CurrentAttempt += 1;
-                Score.AddRound(MinAngle, MaxAngle);
+                Score.AddRound(FingerTapCount);
                 CurrentStage = GameStage.ROUND_RESULT_INDEX;
                 break;
             case GameStage.ROUND_RESULT_INDEX:
                 CurrentAttempt += 1;
-                Score.AddRound(MinAngle, MaxAngle);
+                Score.AddRound(FingerTapCount);
                 CurrentStage = GameStage.MIDDLE_INSTRUCTION;
                 break;
             case GameStage.MIDDLE_INSTRUCTION:
@@ -219,12 +218,12 @@ public class Game5Workflow : MonoBehaviour
                 break;
             case GameStage.MIDDLE_GAME:
                 CurrentAttempt += 1;
-                Score.AddRound(MinAngle, MaxAngle);
+                Score.AddRound(FingerTapCount);
                 CurrentStage = GameStage.ROUND_RESULT_MIDDLE;
                 break;
             case GameStage.ROUND_RESULT_MIDDLE:
                 CurrentAttempt += 1;
-                Score.AddRound(MinAngle, MaxAngle);
+                Score.AddRound(FingerTapCount);
                 CurrentStage = GameStage.RING_INSTRUCTION;
                 break;
             case GameStage.RING_INSTRUCTION:
@@ -232,12 +231,12 @@ public class Game5Workflow : MonoBehaviour
                 break;
             case GameStage.RING_GAME:
                 CurrentAttempt += 1;
-                Score.AddRound(MinAngle, MaxAngle);
+                Score.AddRound(FingerTapCount);
                 CurrentStage = GameStage.ROUND_RESULT_RING;
                 break;
             case GameStage.ROUND_RESULT_RING:
                 CurrentAttempt += 1;
-                Score.AddRound(MinAngle, MaxAngle);
+                Score.AddRound(FingerTapCount);
                 CurrentStage = GameStage.PINKIE_INSTRUCTION;
                 break;
             case GameStage.PINKIE_INSTRUCTION:
@@ -245,7 +244,7 @@ public class Game5Workflow : MonoBehaviour
                 break;
             case GameStage.PINKIE_GAME:
                 CurrentAttempt += 1;
-                Score.AddRound(MinAngle, MaxAngle);
+                Score.AddRound(FingerTapCount);
                 CurrentStage = GameStage.ROUND_RESULT_PINKIE;
                 break;
             case GameStage.ROUND_RESULT:
@@ -386,7 +385,7 @@ public class Game5Workflow : MonoBehaviour
     private void resetScores()
     {
         FingerTapCount = 0;
-        Angle = 0;
+        Distance = 0;
         MaxAngle = -99999;
         MinAngle = 99999;
         fingerTouching = false;
@@ -430,7 +429,7 @@ public class Game5Workflow : MonoBehaviour
         while (CurrentAttempt < MaxAttempts)
         {
             CurrentAttempt += 1;
-            Score.AddRound(0f, 180f);
+            Score.AddRound(10);
         }
         Score.MarkEndTime();
         CurrentStage = GameStage.FINISHED;
