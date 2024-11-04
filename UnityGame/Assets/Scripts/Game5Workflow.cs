@@ -207,11 +207,11 @@ public class Game5Workflow : MonoBehaviour
                 break;
             case GameStage.INDEX_GAME:
                 CurrentAttempt += 1;
-                //Score.AddRound(FingerTapCount);
+                Score.AddRound(FingerTapCount);
                 CurrentStage = GameStage.ROUND_RESULT_INDEX;
                 break;
             case GameStage.ROUND_RESULT_INDEX:
-                Score.AddRound(FingerTapCount);
+                //Score.AddRound(FingerTapCount);
                 CurrentStage = GameStage.MIDDLE_INSTRUCTION;
                 break;
             case GameStage.MIDDLE_INSTRUCTION:
@@ -219,11 +219,11 @@ public class Game5Workflow : MonoBehaviour
                 break;
             case GameStage.MIDDLE_GAME:
                 CurrentAttempt += 1;
-                //Score.AddRound(FingerTapCount);
+                Score.AddRound(FingerTapCount);
                 CurrentStage = GameStage.ROUND_RESULT_MIDDLE;
                 break;
             case GameStage.ROUND_RESULT_MIDDLE:
-                Score.AddRound(FingerTapCount);
+                //Score.AddRound(FingerTapCount);
                 CurrentStage = GameStage.RING_INSTRUCTION;
                 break;
             case GameStage.RING_INSTRUCTION:
@@ -231,11 +231,11 @@ public class Game5Workflow : MonoBehaviour
                 break;
             case GameStage.RING_GAME:
                 CurrentAttempt += 1;
-                //Score.AddRound(FingerTapCount);
+                Score.AddRound(FingerTapCount);
                 CurrentStage = GameStage.ROUND_RESULT_RING;
                 break;
             case GameStage.ROUND_RESULT_RING:
-                Score.AddRound(FingerTapCount);
+                //Score.AddRound(FingerTapCount);
                 CurrentStage = GameStage.PINKIE_INSTRUCTION;
                 break;
             case GameStage.PINKIE_INSTRUCTION:
@@ -243,7 +243,7 @@ public class Game5Workflow : MonoBehaviour
                 break;
             case GameStage.PINKIE_GAME:
                 CurrentAttempt += 1;
-                //Score.AddRound(FingerTapCount);
+                Score.AddRound(FingerTapCount);
                 CurrentStage = GameStage.ROUND_RESULT_PINKIE;
                 break;
             case GameStage.ROUND_RESULT_PINKIE:
@@ -253,7 +253,7 @@ public class Game5Workflow : MonoBehaviour
                 }
                 else
                 {*/
-                    Score.AddRound(FingerTapCount);
+                    //Score.AddRound(FingerTapCount);
                     Score.MarkEndTime();
                     CurrentStage = GameStage.FINISHED;
                 //}
