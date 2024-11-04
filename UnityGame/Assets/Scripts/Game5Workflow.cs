@@ -213,7 +213,6 @@ public class Game5Workflow : MonoBehaviour
                 CurrentStage = GameStage.ROUND_RESULT_INDEX;
                 break;
             case GameStage.ROUND_RESULT_INDEX:
-                CurrentAttempt += 1;
                 Score.AddRound(FingerTapCount);
                 CurrentStage = GameStage.MIDDLE_INSTRUCTION;
                 break;
@@ -226,7 +225,6 @@ public class Game5Workflow : MonoBehaviour
                 CurrentStage = GameStage.ROUND_RESULT_MIDDLE;
                 break;
             case GameStage.ROUND_RESULT_MIDDLE:
-                CurrentAttempt += 1;
                 Score.AddRound(FingerTapCount);
                 CurrentStage = GameStage.RING_INSTRUCTION;
                 break;
@@ -239,7 +237,6 @@ public class Game5Workflow : MonoBehaviour
                 CurrentStage = GameStage.ROUND_RESULT_RING;
                 break;
             case GameStage.ROUND_RESULT_RING:
-                CurrentAttempt += 1;
                 Score.AddRound(FingerTapCount);
                 CurrentStage = GameStage.PINKIE_INSTRUCTION;
                 break;
@@ -249,7 +246,7 @@ public class Game5Workflow : MonoBehaviour
             case GameStage.PINKIE_GAME:
                 CurrentAttempt += 1;
                 Score.AddRound(FingerTapCount);
-                CurrentStage = GameStage.ROUND_RESULT_PINKIE;
+                CurrentStage = GameStage.ROUND_RESULT;
                 break;
             case GameStage.ROUND_RESULT:
                 if (CurrentAttempt < MaxAttempts)
@@ -323,6 +320,7 @@ public class Game5Workflow : MonoBehaviour
                 PoseVisibilityWarner.ResetTriggers();
                 GameStepInstructionShower.SetInstructionText("Now, let's use your middle finger to tap with your thumb. Ready?");
                 GameStepInstructionShower.ShowInstruction();
+                RoundResultShower.Hide();
                 GameStepInstructionShower.SetDisplayedContent(1);
                 HandMovementControl.HideInstruction();
                 break;
@@ -353,6 +351,7 @@ public class Game5Workflow : MonoBehaviour
                 PoseVisibilityWarner.ResetTriggers();
                 GameStepInstructionShower.SetInstructionText("It's time to move on to tapping your ring finger to tap with your thumb. Ready?");
                 GameStepInstructionShower.ShowInstruction();
+                RoundResultShower.Hide();
                 GameStepInstructionShower.SetDisplayedContent(1);
                 HandMovementControl.HideInstruction();
                 break;
@@ -383,6 +382,7 @@ public class Game5Workflow : MonoBehaviour
                 PoseVisibilityWarner.ResetTriggers();
                 GameStepInstructionShower.SetInstructionText("Finally, let's use your pinkie finger to tap with your thumb. Ready?");
                 GameStepInstructionShower.ShowInstruction();
+                RoundResultShower.Hide();
                 GameStepInstructionShower.SetDisplayedContent(1);
                 HandMovementControl.HideInstruction();
                 break;
