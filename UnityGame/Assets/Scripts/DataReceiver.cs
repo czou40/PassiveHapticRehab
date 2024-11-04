@@ -413,7 +413,7 @@ public class DataReceiver : MonoBehaviour
     public float getLeftIndexFingerDistance()
     {
         float distance = Vector3.Distance(LeftHandPositions[4], LeftHandPositions[8]);
-        Debug.Log("4" + LeftHandPositions[4]);
+        // Debug.Log("4" + LeftHandPositions[4]);
         Debug.Log("distance: " + distance);
         return distance;
     }

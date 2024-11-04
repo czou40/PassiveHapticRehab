@@ -19,7 +19,7 @@ public class Game5Workflow : MonoBehaviour
     private float MaxDistanceThreshold = 10.0f;
     private int PreGameCountdown = 3;
     private int InstructionCountdown = 5;
-    private int InstructionCountdownFirstTime = 10;
+    private int InstructionCountdownFirstTime = 8;
     private int TimerDuration = 10; //TODO: change to 30
     //private bool MinAngleExceeded = false;
     private bool fingerTouching = false;
@@ -301,6 +301,18 @@ public class Game5Workflow : MonoBehaviour
                 HandMovementControl.ShowInstruction1();
                 Timer.StartTimer(TimerDuration);
                 break;
+            case GameStage.ROUND_RESULT_INDEX:
+                Debug.Log("ROUND_RESULT_INDEX");
+                GameManager.Instance.PauseGame();
+                PoseVisibilityWarner.ResetTriggers();
+                GameStepInstructionShower.HideInstruction();
+                // RoundResultShower.SetResultText(Score.GetResultForRound());
+                RoundResultShower.SetResultText(Score.GetResultForRound());
+                bool isLastAttempt = CurrentAttempt == MaxAttempts;
+                RoundResultShower.SetNextButtonText(isLastAttempt ? "View Results" : "Jump to Round " + (CurrentAttempt + 1));
+                RoundResultShower.Show();
+                HandMovementControl.HideInstruction();
+                break;
             case GameStage.MIDDLE_INSTRUCTION:
                 Debug.Log("MIDDLE_INSTRUCTION");
                 GameManager.Instance.PauseGame();
@@ -318,6 +330,18 @@ public class Game5Workflow : MonoBehaviour
                 GameStepInstructionShower.HideInstruction();
                 HandMovementControl.ShowInstruction2();
                 Timer.StartTimer(TimerDuration);
+                break;
+            case GameStage.MIDDLE_RESULT_INDEX:
+                Debug.Log("MIDDLE_RESULT_INDEX");
+                GameManager.Instance.PauseGame();
+                PoseVisibilityWarner.ResetTriggers();
+                GameStepInstructionShower.HideInstruction();
+                // RoundResultShower.SetResultText(Score.GetResultForRound());
+                RoundResultShower.SetResultText(Score.GetResultForRound());
+                bool isLastAttempt = CurrentAttempt == MaxAttempts;
+                RoundResultShower.SetNextButtonText(isLastAttempt ? "View Results" : "Jump to Round " + (CurrentAttempt + 1));
+                RoundResultShower.Show();
+                HandMovementControl.HideInstruction();
                 break;
             case GameStage.RING_INSTRUCTION:
                 Debug.Log("RING_INSTRUCTION");
@@ -337,6 +361,18 @@ public class Game5Workflow : MonoBehaviour
                 HandMovementControl.ShowInstruction2();
                 Timer.StartTimer(TimerDuration);
                 break;
+            case GameStage.ROUND_RESULT_RING:
+                Debug.Log("ROUND_RESULT_RING");
+                GameManager.Instance.PauseGame();
+                PoseVisibilityWarner.ResetTriggers();
+                GameStepInstructionShower.HideInstruction();
+                // RoundResultShower.SetResultText(Score.GetResultForRound());
+                RoundResultShower.SetResultText(Score.GetResultForRound());
+                bool isLastAttempt = CurrentAttempt == MaxAttempts;
+                RoundResultShower.SetNextButtonText(isLastAttempt ? "View Results" : "Jump to Round " + (CurrentAttempt + 1));
+                RoundResultShower.Show();
+                HandMovementControl.HideInstruction();
+                break;
             case GameStage.PINKIE_INSTRUCTION:
                 Debug.Log("PINKIE_INSTRUCTION");
                 GameManager.Instance.PauseGame();
@@ -355,8 +391,8 @@ public class Game5Workflow : MonoBehaviour
                 HandMovementControl.ShowInstruction2();
                 Timer.StartTimer(TimerDuration);
                 break;
-            case GameStage.ROUND_RESULT:
-                Debug.Log("ROUND_RESULT");
+            case GameStage.ROUND_RESULT_PINKIE:
+                Debug.Log("ROUND_RESULT_PINKIE");
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
                 GameStepInstructionShower.HideInstruction();
