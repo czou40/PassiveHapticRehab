@@ -16,13 +16,14 @@ public class Game5Workflow : MonoBehaviour
     private float MaxAngle = -99999;
     private float MinAngle = 99999;
     // maximum distance needed to slow down the caterpillar
-    private float MaxDistanceThreshold = 10.0f;
+    private float MaxDistanceThreshold = 0.3f;
     private int PreGameCountdown = 3;
     private int InstructionCountdown = 5;
     private int InstructionCountdownFirstTime = 8;
     private int TimerDuration = 10; //TODO: change to 30
     //private bool MinAngleExceeded = false;
     private bool fingerTouching = false;
+    private bool fingerSeparated = false;
 
     private HandMovementControl HandMovementControl;
 
@@ -31,7 +32,7 @@ public class Game5Workflow : MonoBehaviour
 
     private Game5Score Score;
 
-    private int MaxAttempts = 3;
+    private int MaxAttempts = 5;
     private int CurrentAttempt = 0;
     private DataReceiver DataReceiver;
     private GameStepInstructionShower GameStepInstructionShower;
@@ -104,7 +105,7 @@ public class Game5Workflow : MonoBehaviour
     {
         checkScore();
 
-        if (fingerTouching)
+        if (fingerTouching && fingerSeparated)
         {
             //condition reached, increment score
             FingerTapCount += 1;
@@ -154,13 +155,13 @@ public class Game5Workflow : MonoBehaviour
                 Debug.Log("got angle");
             } else if (CurrentStage == GameStage.MIDDLE_GAME)
             {
-                Distance = DataReceiver.getLeftIndexFingerDistance();
+                Distance = DataReceiver.getLeftMiddleFingerDistance();
             } else if (CurrentStage == GameStage.RING_GAME)
             {
-                Distance = DataReceiver.getLeftIndexFingerDistance();
+                Distance = DataReceiver.getLeftRingFingerDistance();
             } else if (CurrentStage == GameStage.PINKIE_GAME)
             {
-                Distance = DataReceiver.getLeftIndexFingerDistance();
+                Distance = DataReceiver.getLeftPinkieFingerDistance();
             }
 
             Debug.Log("Distance: " + Distance);
@@ -169,6 +170,9 @@ public class Game5Workflow : MonoBehaviour
             {
                 fingerTouching = true;
                 updateCaterpillar();
+            } else
+            {
+                fingerSeparated = true;
             }
         }
 
@@ -331,14 +335,14 @@ public class Game5Workflow : MonoBehaviour
                 HandMovementControl.ShowInstruction2();
                 Timer.StartTimer(TimerDuration);
                 break;
-            case GameStage.MIDDLE_RESULT_INDEX:
-                Debug.Log("MIDDLE_RESULT_INDEX");
+            case GameStage.ROUND_RESULT_MIDDLE:
+                Debug.Log("ROUND_RESULT_MIDDLE");
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
                 GameStepInstructionShower.HideInstruction();
                 // RoundResultShower.SetResultText(Score.GetResultForRound());
                 RoundResultShower.SetResultText(Score.GetResultForRound());
-                bool isLastAttempt = CurrentAttempt == MaxAttempts;
+                isLastAttempt = CurrentAttempt == MaxAttempts;
                 RoundResultShower.SetNextButtonText(isLastAttempt ? "View Results" : "Jump to Round " + (CurrentAttempt + 1));
                 RoundResultShower.Show();
                 HandMovementControl.HideInstruction();
@@ -368,7 +372,7 @@ public class Game5Workflow : MonoBehaviour
                 GameStepInstructionShower.HideInstruction();
                 // RoundResultShower.SetResultText(Score.GetResultForRound());
                 RoundResultShower.SetResultText(Score.GetResultForRound());
-                bool isLastAttempt = CurrentAttempt == MaxAttempts;
+                isLastAttempt = CurrentAttempt == MaxAttempts;
                 RoundResultShower.SetNextButtonText(isLastAttempt ? "View Results" : "Jump to Round " + (CurrentAttempt + 1));
                 RoundResultShower.Show();
                 HandMovementControl.HideInstruction();
@@ -398,7 +402,7 @@ public class Game5Workflow : MonoBehaviour
                 GameStepInstructionShower.HideInstruction();
                 // RoundResultShower.SetResultText(Score.GetResultForRound());
                 RoundResultShower.SetResultText(Score.GetResultForRound());
-                bool isLastAttempt = CurrentAttempt == MaxAttempts;
+                isLastAttempt = CurrentAttempt == MaxAttempts;
                 RoundResultShower.SetNextButtonText(isLastAttempt ? "View Results" : "Jump to Round " + (CurrentAttempt + 1));
                 RoundResultShower.Show();
                 HandMovementControl.HideInstruction();
