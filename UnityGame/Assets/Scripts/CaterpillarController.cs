@@ -9,14 +9,17 @@ public class CaterpillarController : MonoBehaviour
 
     private Rigidbody2D rb2d;
     public Vector3 startPosition;
-    public GameObject effect;
-    private GameObject[] clones;
+    //public GameObject effect;
+    public GameObject[] clones; 
     private bool active = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        clones = new GameObject[3];
+        for (int i = 0; i < clones.Length; i++)
+        {
+            clones[i].SetActive(false);
+        }
         transform.position = startPosition;
         currSpeed = speed;
         rb2d = GetComponent<Rigidbody2D>();
@@ -50,9 +53,11 @@ public class CaterpillarController : MonoBehaviour
         goalReached = true;
         active = false;
 
-        clones[0] = (GameObject)Instantiate(effect, transform.position, Quaternion.identity);
-        clones[1] = (GameObject)Instantiate(effect, transform.position, Quaternion.identity);
-        clones[2] = (GameObject)Instantiate(effect, transform.position, Quaternion.identity);
+        for (int i = 0; i < clones.Length; i++)
+        {
+            clones[i].SetActive(true);
+        }
+        
     }
 
     public void Reset()
@@ -63,7 +68,10 @@ public class CaterpillarController : MonoBehaviour
         active = false;
         currSpeed = speed;
 
-        //for (int i = 0; i < clones.Length; i++) Destroy(clones[i], 0.0f);
+        for (int i = 0; i < clones.Length; i++)
+        {
+            clones[i].SetActive(false);
+        }
 
     }
 }
