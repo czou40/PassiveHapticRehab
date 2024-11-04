@@ -37,7 +37,7 @@ public class CaterpillarController : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        Debug.Log(col.gameObject.name + " : " + gameObject.name + " : " + Time.time);
+        Debug.Log("Collider: "+ col.gameObject.name + " : " + gameObject.name + " : " + Time.time);
         goalReached = true;
 
         clones[0] = (GameObject)Instantiate(effect, transform.position, Quaternion.identity);

@@ -236,9 +236,7 @@ public class Game3Score : GameScore
 
 public class Game5Score : GameScore
 {
-    public List<float> MinAngles { get; private set; }
-
-    public List<float> MaxAngles { get; private set; }
+    public List<float> FingerTapCount { get; private set; }
 
     public override int Score
     {
@@ -250,16 +248,13 @@ public class Game5Score : GameScore
             }
             else
             {
-                float averageMin = 0;
-                float averageMax = 0;
+                float averageCount = 0;
                 for (int i = 0; i < NumRounds; i++)
                 {
-                    averageMin += MinAngles[i];
-                    averageMax += MaxAngles[i];
+                    averageCount += FingerTapCount[i];
                 }
-                averageMin /= NumRounds;
-                averageMax /= NumRounds;
-                return (int)(averageMax - averageMin);
+                averageCount /= NumRounds;
+                return (int)(averageCount);
             }
         }
     }
@@ -267,14 +262,12 @@ public class Game5Score : GameScore
     public Game5Score()
     {
         Game = Game.Game3;
-        MinAngles = new List<float>();
-        MaxAngles = new List<float>();
+        FingerTapCount = new List<float>();
     }
 
-    public void AddRound(float minAngle, float maxAngle)
+    public void AddRound(float minAngle)
     {
-        MinAngles.Add(minAngle);
-        MaxAngles.Add(maxAngle);
+        FingerTapCount.Add(minAngle);
         NumRounds++;
     }
 
@@ -282,16 +275,12 @@ public class Game5Score : GameScore
     {
         string s = "Game: " + Game.ToString() + "\n";
         s += "NumRounds: " + NumRounds.ToString() + "\n";
-        s += "MinAngles: ";
-        foreach (float f in MinAngles)
+        s += "TapCount: ";
+        foreach (float f in FingerTapCount)
         {
             s += f.ToString() + ", ";
         }
-        s += "\nMaxAngles: ";
-        foreach (float f in MaxAngles)
-        {
-            s += f.ToString() + ", ";
-        }
+        
         s += "\nScore: " + Score.ToString();
         return s;
     }
@@ -302,10 +291,9 @@ public class Game5Score : GameScore
         {
             throw new ArgumentOutOfRangeException("round", "Round index out of range");
         }
-        double min = MinAngles[round];
-        double max = MaxAngles[round];
+        double count = FingerTapCount[round];
         // one decimal place
-        return $"Round {round + 1}\nMin Angle: {min:F1}\nMax Angle: {max:F1}\nScore: {max - min:F1}";
+        return $"Round {round + 1}\nFinger Tapping count: {count:F1}\nScore: {count:F1}";
     }
 
     public string GetResultForRound()
