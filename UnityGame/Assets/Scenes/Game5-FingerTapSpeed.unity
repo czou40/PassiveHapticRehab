@@ -609,7 +609,7 @@ Transform:
   m_GameObject: {fileID: 137233161}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 5.89, z: 0}
+  m_LocalPosition: {x: 0, y: -0.09, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1126,6 +1126,10 @@ PrefabInstance:
     - target: {fileID: 3026485134239902007, guid: 55b1232b6ecbb4e4fbfe351bfde2166e, type: 3}
       propertyPath: m_Name
       value: Game5-flower (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3026485134239902007, guid: 55b1232b6ecbb4e4fbfe351bfde2166e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4284846129043095978, guid: 55b1232b6ecbb4e4fbfe351bfde2166e, type: 3}
       propertyPath: m_LocalScale.x
@@ -1795,6 +1799,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ScoreText: {fileID: 336833334}
+  caterpillar: {fileID: 1559361833}
   gameEvent:
     m_PersistentCalls:
       m_Calls:
@@ -1938,7 +1943,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &471477544
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4366,7 +4371,7 @@ Transform:
   m_GameObject: {fileID: 1559361833}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.02, y: 2.2, z: 0}
+  m_LocalPosition: {x: 0.02, y: 8.13, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4387,6 +4392,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 0.5
   slowFactor: 0.5
+  startPosition: {x: 0, y: 8, z: 0}
   effect: {fileID: 33605904}
 --- !u!70 &1559361837
 CapsuleCollider2D:
@@ -4422,8 +4428,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.04791379, y: 6.0227003}
-  m_Size: {x: 2.5164027, y: 7.9674435}
+  m_Offset: {x: 0.04791379, y: 0.053351402}
+  m_Size: {x: 2.5164027, y: 8.106728}
   m_Direction: 0
 --- !u!50 &1559361838
 Rigidbody2D:
@@ -5778,9 +5784,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 367063114134984560, guid: 55b1232b6ecbb4e4fbfe351bfde2166e, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 3026485134239902007, guid: 55b1232b6ecbb4e4fbfe351bfde2166e, type: 3}
       propertyPath: m_Name
       value: Game5-flower
+      objectReference: {fileID: 0}
+    - target: {fileID: 3026485134239902007, guid: 55b1232b6ecbb4e4fbfe351bfde2166e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4284846129043095978, guid: 55b1232b6ecbb4e4fbfe351bfde2166e, type: 3}
       propertyPath: m_LocalPosition.x

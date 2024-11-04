@@ -17,7 +17,7 @@ public class Game5Workflow : MonoBehaviour
     private float MinAngle = 99999;
     // //minimum and maximum angle needed to reach to increment score
     private float MinAngleThreshold = 110.0f;
-    private float MaxAngleThreshold = 160.0f;
+    private float MaxAngleThreshold = 10.0f;
     private int PreGameCountdown = 3;
     private int InstructionCountdown = 5;
     private int InstructionCountdownFirstTime = 10;
@@ -43,7 +43,6 @@ public class Game5Workflow : MonoBehaviour
 
     [SerializeField] private TMP_Text ScoreText;
     [SerializeField] private GameObject caterpillar;
-    CaterpillarController catController;
     public UnityEvent gameEvent;
 
     public List<GameObject> Game5Score = new List<GameObject>();
@@ -98,7 +97,7 @@ public class Game5Workflow : MonoBehaviour
         HandMovementControl = GetComponent<HandMovementControl>();
         Timer = GetComponent<Timer>();
         initializeCurrentStage();
-        catController = caterpillar.GetComponent<CaterpillarController>();
+        caterpillar.GetComponent<CaterpillarController>();
     }
 
     // Update is called once per frame
@@ -110,6 +109,7 @@ public class Game5Workflow : MonoBehaviour
         {
             //condition reached, increment score
             FingerTapCount += 1;
+            updateCaterpillar();
             //reset the exceed flags
             fingerTouching = false;
         }
@@ -118,11 +118,10 @@ public class Game5Workflow : MonoBehaviour
     void updateCaterpillar()
     {
         float percentSize = 0.0f;
-        float avg = 0;
-
+       
         if (CurrentStage == GameStage.INDEX_GAME || CurrentStage == GameStage.MIDDLE_GAME || CurrentStage == GameStage.RING_GAME || CurrentStage == GameStage.PINKIE_GAME)
         {
-            catController.slowMovement();
+            caterpillar.GetComponent<CaterpillarController>().slowMovement();
             //gameEvent.Invoke();
             /*
             if (MaxAngle >= MaxAngleThreshold)
@@ -152,7 +151,8 @@ public class Game5Workflow : MonoBehaviour
         {
             if (CurrentStage == GameStage.INDEX_GAME)
             {
-                Angle = DataReceiver.getLeftAverageFingerExtensionAngle();
+                Angle = DataReceiver.getLeftIndexFingerAngle();
+                Debug.Log("got angle");
             } else if (CurrentStage == GameStage.MIDDLE_GAME)
             {
                 Angle = DataReceiver.getLeftAverageFingerExtensionAngle();
@@ -163,6 +163,8 @@ public class Game5Workflow : MonoBehaviour
             {
                 Angle = DataReceiver.getLeftAverageFingerExtensionAngle();
             }
+
+            Debug.Log("Angle: " + Angle);
 
             if (Angle < MaxAngleThreshold)
             {
@@ -389,7 +391,7 @@ public class Game5Workflow : MonoBehaviour
         MinAngle = 99999;
         fingerTouching = false;
 
-        catController.Reset();
+        caterpillar.GetComponent<CaterpillarController>().Reset();
     }
 
     public void onVisibilityEndured()

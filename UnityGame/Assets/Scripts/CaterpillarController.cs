@@ -8,7 +8,7 @@ public class CaterpillarController : MonoBehaviour
     bool goalReached = false;
 
     private Rigidbody2D rb2d;
-    private Vector3 startPosition;
+    public Vector3 startPosition;
     public GameObject effect;
     private GameObject[] clones;
 
@@ -16,7 +16,7 @@ public class CaterpillarController : MonoBehaviour
     void Start()
     {
         clones = new GameObject[3];
-        startPosition = transform.position;
+        transform.position = startPosition;
         currSpeed = speed;
         rb2d = GetComponent<Rigidbody2D>();
     }
@@ -32,7 +32,7 @@ public class CaterpillarController : MonoBehaviour
 
     public void slowMovement()
     {
-        currSpeed = currSpeed - 0.1f;
+        transform.position += new Vector3(0, currSpeed * Time.deltaTime, 0);
     }
 
     void OnTriggerEnter2D(Collider2D col)
@@ -52,7 +52,7 @@ public class CaterpillarController : MonoBehaviour
         goalReached = false;
         currSpeed = speed;
 
-        for (int i = 0; i < clones.Length; i++) Destroy(clones[i], 0.0f);
+        //for (int i = 0; i < clones.Length; i++) Destroy(clones[i], 0.0f);
 
     }
 }
