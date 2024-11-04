@@ -56,6 +56,7 @@ public class CaterpillarController : MonoBehaviour
         for (int i = 0; i < clones.Length; i++)
         {
             clones[i].SetActive(true);
+            Debug.Log("Set active " + clones[i].name);
         }
         
     }

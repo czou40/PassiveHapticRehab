@@ -175,7 +175,7 @@ public class Game5Workflow : MonoBehaviour
 
         }
 
-        ScoreText.text = string.Format("Score: {0:0.##}", Score.Score);
+        ScoreText.text = string.Format("Score: {0:0.##}", FingerTapCount);//Score.Score
 
     }
 
@@ -358,7 +358,7 @@ public class Game5Workflow : MonoBehaviour
                 GameStepInstructionShower.SetInstructionText("It's time to move on to tapping your ring finger to tap with your thumb. Ready?");
                 GameStepInstructionShower.ShowInstruction();
                 RoundResultShower.Hide();
-                GameStepInstructionShower.SetDisplayedContent(1);
+                GameStepInstructionShower.SetDisplayedContent(2);
                 HandMovementControl.HideInstruction();
                 break;
             case GameStage.RING_GAME:
@@ -392,7 +392,7 @@ public class Game5Workflow : MonoBehaviour
                 GameStepInstructionShower.SetInstructionText("Finally, let's use your pinkie finger to tap with your thumb. Ready?");
                 GameStepInstructionShower.ShowInstruction();
                 RoundResultShower.Hide();
-                GameStepInstructionShower.SetDisplayedContent(1);
+                GameStepInstructionShower.SetDisplayedContent(3);
                 HandMovementControl.HideInstruction();
                 break;
             case GameStage.PINKIE_GAME:
