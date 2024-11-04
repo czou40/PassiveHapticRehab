@@ -13,10 +13,8 @@ public class Game5Workflow : MonoBehaviour
     private int FingerTapCount; 
     private float Distance;
 
-    private float MaxAngle = -99999;
-    private float MinAngle = 99999;
     // maximum distance needed to slow down the caterpillar
-    private float MaxDistanceThreshold = 0.3f;
+    private float MaxDistanceThreshold = 0.2f;
     private int PreGameCountdown = 3;
     private int InstructionCountdown = 5;
     private int InstructionCountdownFirstTime = 8;
@@ -97,7 +95,7 @@ public class Game5Workflow : MonoBehaviour
         HandMovementControl = GetComponent<HandMovementControl>();
         Timer = GetComponent<Timer>();
         initializeCurrentStage();
-        caterpillar.GetComponent<CaterpillarController>();
+        CaterpillarController catControl = caterpillar.GetComponent<CaterpillarController>();
     }
 
     // Update is called once per frame
@@ -209,7 +207,7 @@ public class Game5Workflow : MonoBehaviour
                 break;
             case GameStage.INDEX_GAME:
                 CurrentAttempt += 1;
-                Score.AddRound(FingerTapCount);
+                //Score.AddRound(FingerTapCount);
                 CurrentStage = GameStage.ROUND_RESULT_INDEX;
                 break;
             case GameStage.ROUND_RESULT_INDEX:
@@ -221,7 +219,7 @@ public class Game5Workflow : MonoBehaviour
                 break;
             case GameStage.MIDDLE_GAME:
                 CurrentAttempt += 1;
-                Score.AddRound(FingerTapCount);
+                //Score.AddRound(FingerTapCount);
                 CurrentStage = GameStage.ROUND_RESULT_MIDDLE;
                 break;
             case GameStage.ROUND_RESULT_MIDDLE:
@@ -233,7 +231,7 @@ public class Game5Workflow : MonoBehaviour
                 break;
             case GameStage.RING_GAME:
                 CurrentAttempt += 1;
-                Score.AddRound(FingerTapCount);
+                //Score.AddRound(FingerTapCount);
                 CurrentStage = GameStage.ROUND_RESULT_RING;
                 break;
             case GameStage.ROUND_RESULT_RING:
@@ -245,19 +243,20 @@ public class Game5Workflow : MonoBehaviour
                 break;
             case GameStage.PINKIE_GAME:
                 CurrentAttempt += 1;
-                Score.AddRound(FingerTapCount);
-                CurrentStage = GameStage.ROUND_RESULT;
+                //Score.AddRound(FingerTapCount);
+                CurrentStage = GameStage.ROUND_RESULT_PINKIE;
                 break;
-            case GameStage.ROUND_RESULT:
-                if (CurrentAttempt < MaxAttempts)
+            case GameStage.ROUND_RESULT_PINKIE:
+                /*if (CurrentAttempt < MaxAttempts)
                 {
                     CurrentStage = GameStage.PRE_GAME;
                 }
                 else
-                {
+                {*/
+                    Score.AddRound(FingerTapCount);
                     Score.MarkEndTime();
                     CurrentStage = GameStage.FINISHED;
-                }
+                //}
                 break;
             default:
                 //do nothing
@@ -301,11 +300,13 @@ public class Game5Workflow : MonoBehaviour
                 GameStepInstructionShower.HideInstruction();
                 HandMovementControl.ShowInstruction1();
                 Timer.StartTimer(TimerDuration);
+                caterpillar.GetComponent<CaterpillarController>().setActive(true);
                 break;
             case GameStage.ROUND_RESULT_INDEX:
                 Debug.Log("ROUND_RESULT_INDEX");
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
+                caterpillar.GetComponent<CaterpillarController>().Reset();
                 GameStepInstructionShower.HideInstruction();
                 // RoundResultShower.SetResultText(Score.GetResultForRound());
                 RoundResultShower.SetResultText(Score.GetResultForRound());
@@ -316,6 +317,7 @@ public class Game5Workflow : MonoBehaviour
                 break;
             case GameStage.MIDDLE_INSTRUCTION:
                 Debug.Log("MIDDLE_INSTRUCTION");
+                resetScores();
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
                 GameStepInstructionShower.SetInstructionText("Now, let's use your middle finger to tap with your thumb. Ready?");
@@ -332,12 +334,14 @@ public class Game5Workflow : MonoBehaviour
                 GameStepInstructionShower.HideInstruction();
                 HandMovementControl.ShowInstruction2();
                 Timer.StartTimer(TimerDuration);
+                caterpillar.GetComponent<CaterpillarController>().setActive(true);
                 break;
             case GameStage.ROUND_RESULT_MIDDLE:
                 Debug.Log("ROUND_RESULT_MIDDLE");
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
                 GameStepInstructionShower.HideInstruction();
+                caterpillar.GetComponent<CaterpillarController>().Reset();
                 // RoundResultShower.SetResultText(Score.GetResultForRound());
                 RoundResultShower.SetResultText(Score.GetResultForRound());
                 isLastAttempt = CurrentAttempt == MaxAttempts;
@@ -348,6 +352,7 @@ public class Game5Workflow : MonoBehaviour
             case GameStage.RING_INSTRUCTION:
                 Debug.Log("RING_INSTRUCTION");
                 GameManager.Instance.PauseGame();
+                resetScores();
                 PoseVisibilityWarner.ResetTriggers();
                 GameStepInstructionShower.SetInstructionText("It's time to move on to tapping your ring finger to tap with your thumb. Ready?");
                 GameStepInstructionShower.ShowInstruction();
@@ -363,11 +368,13 @@ public class Game5Workflow : MonoBehaviour
                 GameStepInstructionShower.HideInstruction();
                 HandMovementControl.ShowInstruction2();
                 Timer.StartTimer(TimerDuration);
+                caterpillar.GetComponent<CaterpillarController>().setActive(true);
                 break;
             case GameStage.ROUND_RESULT_RING:
                 Debug.Log("ROUND_RESULT_RING");
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
+                caterpillar.GetComponent<CaterpillarController>().Reset();
                 GameStepInstructionShower.HideInstruction();
                 // RoundResultShower.SetResultText(Score.GetResultForRound());
                 RoundResultShower.SetResultText(Score.GetResultForRound());
@@ -380,6 +387,7 @@ public class Game5Workflow : MonoBehaviour
                 Debug.Log("PINKIE_INSTRUCTION");
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
+                resetScores();
                 GameStepInstructionShower.SetInstructionText("Finally, let's use your pinkie finger to tap with your thumb. Ready?");
                 GameStepInstructionShower.ShowInstruction();
                 RoundResultShower.Hide();
@@ -394,24 +402,29 @@ public class Game5Workflow : MonoBehaviour
                 GameStepInstructionShower.HideInstruction();
                 HandMovementControl.ShowInstruction2();
                 Timer.StartTimer(TimerDuration);
+                caterpillar.GetComponent<CaterpillarController>().setActive(true);
                 break;
             case GameStage.ROUND_RESULT_PINKIE:
                 Debug.Log("ROUND_RESULT_PINKIE");
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
+                caterpillar.GetComponent<CaterpillarController>().Reset();
                 GameStepInstructionShower.HideInstruction();
                 // RoundResultShower.SetResultText(Score.GetResultForRound());
                 RoundResultShower.SetResultText(Score.GetResultForRound());
-                isLastAttempt = CurrentAttempt == MaxAttempts;
+                //isLastAttempt = CurrentAttempt == MaxAttempts;
+                isLastAttempt = true;
                 RoundResultShower.SetNextButtonText(isLastAttempt ? "View Results" : "Jump to Round " + (CurrentAttempt + 1));
                 RoundResultShower.Show();
                 HandMovementControl.HideInstruction();
                 break;
             case GameStage.FINISHED:
                 Debug.Log("FINISHED");
-                // RoundResultShower.SetResultText(Score.ToString());
-                // RoundResultShower.Show();
-                RoundResultShower.Hide();
+                RoundResultShower.SetResultText(Score.ToString());
+                RoundResultShower.Show();
+                caterpillar.GetComponent<CaterpillarController>().setActive(false);
+                caterpillar.GetComponent<CaterpillarController>().Reset();
+                //RoundResultShower.Hide();
                 HandMovementControl.HideInstruction();
                 Debug.Log("Game Finished");
                 displayScore();
@@ -426,8 +439,6 @@ public class Game5Workflow : MonoBehaviour
     {
         FingerTapCount = 0;
         Distance = 0;
-        MaxAngle = -99999;
-        MinAngle = 99999;
         fingerTouching = false;
 
         caterpillar.GetComponent<CaterpillarController>().Reset();

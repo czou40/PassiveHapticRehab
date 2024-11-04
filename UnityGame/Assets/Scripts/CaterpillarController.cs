@@ -11,6 +11,7 @@ public class CaterpillarController : MonoBehaviour
     public Vector3 startPosition;
     public GameObject effect;
     private GameObject[] clones;
+    private bool active = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -24,21 +25,30 @@ public class CaterpillarController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!goalReached)
+        if (!goalReached && active)
         {
             transform.position -= new Vector3(0, currSpeed * Time.deltaTime, 0);
         } 
     }
 
+    public void setActive(bool active)
+    {
+        this.active = active;
+    }
+
     public void slowMovement()
     {
-        transform.position += new Vector3(0, currSpeed * Time.deltaTime, 0);
+        if (active)
+        {
+            transform.position += new Vector3(0, currSpeed * Time.deltaTime, 0);
+        }
     }
 
     void OnTriggerEnter2D(Collider2D col)
     {
         Debug.Log("Collider: "+ col.gameObject.name + " : " + gameObject.name + " : " + Time.time);
         goalReached = true;
+        active = false;
 
         clones[0] = (GameObject)Instantiate(effect, transform.position, Quaternion.identity);
         clones[1] = (GameObject)Instantiate(effect, transform.position, Quaternion.identity);
@@ -50,6 +60,7 @@ public class CaterpillarController : MonoBehaviour
         Debug.Log("Game 5 reset");
         transform.position = startPosition;
         goalReached = false;
+        active = false;
         currSpeed = speed;
 
         //for (int i = 0; i < clones.Length; i++) Destroy(clones[i], 0.0f);

@@ -420,7 +420,7 @@ public class DataReceiver : MonoBehaviour
 
     public float getLeftMiddleFingerDistance()
     {
-        float distance = Vector3.Distance(LeftHandPositions[4], LeftHandPositions[8]);
+        float distance = Vector3.Distance(LeftHandPositions[4], LeftHandPositions[12]);
         // Debug.Log("4" + LeftHandPositions[4]);
         Debug.Log("Middle finger & thumb distance: " + distance);
         return distance;
@@ -428,7 +428,7 @@ public class DataReceiver : MonoBehaviour
 
     public float getLeftRingFingerDistance()
     {
-        float distance = Vector3.Distance(LeftHandPositions[4], LeftHandPositions[8]);
+        float distance = Vector3.Distance(LeftHandPositions[4], LeftHandPositions[16]);
         // Debug.Log("4" + LeftHandPositions[4]);
         Debug.Log("Ring finger & thumb distance: " + distance);
         return distance;
@@ -436,7 +436,7 @@ public class DataReceiver : MonoBehaviour
 
     public float getLeftPinkieFingerDistance()
     {
-        float distance = Vector3.Distance(LeftHandPositions[4], LeftHandPositions[8]);
+        float distance = Vector3.Distance(LeftHandPositions[4], LeftHandPositions[20]);
         // Debug.Log("4" + LeftHandPositions[4]);
         Debug.Log("Pinkie & thumb distance: " + distance);
         return distance;

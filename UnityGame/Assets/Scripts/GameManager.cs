@@ -261,19 +261,19 @@ public class Game5Score : GameScore
 
     public Game5Score()
     {
-        Game = Game.Game3;
+        Game = Game.Game5;
         FingerTapCount = new List<float>();
     }
 
-    public void AddRound(float minAngle)
+    public void AddRound(float count)
     {
-        FingerTapCount.Add(minAngle);
+        FingerTapCount.Add(count);
         NumRounds++;
     }
 
     public override string ToString()
     {
-        string s = "Game: " + Game.ToString() + "\n";
+        string s = "Game: Finger Tapping - Speed\n";
         s += "NumRounds: " + NumRounds.ToString() + "\n";
         s += "TapCount: ";
         foreach (float f in FingerTapCount)
