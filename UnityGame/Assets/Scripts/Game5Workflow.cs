@@ -138,6 +138,7 @@ public class Game5Workflow : MonoBehaviour
     {
         if (CurrentStage == GameStage.INDEX_GAME || CurrentStage == GameStage.MIDDLE_GAME || CurrentStage == GameStage.RING_GAME || CurrentStage == GameStage.PINKIE_GAME)
         {
+            Debug.Log("Caterpillar updated");
             caterpillar.GetComponent<CaterpillarController>().slowMovement();
         }
     }

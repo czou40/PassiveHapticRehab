@@ -4,7 +4,7 @@ public class CaterpillarController : MonoBehaviour
 {
     public float speed = 0.2f;
     float currSpeed;
-    public float slowFactor = 0.5f;
+    public float slowFactor = 2f;
     bool goalReached = false;
 
     private Rigidbody2D rb2d;
@@ -43,7 +43,9 @@ public class CaterpillarController : MonoBehaviour
     {
         if (active)
         {
-            transform.position += new Vector3(0, currSpeed * Time.deltaTime, 0);
+            Debug.Log("Slow caterpillar");
+            transform.position += new Vector3(0, currSpeed * slowFactor * Time.deltaTime, 0);
+
         }
     }
 
