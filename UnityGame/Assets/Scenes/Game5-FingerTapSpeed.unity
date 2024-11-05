@@ -1136,7 +1136,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1559361835}
+    m_TransformParent: {fileID: 1198803495}
     m_Modifications:
     - target: {fileID: 3026485134239902007, guid: 55b1232b6ecbb4e4fbfe351bfde2166e, type: 3}
       propertyPath: m_Name
@@ -1160,15 +1160,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4284846129043095978, guid: 55b1232b6ecbb4e4fbfe351bfde2166e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.8799999
+      value: -4.2322702
       objectReference: {fileID: 0}
     - target: {fileID: 4284846129043095978, guid: 55b1232b6ecbb4e4fbfe351bfde2166e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -10.780001
+      value: -1.6648855
       objectReference: {fileID: 0}
     - target: {fileID: 4284846129043095978, guid: 55b1232b6ecbb4e4fbfe351bfde2166e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 9.938582
       objectReference: {fileID: 0}
     - target: {fileID: 4284846129043095978, guid: 55b1232b6ecbb4e4fbfe351bfde2166e, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2024,11 +2024,11 @@ Transform:
   m_GameObject: {fileID: 471477543}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.030000001, y: -11.31, z: 0}
+  m_LocalPosition: {x: -1.3222706, y: -2.1948853, z: 9.938582}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1559361835}
+  m_Father: {fileID: 1198803495}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &471477546
 Animator:
@@ -3919,6 +3919,40 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1198803494
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1198803495}
+  m_Layer: 0
+  m_Name: Flower effects
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1198803495
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1198803494}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.3722706, y: -0.985115, z: -9.938582}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 33605907}
+  - {fileID: 471477545}
+  - {fileID: 180079103}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1303682240
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4392,9 +4426,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 137233162}
-  - {fileID: 33605907}
-  - {fileID: 471477545}
-  - {fileID: 180079103}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1559361836
@@ -5804,7 +5835,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1559361835}
+    m_TransformParent: {fileID: 1198803495}
     m_Modifications:
     - target: {fileID: 367063114134984560, guid: 55b1232b6ecbb4e4fbfe351bfde2166e, type: 3}
       propertyPath: m_SortingOrder
@@ -5820,15 +5851,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4284846129043095978, guid: 55b1232b6ecbb4e4fbfe351bfde2166e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.77
+      value: -3.1222706
       objectReference: {fileID: 0}
     - target: {fileID: 4284846129043095978, guid: 55b1232b6ecbb4e4fbfe351bfde2166e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -9.82
+      value: -0.7048846
       objectReference: {fileID: 0}
     - target: {fileID: 4284846129043095978, guid: 55b1232b6ecbb4e4fbfe351bfde2166e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 9.938582
       objectReference: {fileID: 0}
     - target: {fileID: 4284846129043095978, guid: 55b1232b6ecbb4e4fbfe351bfde2166e, type: 3}
       propertyPath: m_LocalRotation.w
@@ -5985,3 +6016,4 @@ SceneRoots:
   - {fileID: 1559361835}
   - {fileID: 1340338772}
   - {fileID: 1132449598}
+  - {fileID: 1198803495}
