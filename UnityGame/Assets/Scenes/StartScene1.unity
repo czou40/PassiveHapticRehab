@@ -315,17 +315,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e90626a6d07623346addc839fa668d05, type: 3}
---- !u!114 &330877309 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7723990442482964776, guid: 043019fa335fa124dbf0e7c40bca4ec4, type: 3}
-  m_PrefabInstance: {fileID: 4599790714270682326}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 303d0a44e29c1ed4198d608d9250f1d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &363789012
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -496,12 +485,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 2560, y: 2000}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -562,6 +551,10 @@ PrefabInstance:
     - target: {fileID: 6699018917098306859, guid: 7af0e60b2604d744aa3f9a5ab417e04f, type: 3}
       propertyPath: m_RootOrder
       value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 6699018917098306859, guid: 7af0e60b2604d744aa3f9a5ab417e04f, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6699018917098306859, guid: 7af0e60b2604d744aa3f9a5ab417e04f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1065,7 +1058,7 @@ PrefabInstance:
     - target: {fileID: 2904862464477464452, guid: 206f07d2a9edf6549aaffb73aaea67dd, type: 3}
       propertyPath: dataReceiver
       value: 
-      objectReference: {fileID: 330877309}
+      objectReference: {fileID: 0}
     - target: {fileID: 2904862464477464472, guid: 206f07d2a9edf6549aaffb73aaea67dd, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1878,7 +1871,7 @@ PrefabInstance:
     - target: {fileID: 577431228433007234, guid: efd117038e7bef94a81a431678791aeb, type: 3}
       propertyPath: dataReceiver
       value: 
-      objectReference: {fileID: 330877309}
+      objectReference: {fileID: 0}
     - target: {fileID: 577431228433007234, guid: efd117038e7bef94a81a431678791aeb, type: 3}
       propertyPath: warningObject
       value: 

@@ -25,6 +25,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -86,17 +87,34 @@ fun Greeting(modifier: Modifier = Modifier) {
 fun UpperLimbTestsScreen(
     tests: List<Test>
 ) {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFF20A086)) // Set background color
             .padding(16.dp)
     ) {
-        Text(
-            text = "Upper Limb Tests",
-            style = MaterialTheme.typography.headlineMedium.copy(color = Color.White),
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = "Upper Limb Tests",
+                style = MaterialTheme.typography.headlineMedium.copy(color = Color.White),
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            Spacer(Modifier.weight(1f))
+
+            Button(onClick = {
+                val intent = Intent(context, ProgressVisualizationActivity::class.java)
+                context.startActivity(intent)
+            }, modifier =  Modifier
+                .background(Color(0xFF20A086))) {
+                Text(
+                    text = "Progress",
+                    style = MaterialTheme.typography.headlineMedium.copy(color = Color.White)
+                )
+            }
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -173,12 +191,12 @@ fun PreviewUpperLimbTestsScreen() {
     val tests = listOf(
         Test("Shoulder Extension & Flexion", "Evaluate the range of motion of your shoulder", R.drawable.shoulder_extension_icon, UnityAPI.Scene.GAME_1),
         Test("Shoulder Rotation", "Evaluate the internal and external rotation ability of your shoulder", R.drawable.shoulder_rotation_icon, UnityAPI.Scene.GAME_2),
-        Test("Elbow Extension & Flexion", "Evaluate the range of motion of your elbow", R.drawable.elbow_extension_icon, UnityAPI.Scene.None),
+//        Test("Elbow Extension & Flexion", "Evaluate the range of motion of your elbow", R.drawable.elbow_extension_icon, UnityAPI.Scene.None),
         Test("Wrist Up & Down", "Evaluate the range of motion of your wrist", R.drawable.wrist_up_icon_compressed, UnityAPI.Scene.GAME_4),
-        Test("Finger-to-Nose", "Evaluate the overall coordination of your upper-limb", R.drawable.finger_to_nose_icon_compressed, UnityAPI.Scene.None),
-        Test("Finger Extension & Flexion", "Evaluate the maximum range of motion of your fingers", R.drawable.finger_extension_icon, UnityAPI.Scene.None),
-        Test("Finger Tapping - Coordination", "Evaluate the overall dexterity and coordination of your fingers", R.drawable.finger_tapping_1_icon, UnityAPI.Scene.None),
-        Test("Finger Tapping - Speed", "Evaluate the dexterity and movements of your fingers", R.drawable.finger_tapping_2_icon, UnityAPI.Scene.None),
+//        Test("Finger-to-Nose", "Evaluate the overall coordination of your upper-limb", R.drawable.finger_to_nose_icon_compressed, UnityAPI.Scene.None),
+//        Test("Finger Extension & Flexion", "Evaluate the maximum range of motion of your fingers", R.drawable.finger_extension_icon, UnityAPI.Scene.None),
+//        Test("Finger Tapping - Coordination", "Evaluate the overall dexterity and coordination of your fingers", R.drawable.finger_tapping_1_icon, UnityAPI.Scene.None),
+//        Test("Finger Tapping - Speed", "Evaluate the dexterity and movements of your fingers", R.drawable.finger_tapping_2_icon, UnityAPI.Scene.None),
     )
 
 
