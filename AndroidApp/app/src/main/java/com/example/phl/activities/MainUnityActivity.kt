@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.Toast
@@ -18,13 +19,12 @@ import com.example.phl.activities.unity.ShoulderExtensionFlexionOverlay
 import com.example.phl.services.MediaPipeService
 import com.example.phl.utils.PermissionManager
 import com.example.phl.utils.UnityAPI
+import com.example.phl.utils.UnityAPI.Scene
+import com.example.phl.views.HolisticOverlayView
 import com.unity3d.player.IUnityPlayerSupport
 import com.unity3d.player.UnityPlayer
 import com.unity3d.player.UnityPlayerGameActivity
-import com.example.phl.utils.UnityAPI.Scene
-import com.example.phl.views.HandLandmarkerOverlayView
-import com.example.phl.views.HolisticOverlayView
-import com.example.phl.views.PoseLandmarkerOverlayView
+
 
 class MainUnityActivity : UnityPlayerGameActivity() {
 
@@ -96,6 +96,13 @@ class MainUnityActivity : UnityPlayerGameActivity() {
         super.onNewIntent(intent)
         handleIntent(intent)
         setIntent(intent)
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+            onBackPressed()
+        }
+        return mUnityPlayer.injectEvent(event)
     }
 
     fun doQuit() {
