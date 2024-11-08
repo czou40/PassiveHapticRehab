@@ -101,6 +101,7 @@ public class Game4Workflow : MonoBehaviour
             case GameStage.ROUND_RESULT:
                 Debug.Log("Entering ROUND_RESULT stage.");
                 StopCrowSpawning();
+                Timer.StopTimer();
 
                 //GameStepInstructionShower.HideInstruction();
                 RoundResultShower.SetResultText(CrowClicksThisRound.ToString());
@@ -158,13 +159,16 @@ public class Game4Workflow : MonoBehaviour
             case GameStage.ROUND_RESULT:
                 if (CurrentAttempt < MaxAttempts)
                 {
-                    CurrentStage = GameStage.PRE_GAME;
+                    Debug.Log("Entering the right place");
+                    Timer.StopTimer();
                     RoundResultShower.Hide();
                     resetScores();
                     UpdateScoreUI();
+                    CurrentStage = GameStage.PRE_GAME;
                 }
                 else
                 {
+                    Debug.Log("Enterring the wrong place");
                     Score.MarkEndTime();
                     CurrentStage = GameStage.FINISHED;
                 }

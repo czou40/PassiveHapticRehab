@@ -60,4 +60,11 @@ public class Timer : MonoBehaviour
         RemainingTime = TotalTime;
         TimerOn = true;
     }
+
+    public void StopTimer()
+    {
+        TimerOn = false;
+        RemainingTime = TotalTime; // Optional: Reset the remaining time to the total time
+    }
+
 }
