@@ -20,6 +20,14 @@ public class Game4Workflow : MonoBehaviour
     private GameStage CurrentStage;
     private RoundResultShower RoundResultShower;
 
+    private bool canClickCrow = false;
+
+    public GameObject crowPrefab;
+    private GameObject currentCrow;
+    public float crowRespawnDelay = 1f;
+
+    public static Game4Workflow Instance {get; private set;}
+
     private enum GameStage
     {
         PRE_GAME,
@@ -27,6 +35,18 @@ public class Game4Workflow : MonoBehaviour
         FINGER_TO_NOSE_GAME,
         ROUND_RESULT,
         FINISHED
+    }
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     void Start()
@@ -39,6 +59,11 @@ public class Game4Workflow : MonoBehaviour
         GameStepInstructionShower = GetComponent<GameStepInstructionShower>();
         RoundResultShower = GetComponent<RoundResultShower>();
         Timer = GetComponent<Timer>();
+        if (crowPrefab != null)
+        {
+            currentCrow = Instantiate(crowPrefab);
+            currentCrow.SetActive(false);
+        }
         initializeCurrentStage();
     }
 
@@ -94,8 +119,59 @@ public class Game4Workflow : MonoBehaviour
             yield return new WaitForSeconds(1);
             countdownTime--;
         }
-        moveToNextStage(); // Move to the next stage after countdown
+        moveToNextStage();
     }
+
+    private void Update()
+    {
+        if (DataReceiver.NoseTouchTimestamps.Count > 0)
+        {
+            canClickCrow = true;
+            DataReceiver.NoseTouchTimestamps.Clear();
+        }
+    }
+
+    public void OnCrowClicked()
+    {
+        if (canClickCrow)
+        {
+            CrowClicksThisRound++;
+            canClickCrow = false;
+            Debug.Log("Crow clicked! Score registered.");
+
+            if (currentCrow != null)
+            {
+                currentCrow.SetActive(false);
+            }
+
+            Invoke(nameof(RespawnCrow), crowRespawnDelay);
+        }
+    }
+
+    private void RespawnCrow()
+    {
+        if (currentCrow == null)
+        {
+            currentCrow = Instantiate(crowPrefab);
+        }
+
+        currentCrow.transform.position = GetRandomPosition();
+        currentCrow.SetActive(true);
+    }
+
+    private Vector3 GetRandomPosition()
+    {
+        Camera mainCamera = Camera.main;
+        float screenWidth = mainCamera.pixelWidth;
+        float screenHeight = mainCamera.pixelHeight;
+
+        float randomX = Random.Range(0, screenWidth);
+        float randomY = Random.Range(0, screenHeight);
+
+        Vector3 randomScreenPosition = new Vector3(randomX, randomY, mainCamera.nearClipPlane);
+        return mainCamera.ScreenToWorldPoint(randomScreenPosition);
+    }
+
 
     private void resetScores()
     {
@@ -135,7 +211,7 @@ public class Game4Workflow : MonoBehaviour
                 // Do nothing
                 break;
         }
-        Debug.Log("Next Stage: " + CurrentStage); // Debug statement for next stage transition
+        Debug.Log("Next Stage: " + CurrentStage); 
 
         initializeCurrentStage();
     }

@@ -167,7 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
@@ -216,6 +216,7 @@ RectTransform:
   - {fileID: 1603968667}
   - {fileID: 295810260}
   - {fileID: 150540118}
+  - {fileID: 260107096}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -233,6 +234,7 @@ GameObject:
   m_Component:
   - component: {fileID: 150540118}
   - component: {fileID: 150540117}
+  - component: {fileID: 150540119}
   m_Layer: 5
   m_Name: NoseToFingerBackground_0
   m_TagString: Untagged
@@ -283,7 +285,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1138585453
   m_SortingLayer: 6
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_Sprite: {fileID: 4297452011639790463, guid: 897282efd5b7d4515b2e33f9aa9e6b56, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -295,21 +297,48 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!4 &150540118
-Transform:
+--- !u!224 &150540118
+RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 150540116}
-  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1280, y: -800, z: 0}
-  m_LocalScale: {x: 1.75, y: 1.75, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 354.2892, y: 354.2892, z: 202.45096}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 36286582}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 77, y: 67}
+  m_SizeDelta: {x: 8.96, y: 4.14}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!223 &150540119
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 150540116}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!1 &229685135
 GameObject:
   m_ObjectHideFlags: 0
@@ -389,7 +418,8 @@ GameObject:
   - component: {fileID: 260107096}
   - component: {fileID: 260107095}
   - component: {fileID: 260107094}
-  m_Layer: 0
+  - component: {fileID: 260107097}
+  m_Layer: 5
   m_Name: Crow_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -459,9 +489,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1138585453
+  m_SortingLayer: 6
+  m_SortingOrder: 1
   m_Sprite: {fileID: -4285408029963660783, guid: 8f793b5d4432b40fe9f26f632d745f6f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -481,13 +511,42 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 260107093}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.35, y: -7.63, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1082, y: -480, z: -22.086819}
+  m_LocalScale: {x: 206.57158, y: 206.57158, z: 206.57158}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 36286582}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &260107097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 260107093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 4
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1196721776}
+          m_TargetAssemblyTypeName: Game4Workflow, Assembly-CSharp
+          m_MethodName: OnCrowClicked
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &271710412
 GameObject:
   m_ObjectHideFlags: 0
@@ -673,7 +732,7 @@ GameObject:
   - component: {fileID: 295810260}
   - component: {fileID: 295810262}
   - component: {fileID: 295810261}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Timer Text Element
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -784,7 +843,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -2.400238, y: 0, z: 88.71475, w: 10.401172}
+  m_margin: {x: -2.400238, y: 0, z: 88.71475, w: 12.389505}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -946,7 +1005,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 1534.951
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -971,8 +1030,8 @@ Transform:
   m_GameObject: {fileID: 652407389}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalPosition: {x: 884.2, y: 512, z: -10}
+  m_LocalScale: {x: 5.4765573, y: 3.8379023, z: 3.4498}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1179,6 +1238,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4faab77263c1c4393baca9f4d00ea592, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  crowPrefab: {fileID: 5740400428864339755, guid: f0470d87134244177a4197accc40a8f9, type: 3}
+  crowRespawnDelay: 1
 --- !u!1 &1603968666
 GameObject:
   m_ObjectHideFlags: 0
@@ -1497,7 +1558,6 @@ SceneRoots:
   - {fileID: 652407392}
   - {fileID: 716380817}
   - {fileID: 229685138}
-  - {fileID: 260107096}
   - {fileID: 283947947}
   - {fileID: 1810010881}
   - {fileID: 271710414}

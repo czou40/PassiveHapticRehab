@@ -17,6 +17,7 @@ using System.Net.Sockets;
 
 public class DataReceiver : MonoBehaviour
 {
+    public List<long> NoseTouchTimestamps { get; private set; } = new List<long>();
 
     public Vector3[] LeftHandPositions { get; private set; } = new Vector3[HAND_LANDMARK_COUNT];
 
@@ -186,6 +187,11 @@ public class DataReceiver : MonoBehaviour
         bool hasRightHandData = false;
         bool hasPoseData = false;
         long timeStamp = System.DateTimeOffset.Now.ToUnixTimeMilliseconds();
+        if (str.Contains("Hand touching nose"))
+        {
+            Debug.Log("Nose touch detected!");
+            NoseTouchTimestamps.Add(timeStamp);
+        }
         foreach (string l in lines)
         {
             if (l.Trim().Length == 0) continue;

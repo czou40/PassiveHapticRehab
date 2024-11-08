@@ -20,6 +20,8 @@ public class DataReceiverGame4 : MonoBehaviour
     private volatile bool _shouldStop = false;
     private readonly object lockObject = new object();
 
+    public List<long> NoseTouchTimestamps { get; private set; } = new List<long>();
+
     private void DataThreadMethod()
     {
         UdpClient dataUdpClient = new UdpClient(dataListenPort);
@@ -54,6 +56,8 @@ public class DataReceiverGame4 : MonoBehaviour
             {
                 noseTouched = true;
                 canSelectCrow = true; // Allow crow selection after nose is touched
+                long timeStamp = System.DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                NoseTouchTimestamps.Add(timeStamp);
                 Debug.Log("Nose touched. You can now select a crow.");
             }
             else
