@@ -18,6 +18,7 @@ public class CrowClick : MonoBehaviour
         {
             Game4Workflow.Instance.CrowTapped();
         }
+        Destroy(gameObject);
     }
 
 
