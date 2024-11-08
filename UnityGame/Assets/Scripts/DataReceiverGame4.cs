@@ -69,23 +69,6 @@ public class DataReceiverGame4 : MonoBehaviour
         }
     }
 
-    public void OnCrowClicked()
-    {
-        lock (lockObject) // Ensure thread safety when accessing shared state
-        {
-            // Only allow the crow to be clicked if the nose was touched first
-            if (canSelectCrow)
-            {
-                Debug.Log("Crow clicked!");
-                canSelectCrow = false; // Disable further crow selection until the nose is touched again
-            }
-            else
-            {
-                Debug.Log("Please touch your nose before selecting a crow.");
-            }
-        }
-    }
-
     public void RequestStop()
     {
         _shouldStop = true;

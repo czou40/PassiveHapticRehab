@@ -8,6 +8,16 @@ using JetBrains.Annotations;
 // https://github.com/czou40/PassiveHapticRehab/blob/master/UnityGame/Assets/Scripts/Game1Workflow.cs
 public class Game4Workflow : MonoBehaviour
 {
+    public GameObject CrowPrefab; // Reference to the crow prefab
+    public int NumberOfCrowsPerRound = 5; // Number of crows to spawn each round
+    public Vector2 SpawnAreaMin; // Bottom-left corner of the spawn area
+    public Vector2 SpawnAreaMax; // Top-right corner of the spawn area
+    public float SpawnInterval = 2.0f; // Time interval (in seconds) between crow spawns
+    private Coroutine crowSpawnCoroutine; // Reference to the crow-spawning coroutine
+    private int crowsSpawnedThisRound = 0; // Track number of crows spawned in current round
+
+
+
     private Game4Score Score;
     private int MaxAttempts = 3;
     private int CurrentAttempt = 0;
@@ -63,9 +73,11 @@ public class Game4Workflow : MonoBehaviour
                 //GameStepInstructionShower.HideDisplayedContent();
                 //GameStepInstructionShower.HideInstruction();
                 Timer.StartTimer(TimerDuration); // Start the timer for 30 seconds
+                StartCrowSpawning();
                 break;
             case GameStage.ROUND_RESULT:
                 Debug.Log("Entering ROUND_RESULT stage.");
+                StopCrowSpawning();
                 GameManager.Instance.PauseGame();
                 GameStepInstructionShower.HideInstruction();
                 RoundResultShower.SetResultText(Score.GetResultForRound());
@@ -75,6 +87,7 @@ public class Game4Workflow : MonoBehaviour
                 break;
             case GameStage.FINISHED:
                 Debug.Log("Entering FINISHED stage.");
+                StopCrowSpawning();
                 RoundResultShower.Hide();
                 Debug.Log("Game Finished");
                 displayScore();
@@ -139,4 +152,39 @@ public class Game4Workflow : MonoBehaviour
 
         initializeCurrentStage();
     }
+
+    private void StartCrowSpawning()
+    {
+        crowsSpawnedThisRound = 0; // Reset crow count for this round
+        crowSpawnCoroutine = StartCoroutine(SpawnCrowsOverTime());
+    }
+
+    private void StopCrowSpawning()
+    {
+        if (crowSpawnCoroutine != null)
+        {
+            StopCoroutine(crowSpawnCoroutine);
+            crowSpawnCoroutine = null;
+        }
+    }
+
+    private IEnumerator SpawnCrowsOverTime()
+    {
+        while (crowsSpawnedThisRound < NumberOfCrowsPerRound)
+        {
+            SpawnCrow();
+            crowsSpawnedThisRound++;
+            yield return new WaitForSeconds(SpawnInterval);
+        }
+    }
+
+    private void SpawnCrow()
+    {
+        Vector2 randomPosition = new Vector2(
+            Random.Range(SpawnAreaMin.x, SpawnAreaMax.x),
+            Random.Range(SpawnAreaMin.y, SpawnAreaMax.y)
+        );
+        Instantiate(CrowPrefab, randomPosition, Quaternion.identity);
+    }
+
 }
