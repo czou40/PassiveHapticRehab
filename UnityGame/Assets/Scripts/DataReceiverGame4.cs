@@ -12,8 +12,7 @@ using System.Net.Sockets;
 
 public class DataReceiverGame4 : MonoBehaviour
 {
-    private bool noseTouched = false;
-    private bool canSelectCrow = false;
+
 
     private Thread dataUdpThread;
     private static int dataListenPort = 5000;
@@ -31,8 +30,7 @@ public class DataReceiverGame4 : MonoBehaviour
                 byte[] receiveBytes = dataUdpClient.Receive(ref RemoteIpEndPoint); // Blocks until data is received
                 string receivedData = Encoding.ASCII.GetString(receiveBytes);
 
-                Debug.Log($"Received data: {receivedData}"); // Log received data
-                ProcessData(receivedData);
+                //Debug.Log($"Received data: {receivedData}"); // Log received data
             }
         }
         catch (Exception e)
@@ -42,30 +40,6 @@ public class DataReceiverGame4 : MonoBehaviour
         finally
         {
             dataUdpClient.Close();
-        }
-    }
-
-    private void ProcessData(string receivedData)
-    {
-        lock (lockObject) // Ensure thread safety when modifying shared state
-        {
-            // Check if the user touched their nose
-            if (receivedData.Contains("Hand is touching the nose"))
-            {
-                noseTouched = true;
-                canSelectCrow = true; // Allow crow selection after nose is touched
-                Debug.Log("Nose touched. You can now select a crow.");
-            }
-            else
-            {
-                noseTouched = false;
-            }
-
-            // Reset canSelectCrow if needed for the next action
-            if (receivedData.Contains("Face detected in frame"))
-            {
-                Debug.Log("Face is detected, waiting for further input.");
-            }
         }
     }
 

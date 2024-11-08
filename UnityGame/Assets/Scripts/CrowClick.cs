@@ -7,7 +7,6 @@ public class CrowClick : MonoBehaviour
     {
         if (Game4Workflow.Instance != null)
         {
-            Debug.Log("Crow clicked internal"); // Debug statement for next stage transition
             Game4Workflow.Instance.CrowTapped(); // Notify Game4Workflow of the crow tap
         }
     }

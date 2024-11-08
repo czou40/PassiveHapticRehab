@@ -1,12 +1,14 @@
 using UnityEngine;
 using TMPro;
-
+using UnityEngine.UI;
 
 public class RoundResultShower : MonoBehaviour
 {
     public GameObject ResultPanel;
     public TextMeshProUGUI ResultText;
-    public TextMeshProUGUI NextButtonText;
+    public Button NextRoundButton;
+
+    public TextMeshProUGUI NextButtonText; // Not used in game 4
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

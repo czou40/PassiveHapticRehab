@@ -22,7 +22,7 @@ public class Game4Workflow : MonoBehaviour
 
     // Scoring variables
     private Game4Score Score;
-    public TMP_Text scoreText; // Reference to the on-screen score text
+    public TMP_Text scoreText;
     private int CrowClicksThisRound = 0;
     private int MaxAttempts = 3;
     private int CurrentAttempt = 0;
@@ -35,7 +35,7 @@ public class Game4Workflow : MonoBehaviour
     private GameStepInstructionShower GameStepInstructionShower;
     private Timer Timer;
     private GameStage CurrentStage;
-    private RoundResultShower RoundResultShower;
+    public RoundResultShower RoundResultShower;
 
     private enum GameStage
     {
@@ -86,8 +86,7 @@ public class Game4Workflow : MonoBehaviour
                 //resetScores();
                 // GameStepInstructionShower.SetInstructionText("Attempt " + (CurrentAttempt + 1) + " out of " + MaxAttempts + ". Get ready to start the game!");
                 // GameStepInstructionShower.ShowInstruction();
-                // RoundResultShower.Hide();
-                //GameStepInstructionShower.StartCountdown(PreGameCountdown);
+                //RoundResultShower.Hide();
                 StartCoroutine(CountdownToNextStage(PreGameCountdown));
                 break;
             case GameStage.FINGER_TO_NOSE_GAME:
@@ -97,15 +96,15 @@ public class Game4Workflow : MonoBehaviour
                 //GameStepInstructionShower.HideInstruction();
                 Timer.StartTimer(TimerDuration); // Start the timer for 30 seconds
                 StartCrowSpawning();
+                //RoundResultShower.Hide();
                 break;
             case GameStage.ROUND_RESULT:
                 Debug.Log("Entering ROUND_RESULT stage.");
                 StopCrowSpawning();
-                GameManager.Instance.PauseGame();
-                GameStepInstructionShower.HideInstruction();
-                RoundResultShower.SetResultText(Score.GetResultForRound());
-                bool isLastAttempt = CurrentAttempt == MaxAttempts;
-                RoundResultShower.SetNextButtonText(isLastAttempt ? "View Results" : "Jump to Round " + (CurrentAttempt + 1));
+
+                //GameStepInstructionShower.HideInstruction();
+                RoundResultShower.SetResultText(CrowClicksThisRound.ToString());
+                //bool isLastAttempt = CurrentAttempt == MaxAttempts;
                 RoundResultShower.Show();
                 break;
             case GameStage.FINISHED:
@@ -160,6 +159,9 @@ public class Game4Workflow : MonoBehaviour
                 if (CurrentAttempt < MaxAttempts)
                 {
                     CurrentStage = GameStage.PRE_GAME;
+                    RoundResultShower.Hide();
+                    resetScores();
+                    UpdateScoreUI();
                 }
                 else
                 {
@@ -217,9 +219,9 @@ public class Game4Workflow : MonoBehaviour
 
     public void CrowTapped()
     {
+        CrowClicksThisRound++;
         Debug.Log("Crow clicked"); // Debug statement for next stage transition
         Debug.Log("New total is: " + CrowClicksThisRound);
-        CrowClicksThisRound++;
         UpdateScoreUI(); // Update the score on the UI
     }
 

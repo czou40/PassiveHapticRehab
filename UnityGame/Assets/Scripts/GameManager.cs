@@ -237,7 +237,7 @@ public class GameManager : MonoBehaviour
 
     private Game CurrentGame = Game.None;
 
-    private bool isGameActive = false;
+    //private bool isGameActive;
 
 
     void Awake()
@@ -287,12 +287,12 @@ public class GameManager : MonoBehaviour
     {
         CurrentScore = new Game4Score();
         SceneManager.LoadScene("Game4"); // Load the Game4 scene
-        isGameActive = true;
+        //isGameActive = true;
     }
 
     public void EndGame()
     {
-        isGameActive = false;
+        //isGameActive = false;
         Debug.Log("Game Over!");
         DisplayCompoundScore(CurrentScore);
     }
