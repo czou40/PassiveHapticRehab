@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Timers;
 using JetBrains.Annotations;
+using TMPro;
 
 // Basically copy this file and use our flow
 // https://github.com/czou40/PassiveHapticRehab/blob/master/UnityGame/Assets/Scripts/Game1Workflow.cs
 public class Game4Workflow : MonoBehaviour
 {
+
+    // Crow Spawning variables
     public GameObject CrowPrefab; // Reference to the crow prefab
     public int NumberOfCrowsPerRound = 5; // Number of crows to spawn each round
     public Vector2 SpawnAreaMin; // Bottom-left corner of the spawn area
@@ -17,12 +20,16 @@ public class Game4Workflow : MonoBehaviour
     private int crowsSpawnedThisRound = 0; // Track number of crows spawned in current round
 
 
-
+    // Scoring variables
     private Game4Score Score;
+    public TMP_Text scoreText; // Reference to the on-screen score text
+    private int CrowClicksThisRound = 0;
     private int MaxAttempts = 3;
     private int CurrentAttempt = 0;
+
+
+    // Game management variables
     private int TimerDuration = 30; // length of each round
-    private int CrowClicksThisRound = 0;
     private int PreGameCountdown = 3;  // seconds before the game begins
     private DataReceiver DataReceiver;
     private GameStepInstructionShower GameStepInstructionShower;
@@ -39,12 +46,28 @@ public class Game4Workflow : MonoBehaviour
         FINISHED
     }
 
+    public static Game4Workflow Instance;
+
+    void Awake()
+    {
+        // Ensure there's only one instance of Game4Workflow
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject); // Prevent duplicate instances
+        }
+    }
+
     void Start()
     {
         // PRE_GAME - This stage will give an initial few seconds before the game begins, and game timer starts counting down from 30 seconds
         CurrentStage = GameStage.PRE_GAME;
         Score = new Game4Score();
         Score.MarkStartTime();
+        UpdateScoreUI();
         DataReceiver = GameManager.Instance.DataReceiver;
         GameStepInstructionShower = GetComponent<GameStepInstructionShower>();
         RoundResultShower = GetComponent<RoundResultShower>();
@@ -185,6 +208,19 @@ public class Game4Workflow : MonoBehaviour
             Random.Range(SpawnAreaMin.y, SpawnAreaMax.y)
         );
         Instantiate(CrowPrefab, randomPosition, Quaternion.identity);
+    }
+
+    private void UpdateScoreUI()
+    {
+        scoreText.text = CrowClicksThisRound.ToString();
+    }
+
+    public void CrowTapped()
+    {
+        Debug.Log("Crow clicked"); // Debug statement for next stage transition
+        Debug.Log("New total is: " + CrowClicksThisRound);
+        CrowClicksThisRound++;
+        UpdateScoreUI(); // Update the score on the UI
     }
 
 }
