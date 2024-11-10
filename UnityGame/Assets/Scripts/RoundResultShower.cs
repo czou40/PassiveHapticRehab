@@ -20,6 +20,25 @@ public class RoundResultShower : MonoBehaviour
 
     }
 
+    // This method will be called when the next round is tapped
+    public void OnNextRoundButtonTapped()
+    {
+        if (Game6Workflow.Instance != null)
+        {
+            Game6Workflow.Instance.moveToNextStage(); // Notify Game6Workflow of the tap
+        }
+    }
+
+    public void OnMouseDown()
+    {
+        if (Game6Workflow.Instance != null)
+        {
+            Game6Workflow.Instance.moveToNextStage();
+        }
+        Destroy(gameObject);
+    }
+
+
     public void Show()
     {
         ResultPanel.SetActive(true);

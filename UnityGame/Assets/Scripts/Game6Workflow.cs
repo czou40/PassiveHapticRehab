@@ -3,14 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Timers;
 using JetBrains.Annotations;
+using TMPro;
 
 // Basically copy this file and use our flow
 // https://github.com/czou40/PassiveHapticRehab/blob/master/UnityGame/Assets/Scripts/Game1Workflow.cs
 public class Game6Workflow : MonoBehaviour
 {
     private Game6Score Score;
+    public TMP_Text scoreText; // Reference to the on-screen score text
+    private int caterpillarsSpawnedThisRound = 0; // Track number of crows spawned in current round
+    private int CatMatchedThisRound = 0;
     private int MaxAttempts = 3;
     private int CurrentAttempt = 0;
+
+
+    // Game management variables
     private int TimerDuration = 30; // length of each round
 
     private int ScoreThisRound = 0;
@@ -31,12 +38,28 @@ public class Game6Workflow : MonoBehaviour
         FINISHED
     }
 
+    public static Game6Workflow Instance;
+
+    void Awake()
+    {
+        // Ensure there's only one instance of Game6Workflow
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject); // Prevent duplicate instances
+        }
+    }
+
     void Start()
     {
         // PRE_GAME - This stage will give an initial few seconds before the game begins, and game timer starts counting down from 30 seconds
         CurrentStage = GameStage.PRE_GAME;
         Score = new Game6Score();
         Score.MarkStartTime();
+        // UpdateScoreUI();
         DataReceiver = GameManager.Instance.DataReceiver;
         GameStepInstructionShower = GetComponent<GameStepInstructionShower>();
         RoundResultShower = GetComponent<RoundResultShower>();
@@ -74,11 +97,12 @@ public class Game6Workflow : MonoBehaviour
                 break;
             case GameStage.ROUND_RESULT:
                 Debug.Log("Entering ROUND_RESULT stage.");
-                GameManager.Instance.PauseGame();
-                GameStepInstructionShower.HideInstruction();
-                RoundResultShower.SetResultText(Score.GetResultForRound());
-                bool isLastAttempt = CurrentAttempt == MaxAttempts;
-                RoundResultShower.SetNextButtonText(isLastAttempt ? "View Results" : "Jump to Round " + (CurrentAttempt + 1));
+                // GameManager.Instance.PauseGame();
+                Timer.StopTimer();
+                // GameStepInstructionShower.HideInstruction();
+                RoundResultShower.SetResultText("40");
+                // bool isLastAttempt = CurrentAttempt == MaxAttempts;
+                // RoundResultShower.SetNextButtonText(isLastAttempt ? "View Results" : "Jump to Round " + (CurrentAttempt + 1));
                 RoundResultShower.Show();
                 break;
             case GameStage.FINISHED:
@@ -131,10 +155,16 @@ public class Game6Workflow : MonoBehaviour
             case GameStage.ROUND_RESULT:
                 if (CurrentAttempt < MaxAttempts)
                 {
+                    Debug.Log("Entering the right place");
+                    Timer.StopTimer();
+                    RoundResultShower.Hide();
+                    resetScores();
+                    // UpdateScoreUI();
                     CurrentStage = GameStage.PRE_GAME;
                 }
                 else
                 {
+                    Debug.Log("Enterring the wrong place");
                     Score.MarkEndTime();
                     CurrentStage = GameStage.FINISHED;
                 }
@@ -147,4 +177,9 @@ public class Game6Workflow : MonoBehaviour
 
         initializeCurrentStage();
     }
+
+    // private void UpdateScoreUI()
+    // {
+    //     scoreText.text = CatMatchedThisRound.ToString();
+    // }
 }

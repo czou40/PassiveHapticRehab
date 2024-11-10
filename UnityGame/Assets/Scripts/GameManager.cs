@@ -157,7 +157,7 @@ public class Game1Score : GameScore
 
 public class Game6Score : GameScore
 {
-    public List<int> CrowClicks { get; private set; }
+    public List<int> CrowClicksPerRound { get; private set; }
 
 
     // Displays the average score for the game over any number of rounds
@@ -174,7 +174,7 @@ public class Game6Score : GameScore
                 int totalCrowClicks = 0;
                 for (int i = 0; i < NumRounds; i++)
                 {
-                    totalCrowClicks += CrowClicks[i];
+                    totalCrowClicks += CrowClicksPerRound[i];
                 }
                 return totalCrowClicks / NumRounds;
             }
@@ -185,13 +185,13 @@ public class Game6Score : GameScore
     public Game6Score()
     {
         Game = Game.Game6;
-        CrowClicks = new List<int>();
+        CrowClicksPerRound = new List<int>();
         NumRounds = 1;
     }
 
     public void AddRound(int crowClicks)
     {
-        CrowClicks.Add(crowClicks);
+        CrowClicksPerRound.Add(crowClicks);
         NumRounds++;
         Debug.Log($"Round {NumRounds} added with {crowClicks} crow clicks.");
     }
@@ -201,7 +201,7 @@ public class Game6Score : GameScore
         string s = "Game: " + Game.ToString() + "\n";
         s += "NumRounds: " + NumRounds.ToString() + "\n";
         s += "CrowClicks: ";
-        foreach (float roundScore in CrowClicks)
+        foreach (float roundScore in CrowClicksPerRound)
         {
             s += roundScore.ToString() + ", ";
         }
@@ -215,7 +215,7 @@ public class Game6Score : GameScore
         {
             throw new ArgumentOutOfRangeException("round", "Round index out of range");
         }
-        int CrowsCapturedThisRound = CrowClicks[round];
+        int CrowsCapturedThisRound = CrowClicksPerRound[round];
         return $"Round {round + 1}\nCrows Successfully Captured: {CrowsCapturedThisRound}";
     }
 
