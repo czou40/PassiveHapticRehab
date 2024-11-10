@@ -232,10 +232,17 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
     public bool gamePaused { get; private set; } = false;
     public DataReceiver DataReceiver { get; private set; }
+    [SerializeField] private Caterpillar caterpillarSpawner;
 
     private GameScore CurrentScore;
 
     private Game CurrentGame = Game.None;
+
+    public float gameDuration = 30f;
+    private float timeRemaining;
+    private bool isGameActive = false;
+
+    public Text timerText;
 
     void Awake()
     {
@@ -250,7 +257,6 @@ public class GameManager : MonoBehaviour
 
             // Subscribe to the sceneLoaded event
             SceneManager.sceneLoaded += onSceneLoaded;
-
             DataReceiver = gameObject.AddComponent<DataReceiver>();
         }
         else
@@ -258,6 +264,44 @@ public class GameManager : MonoBehaviour
             Debug.Log("No need for GameController Instance");
             Destroy(gameObject);
         }
+    }
+
+    void Start()
+    {
+        if (caterpillarSpawner != null) {
+            // StartCoroutine(caterpillarSpawner.CaterpillarSpawn());
+        } else {
+            Debug.LogWarning("CaterpillarSpawn reference is missing!");
+        }
+
+        if (timerText == null)
+        {
+            Debug.LogWarning("Timer text not found, creating dynamically.");
+            CreateTimerTextUI();
+        }
+
+    }
+
+    private void CreateTimerTextUI()
+    {
+        GameObject canvasGO = new GameObject("TimerCanvas");
+        Canvas canvas = canvasGO.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        CanvasScaler canvasScaler = canvasGO.AddComponent<CanvasScaler>();
+        canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        canvasScaler.referenceResolution = new Vector2(1920, 1080);
+
+        GameObject timerTextGO = new GameObject("TimerText");
+        timerTextGO.transform.parent = canvasGO.transform;
+
+        timerText = timerTextGO.AddComponent<Text>();
+        timerText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        timerText.fontSize = 40;
+        timerText.alignment = TextAnchor.MiddleCenter;
+
+        RectTransform rectTransform = timerText.GetComponent<RectTransform>();
+        rectTransform.sizeDelta = new Vector2(200, 80);
+        rectTransform.anchoredPosition = new Vector2(0, 400);
     }
 
     public void StartGame1()
@@ -278,7 +322,33 @@ public class GameManager : MonoBehaviour
     public void StartGame6()
     {
         CurrentScore = new Game6Score();
-        SceneManager.LoadScene("Game6"); // Load the Game6 scene
+        SceneManager.LoadScene("Game6");
+        isGameActive = true;
+        // StartCoroutine(GameTimer());
+    }
+
+    IEnumerator GameTimer()
+    {
+        while (timeRemaining > 0)
+        {
+            timeRemaining -= Time.deltaTime;
+
+            if (timerText != null)
+            {
+                timerText.text = "Time Left: " + Mathf.Ceil(timeRemaining).ToString();
+            }
+
+            yield return null;
+        }
+
+        EndGame();
+    }
+
+    public void EndGame()
+    {
+        isGameActive = false;
+        Debug.Log("Game Over!");
+        DisplayCompoundScore(CurrentScore);
     }
 
     // Function to pause the game.
