@@ -8,12 +8,14 @@ using Unity.VisualScripting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using UnityEngine.Events;
+using TMPro;
 
 public enum Game
 {
-    None=0,
-    Game1=1,
-    Game2=2
+    None = 0,
+    Game1 = 1,
+    Game2 = 2,
+    Game6 = 6
 }
 
 public abstract class GameScore
@@ -35,11 +37,13 @@ public abstract class GameScore
         return JsonSerializer.ToJson(this);
     }
 
-    public void MarkStartTime() {
+    public void MarkStartTime()
+    {
         StartTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
     }
 
-    public void MarkEndTime() {
+    public void MarkEndTime()
+    {
         EndTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
     }
 }
@@ -150,6 +154,78 @@ public class Game1Score : GameScore
     }
 }
 
+
+public class Game6Score : GameScore
+{
+    public List<int> CrowClicks { get; private set; }
+
+
+    // Displays the average score for the game over any number of rounds
+    public override int Score
+    {
+        get
+        {
+            if (NumRounds == 0)
+            {
+                return 0;
+            }
+            else
+            {
+                int totalCrowClicks = 0;
+                for (int i = 0; i < NumRounds; i++)
+                {
+                    totalCrowClicks += CrowClicks[i];
+                }
+                return totalCrowClicks / NumRounds;
+            }
+        }
+    }
+
+    // Initially setting NumRounds to 1, to debug initial configurations
+    public Game6Score()
+    {
+        Game = Game.Game6;
+        CrowClicks = new List<int>();
+        NumRounds = 1;
+    }
+
+    public void AddRound(int crowClicks)
+    {
+        CrowClicks.Add(crowClicks);
+        NumRounds++;
+        Debug.Log($"Round {NumRounds} added with {crowClicks} crow clicks.");
+    }
+
+    public override string ToString()
+    {
+        string s = "Game: " + Game.ToString() + "\n";
+        s += "NumRounds: " + NumRounds.ToString() + "\n";
+        s += "CrowClicks: ";
+        foreach (float roundScore in CrowClicks)
+        {
+            s += roundScore.ToString() + ", ";
+        }
+        s += "\nScore: " + Score.ToString();
+        return s;
+    }
+
+    public string GetResultForRound(int round)
+    {
+        if (round < 0 || round >= NumRounds)
+        {
+            throw new ArgumentOutOfRangeException("round", "Round index out of range");
+        }
+        int CrowsCapturedThisRound = CrowClicks[round];
+        return $"Round {round + 1}\nCrows Successfully Captured: {CrowsCapturedThisRound}";
+    }
+
+    public string GetResultForRound()
+    {
+        return GetResultForRound(NumRounds - 1);
+    }
+}
+
+
 public class GameManager : MonoBehaviour
 {
 
@@ -197,6 +273,12 @@ public class GameManager : MonoBehaviour
     public void StartGame2()
     {
         SceneManager.LoadScene("Game2"); // Load the game scene
+    }
+
+    public void StartGame6()
+    {
+        CurrentScore = new Game6Score();
+        SceneManager.LoadScene("Game6"); // Load the Game6 scene
     }
 
     // Function to pause the game.

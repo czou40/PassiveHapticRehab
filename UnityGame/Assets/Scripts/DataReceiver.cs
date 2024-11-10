@@ -329,11 +329,11 @@ public class DataReceiver : MonoBehaviour
         Vector3 leftShoulderToHip = leftHip - leftShoulder;
 
         float angle = Vector3.Angle(leftShoulderToWrist, leftShoulderToHip);
-        
+
         Vector3 rightShoulder = PosePositions[12];
         Vector3 leftShoulderToRightShoulder = rightShoulder - leftShoulder;
 
-        float determinant = Vector3.Dot(Vector3.Cross(leftShoulderToRightShoulder, leftShoulderToHip),leftShoulderToWrist);
+        float determinant = Vector3.Dot(Vector3.Cross(leftShoulderToRightShoulder, leftShoulderToHip), leftShoulderToWrist);
         if (determinant < 0)
         {
             if (angle > 135)
