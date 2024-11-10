@@ -38,7 +38,7 @@ fun getCurrentActivity(): Activity? {
     return context as? Activity
 }
 @Composable
-@Preview(name = "10-inch Tablet Landscape", widthDp = 1200, heightDp = 750)
+@Preview(name = "10-inch Tablet Landscape", widthDp = 800, heightDp = 600)
 fun ShoulderExtensionFlexionOverlay() {
     var visible by remember { mutableStateOf(true) }
     val activity = getCurrentActivity()
@@ -174,9 +174,9 @@ fun ShoulderExtensionFlexionOverlay() {
                 ) {
                     Text(
                         text = "Let's Begin!",
+                        lineHeight = 35.sp,
                         color = Color(0xFF5B2626),
                         fontSize = 32.sp,
-
                         modifier = Modifier.padding(64.dp, 16.dp)
                     )
                 }

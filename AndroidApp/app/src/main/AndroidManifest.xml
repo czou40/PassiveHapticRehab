@@ -54,6 +54,7 @@
             android:name=".activities.GameInstructionActivity"
             android:exported="true"
             android:label="@string/title_activity_game_instruction"
+            android:screenOrientation="reverseLandscape"
             android:theme="@style/Theme.PHL" />
         <activity
             android:name=".activities.TestListActivity"
@@ -73,7 +74,8 @@
             android:hardwareAccelerated="false"
             android:label="@string/title_activity_main_unity"
             android:process=":Unity"
-            android:screenOrientation="landscape"
+            android:launchMode="singleTask"
+            android:screenOrientation="reverseLandscape"
             android:theme="@style/Theme.PHL" />
 
         <service
@@ -112,7 +114,7 @@
         <activity
             android:name=".activities.ProgressActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="landscape" />
         <activity
             android:name=".activities.MainActivity"
             android:exported="true"

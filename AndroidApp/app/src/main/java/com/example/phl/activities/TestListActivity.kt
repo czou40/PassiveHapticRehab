@@ -190,9 +190,9 @@ data class Test(val title: String, val description: String, val imageRes: Int, v
 fun PreviewUpperLimbTestsScreen() {
     val tests = listOf(
         Test("Shoulder Extension & Flexion", "Evaluate the range of motion of your shoulder", R.drawable.shoulder_extension_icon, UnityAPI.Scene.GAME_1),
-        Test("Shoulder Rotation", "Evaluate the internal and external rotation ability of your shoulder", R.drawable.shoulder_rotation_icon, UnityAPI.Scene.GAME_2),
+//        Test("Shoulder Rotation", "Evaluate the internal and external rotation ability of your shoulder", R.drawable.shoulder_rotation_icon, UnityAPI.Scene.GAME_2),
 //        Test("Elbow Extension & Flexion", "Evaluate the range of motion of your elbow", R.drawable.elbow_extension_icon, UnityAPI.Scene.None),
-        Test("Wrist Up & Down", "Evaluate the range of motion of your wrist", R.drawable.wrist_up_icon_compressed, UnityAPI.Scene.GAME_4),
+//        Test("Wrist Up & Down", "Evaluate the range of motion of your wrist", R.drawable.wrist_up_icon_compressed, UnityAPI.Scene.GAME_4),
 //        Test("Finger-to-Nose", "Evaluate the overall coordination of your upper-limb", R.drawable.finger_to_nose_icon_compressed, UnityAPI.Scene.None),
 //        Test("Finger Extension & Flexion", "Evaluate the maximum range of motion of your fingers", R.drawable.finger_extension_icon, UnityAPI.Scene.None),
 //        Test("Finger Tapping - Coordination", "Evaluate the overall dexterity and coordination of your fingers", R.drawable.finger_tapping_1_icon, UnityAPI.Scene.None),
