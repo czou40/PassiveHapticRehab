@@ -232,6 +232,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
     public bool gamePaused { get; private set; } = false;
     public DataReceiver DataReceiver { get; private set; }
+    public DataReceiverFingerCoord FingerReceiver { get; private set; }
     [SerializeField] private Caterpillar caterpillarSpawner;
 
     private GameScore CurrentScore;
@@ -254,10 +255,16 @@ public class GameManager : MonoBehaviour
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
             DontDestroyOnLoad(gameObject);
             Debug.Log("GameController Instance set");
+            // Add receivers only if they don't exist
+            if (GetComponent<DataReceiver>() == null)
+                DataReceiver = gameObject.AddComponent<DataReceiver>();
+            
+            if (GetComponent<DataReceiverFingerCoord>() == null)
+                FingerReceiver = gameObject.AddComponent<DataReceiverFingerCoord>();
 
             // Subscribe to the sceneLoaded event
             SceneManager.sceneLoaded += onSceneLoaded;
-            DataReceiver = gameObject.AddComponent<DataReceiver>();
+
         }
         else
         {

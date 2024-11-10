@@ -1,11 +1,16 @@
 import cv2
 import mediapipe as mp
 import numpy as np
+import socket
+import time
 
 
 class FingerTouchDetector:
     def __init__(self):
         # Initialize MediaPipe hands module
+        # Add UDP socket setup
+        self.data_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.unity_address = ('127.0.0.1', 5000)
         self.mp_hands = mp.solutions.hands
         self.hands = self.mp_hands.Hands(
             static_image_mode=False,
@@ -59,7 +64,13 @@ class FingerTouchDetector:
                 if distance < self.touch_threshold:
                     touched_finger = finger_num
                     break
-
+        try:
+            data_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            unity_address = ('127.0.0.1', 5000)
+            data_socket.sendto(str(touched_finger).encode(), unity_address)
+            data_socket.close()  # Close the socket after sending
+        except Exception as e:
+            print(f"Error sending data to Unity: {e}")
         return touched_finger
 
 

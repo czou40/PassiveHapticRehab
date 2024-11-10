@@ -16,6 +16,17 @@ public class Game6Workflow : MonoBehaviour
     private int MaxAttempts = 3;
     private int CurrentAttempt = 0;
 
+    //Variables for finger touch detection
+    private DataReceiverFingerCoord fingerReceiver; 
+    private int lastTouchedFinger = 0;
+    //dictionary maps finger touch numbers to name of the coressponding finger
+    private Dictionary<int, string> fingerNames = new Dictionary<int, string>()
+    {
+        {1, "Index"},
+        {2, "Middle"},
+        {3, "Ring"},
+        {4, "Pinky"}
+    };
 
     // Game management variables
     private int TimerDuration = 30; // length of each round
@@ -46,6 +57,7 @@ public class Game6Workflow : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            fingerReceiver = GetComponent<DataReceiverFingerCoord>();
         }
         else
         {
@@ -65,6 +77,32 @@ public class Game6Workflow : MonoBehaviour
         RoundResultShower = GetComponent<RoundResultShower>();
         Timer = GetComponent<Timer>();
         initializeCurrentStage();
+    }
+
+    void Update()
+    {
+        // Check for new finger touch data every frame
+        if (CurrentStage != GameStage.PRE_GAME && fingerReceiver != null)
+        {
+            CheckFingerTouch();
+        }
+    }
+
+    private void CheckFingerTouch()
+    {
+        if (fingerReceiver.HasNewData)
+        {
+            int touchedFinger = fingerReceiver.TouchedFinger;
+            
+            // Only log if the touched finger has changed
+            if (touchedFinger != lastTouchedFinger)
+            {
+                lastTouchedFinger = touchedFinger;
+                string fingerName = fingerNames.ContainsKey(touchedFinger) ? 
+                    fingerNames[touchedFinger] : "No finger";
+                Debug.Log($"Thumb is touching: {fingerName}");
+            }
+        }
     }
 
     public void initializeCurrentStage()
@@ -120,13 +158,15 @@ public class Game6Workflow : MonoBehaviour
 
     private IEnumerator CountdownToNextStage(int countdownTime)
     {
-        while (countdownTime > 0)
+        int currentTime = countdownTime;
+        while (currentTime > 0)
         {
-            Debug.Log($"Countdown: {countdownTime} seconds remaining...");
-            yield return new WaitForSeconds(1);
-            countdownTime--;
+            Debug.Log($"Countdown: {currentTime} seconds remaining...");
+            yield return new WaitForSeconds(1f);
+            currentTime--;  // Use a separate variable for counting down
         }
-        moveToNextStage(); // Move to the next stage after countdown
+        Debug.Log("Countdown complete! Moving to next stage...");
+        moveToNextStage();
     }
 
     private void resetScores()
