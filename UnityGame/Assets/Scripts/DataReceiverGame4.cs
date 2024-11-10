@@ -17,6 +17,7 @@ public class DataReceiverGame4 : MonoBehaviour
     private Thread dataUdpThread;
     private static int dataListenPort = 5000;
     private volatile bool _shouldStop = false;
+    private bool noseTouchDetected = false;
     private readonly object lockObject = new object();
 
     private void DataThreadMethod()
@@ -31,6 +32,14 @@ public class DataReceiverGame4 : MonoBehaviour
                 string receivedData = Encoding.ASCII.GetString(receiveBytes);
 
                 //Debug.Log($"Received data: {receivedData}"); // Log received data
+
+                lock (lockObject)
+                {
+                    if (receivedData.Contains("Hand touching nose"))
+                    {
+                        noseTouchDetected = true;
+                    }
+                }
             }
         }
         catch (Exception e)
@@ -40,6 +49,19 @@ public class DataReceiverGame4 : MonoBehaviour
         finally
         {
             dataUdpClient.Close();
+        }
+    }
+
+    public bool HasNoseTouch()
+    {
+        lock (lockObject)
+        {
+            if (noseTouchDetected)
+            {
+                noseTouchDetected = false;
+                return true;
+            }
+            return false;
         }
     }
 

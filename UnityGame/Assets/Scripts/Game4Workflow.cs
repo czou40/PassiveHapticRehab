@@ -31,7 +31,7 @@ public class Game4Workflow : MonoBehaviour
     // Game management variables
     private int TimerDuration = 30; // length of each round
     private int PreGameCountdown = 3;  // seconds before the game begins
-    private DataReceiver DataReceiver;
+    private DataReceiverGame4 DataReceiver;
     private GameStepInstructionShower GameStepInstructionShower;
     private Timer Timer;
     private GameStage CurrentStage;
@@ -47,6 +47,8 @@ public class Game4Workflow : MonoBehaviour
     }
 
     public static Game4Workflow Instance;
+
+    private bool noseTouched = false; // YT - This is a flag to check if the nose has been touched
 
     void Awake()
     {
@@ -68,7 +70,7 @@ public class Game4Workflow : MonoBehaviour
         Score = new Game4Score();
         Score.MarkStartTime();
         UpdateScoreUI();
-        DataReceiver = GameManager.Instance.DataReceiver;
+        DataReceiver = FindObjectOfType<DataReceiverGame4>();
         GameStepInstructionShower = GetComponent<GameStepInstructionShower>();
         RoundResultShower = GetComponent<RoundResultShower>();
         Timer = GetComponent<Timer>();
@@ -182,6 +184,14 @@ public class Game4Workflow : MonoBehaviour
         initializeCurrentStage();
     }
 
+    private void Update()
+    {
+        if (DataReceiver != null && DataReceiver.HasNoseTouch())
+        {
+            noseTouched = true;
+        }
+    }
+
     private void StartCrowSpawning()
     {
         crowsSpawnedThisRound = 0; // Reset crow count for this round
@@ -223,10 +233,18 @@ public class Game4Workflow : MonoBehaviour
 
     public void CrowTapped()
     {
-        CrowClicksThisRound++;
-        Debug.Log("Crow clicked"); // Debug statement for next stage transition
-        Debug.Log("New total is: " + CrowClicksThisRound);
-        UpdateScoreUI(); // Update the score on the UI
+        if (noseTouched)
+        {
+            CrowClicksThisRound++;
+            Debug.Log("Crow clicked"); // Debug statement for next stage transition
+            Debug.Log("New total is: " + CrowClicksThisRound);
+            UpdateScoreUI(); // Update the score on the UI
+            noseTouched = false;
+        }
+        else
+        {
+            Debug.Log("Please touch your nose before selecting a crow.");
+        }
     }
 
 }
