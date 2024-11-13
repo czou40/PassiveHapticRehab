@@ -48,17 +48,23 @@ public class Game3Workflow : MonoBehaviour
 
     private enum GameStage
     {
+        PRE_GAME_INSTRUCTIONS, 
+
         PRE_GAME,
         UNFURL_INSTRUCTION,
+        UNFURL_GO,
         UNFURL_GAME,
 
         CLENCH_INSTRUCTION,
+        CLENCH_GO,
 
         CLENCH_GAME,
 
         ROUND_RESULT,
 
-        FINISHED
+        FINISHED,
+
+        NEXT_GAME
     }
 
     void Start()
@@ -101,7 +107,7 @@ public class Game3Workflow : MonoBehaviour
                 mainApple.transform.localScale = new Vector3(MAX_SCALE, MAX_SCALE, 1.0f);
                 return;
             }
-            else if (MaxAngle >= MinAngleThreshold)
+            else if (MaxAngle >= MinAngleThreshold)    // Max angle valid
             {
                 percentSize = (float) (MaxAngle - MinAngleThreshold) / (MaxAngleThreshold - MinAngleThreshold);
             }
@@ -109,23 +115,33 @@ public class Game3Workflow : MonoBehaviour
             {
                 percentSize = 0.0f;
             }
+            Debug.Log("UNFURL SIZE: " + percentSize + "\nMaxAngle: " + MaxAngle + "\nMinAngle: " + MinAngle);
         }
         else if (CurrentStage == GameStage.CLENCH_GAME)
         {
             if (MinAngle <= MinAngleThreshold)
             {
+                Debug.Log("CLENCH MIN BELOW THRESHOLD");
                 mainApple.transform.localScale = new Vector3(0.0f, 0.0f, 1.0f);
                 // mainApple.GetComponent<Animator>().SetTrigger("Collected");
                 ScoreApples[CurrentAttempt].SetActive(true);
                 return;
             }
-            else if (MinAngle <= MaxAngleThreshold)
+            else if (MinAngle >= MaxAngle)
             {
-                percentSize = 1.0f - ((float) (MaxAngle - MinAngle) / (MaxAngle - MinAngleThreshold));
+                percentSize = (float) (MaxAngle - MinAngleThreshold) / (MaxAngleThreshold - MinAngleThreshold);
+                Debug.Log("CLENCH MIN ABOVE MAX: " + percentSize);
+            }
+            else if (MinAngle <= MaxAngleThreshold)   // Min angle valid
+            {
+                percentSize = ((float) (MaxAngle - MinAngleThreshold) / (MaxAngleThreshold - MinAngleThreshold)) - ((float) (MaxAngle - MinAngle) / (MaxAngleThreshold - MinAngleThreshold));
+                Debug.Log("CLENCH MIN BELOW MAX THRESH: " + percentSize + "\nMaxAngle: " + MaxAngle + "\nMinAngle: " + MinAngle);
             }
             else
             {
-                percentSize = 1.0f;
+                // percentSize = 1.0f;
+                percentSize = (float) (MaxAngle - MinAngleThreshold) / (MaxAngleThreshold - MinAngleThreshold); // If minAngle not valid, set percentage to max percentage from unfurl stage
+                Debug.Log("CLENCH ELSE: " + percentSize);
             }
         }
 
@@ -192,17 +208,30 @@ public class Game3Workflow : MonoBehaviour
                 CurrentStage = GameStage.UNFURL_INSTRUCTION;
                 break;
             case GameStage.UNFURL_INSTRUCTION:
+                CurrentStage = GameStage.UNFURL_GO;
+                break;
+            case GameStage.UNFURL_GO:
                 CurrentStage = GameStage.UNFURL_GAME;
                 break;
             case GameStage.UNFURL_GAME:
                 CurrentStage = GameStage.CLENCH_INSTRUCTION;
                 break;
             case GameStage.CLENCH_INSTRUCTION:
+                CurrentStage = GameStage.CLENCH_GO;
+                break;
+            case GameStage.CLENCH_GO:
                 CurrentStage = GameStage.CLENCH_GAME;
                 break;
             case GameStage.CLENCH_GAME:
                 CurrentAttempt += 1;
-                Score.AddRound(MinAngle, MaxAngle);
+                if (MinAngle <= MaxAngle)
+                {
+                    Score.AddRound(MinAngle, MaxAngle);
+                }
+                else
+                {
+                    Score.AddRound(0, 0);
+                }
                 CurrentStage = GameStage.ROUND_RESULT;
                 break;
             case GameStage.ROUND_RESULT: 
@@ -215,6 +244,9 @@ public class Game3Workflow : MonoBehaviour
                     Score.MarkEndTime();
                     CurrentStage = GameStage.FINISHED;
                 }
+                break;
+            case GameStage.FINISHED:
+                CurrentStage = GameStage.NEXT_GAME;
                 break;
             default:
                 //do nothing
@@ -250,6 +282,15 @@ public class Game3Workflow : MonoBehaviour
                 // GameStepInstructionShower.StartCountdown(InstructionCountdown);
                 GameStepInstructionShower.SetDisplayedContent(0);
                 break;
+            case GameStage.UNFURL_GO:
+                Debug.Log("UNFURL_GO");
+                GameManager.Instance.PauseGame();
+                PoseVisibilityWarner.ResetTriggers();
+                GameStepInstructionShower.SetInstructionText("GO!");
+                GameStepInstructionShower.ShowInstruction();
+                // GameStepInstructionShower.StartCountdown(InstructionCountdown);
+                GameStepInstructionShower.SetDisplayedContent(0);
+                break;
             case GameStage.UNFURL_GAME:
                 Debug.Log("UNFURL_GAME");
                 GameManager.Instance.PauseGame();
@@ -264,6 +305,15 @@ public class Game3Workflow : MonoBehaviour
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
                 GameStepInstructionShower.SetInstructionText("Now, you need to clench your fingers tightly to collect more fruits. Ready?");
+                GameStepInstructionShower.ShowInstruction();
+                GameStepInstructionShower.SetDisplayedContent(1);
+                HandMovementControl.HideInstruction();
+                break;
+            case GameStage.CLENCH_GO:
+                Debug.Log("CLENCH_GO");
+                GameManager.Instance.PauseGame();
+                PoseVisibilityWarner.ResetTriggers();
+                GameStepInstructionShower.SetInstructionText("GO!");
                 GameStepInstructionShower.ShowInstruction();
                 GameStepInstructionShower.SetDisplayedContent(1);
                 HandMovementControl.HideInstruction();
@@ -289,15 +339,43 @@ public class Game3Workflow : MonoBehaviour
                 RoundResultShower.Show();
                 HandMovementControl.HideInstruction();
                 break;
+            // case GameStage.FINISHED:
+            //     Debug.Log("FINISHED");
+            //     // RoundResultShower.SetResultText(Score.ToString());
+            //     // RoundResultShower.Show();
+            //     RoundResultShower.Hide();
+            //     HandMovementControl.HideInstruction();
+            //     Debug.Log("Game Finished");
+            //     displayScore();
+            //     break;
             case GameStage.FINISHED:
                 Debug.Log("FINISHED");
+                GameManager.Instance.PauseGame();
+                PoseVisibilityWarner.ResetTriggers();
+                GameStepInstructionShower.HideInstruction();
+                // RoundResultShower.SetResultText(Score.GetResultForRound());
+                RoundResultShower.SetResultText($"{Score.Score}");
+                RoundResultShower.SetNextButtonText("Next Game");
+
+                RoundResultShower.ResultPanel.transform.GetChild(1).GetComponent<TextMeshPro>().SetText("Great! Your overall score is:");
+
+                RoundResultShower.Show();
+                HandMovementControl.HideInstruction();
+
+
                 // RoundResultShower.SetResultText(Score.ToString());
                 // RoundResultShower.Show();
-                RoundResultShower.Hide();
-                HandMovementControl.HideInstruction();
-                Debug.Log("Game Finished");
+                // RoundResultShower.Hide();
+                // HandMovementControl.HideInstruction();
+                // Debug.Log("Game Finished");
                 displayScore();
                 break;
+            case GameStage.NEXT_GAME:
+                Debug.Log("NEXT GAME");
+                RoundResultShower.Hide();
+                HandMovementControl.HideInstruction();
+                break;
+
             default:
                 GameStepInstructionShower.HideInstruction();
                 break;
@@ -324,9 +402,17 @@ public class Game3Workflow : MonoBehaviour
                 Debug.Log("RESETTING COUNTDOWN - UNFURL");
                 GameStepInstructionShower.StartCountdown(CurrentAttempt == 0 ? InstructionCountdownFirstTime : InstructionCountdown);
                 break;
+            case GameStage.UNFURL_GO:
+                Debug.Log("RESETTING COUNTDOWN - UNFURL GO");
+                GameStepInstructionShower.StartCountdown(1);
+                break;
             case GameStage.CLENCH_INSTRUCTION:
                 Debug.Log("RESETTING COUNTDOWN - CLENCH");
                 GameStepInstructionShower.StartCountdown(CurrentAttempt == 0 ? InstructionCountdownFirstTime : InstructionCountdown);
+                break;
+            case GameStage.CLENCH_GO:
+                Debug.Log("RESETTING COUNTDOWN - CLENCH GO");
+                GameStepInstructionShower.StartCountdown(1);
                 break;
             default:
                 //do nothing
@@ -344,7 +430,7 @@ public class Game3Workflow : MonoBehaviour
         while (CurrentAttempt < MaxAttempts)
         {
             CurrentAttempt += 1;
-            Score.AddRound(0f, 180f);
+            Score.AddRound(MinAngleThreshold, MaxAngleThreshold);
         }
         Score.MarkEndTime();
         CurrentStage = GameStage.FINISHED;
