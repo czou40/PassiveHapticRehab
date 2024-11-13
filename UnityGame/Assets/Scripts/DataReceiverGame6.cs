@@ -91,15 +91,6 @@ public class DataReceiverGame6 : MonoBehaviour
         _shouldStop = true;
     }
 
-    private void OnEnable()
-    {
-        if (dataUdpThread == null || !dataUdpThread.IsAlive)
-        {
-            dataUdpThread = new Thread(DataThreadMethod);
-            dataUdpThread.Start();
-        }
-    }
-
     private void OnDisable()
     {
         _shouldStop = true;
