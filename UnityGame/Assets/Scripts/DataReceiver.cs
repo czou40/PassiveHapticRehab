@@ -282,10 +282,12 @@ public class DataReceiver : MonoBehaviour
         if (hasLeftHandData)
         {
             this.LeftHandDataTimeStamp = timeStamp;
+            this.PoseDataTimeStamp = timeStamp;
         }
         if (hasRightHandData)
         {
             this.RightHandDataTimeStamp = timeStamp;
+            this.PoseDataTimeStamp = timeStamp;
         }
         if (hasPoseData)
         {
@@ -393,6 +395,7 @@ public class DataReceiver : MonoBehaviour
                                     {17, 18, 19},
                                     {18, 19, 20}};
         float angleSum = 0.0f;
+        Vector3 totalMTU = new Vector3(0, 0, 0);
         for (int i = 0; i < anglesToCalculate.GetLength(0); ++i)
         {
             Vector3 lowerJoint  = LeftHandPositions[anglesToCalculate[i, 0]];
@@ -402,10 +405,16 @@ public class DataReceiver : MonoBehaviour
             Vector3 middleToLower = lowerJoint - middleJoint;
             Vector3 middleToUpper = upperJoint - middleJoint;
 
+            Debug.Log("MTL[" + i + "]: " + middleToLower);
+            Debug.Log("MTU[" + i + "]: " + middleToUpper);
+
             float angle = Vector3.Angle(middleToLower, middleToUpper);
+            totalMTU += middleToUpper;
 
             angleSum += angle;
         }
+
+        Debug.Log(totalMTU);
 
         return angleSum / anglesToCalculate.GetLength(0);
     }
@@ -440,5 +449,49 @@ public class DataReceiver : MonoBehaviour
         // Debug.Log("4" + LeftHandPositions[4]);
         Debug.Log("Pinkie & thumb distance: " + distance);
         return distance;
+    }
+
+    public bool isFist()
+    {
+        int[,] anglesToCalculate = {{1, 2, 3},
+                                    {2, 3, 4},
+                                    {0, 5, 6},
+                                    {5, 6, 7},
+                                    {6, 7, 8},
+                                    {0, 9, 10},
+                                    {9, 10, 11},
+                                    {10, 11, 12},
+                                    {0, 13, 14},
+                                    {13, 14, 15},
+                                    {14, 15, 16},
+                                    {0, 17, 18},
+                                    {17, 18, 19},
+                                    {18, 19, 20}};
+        float angleSum = 0.0f;
+        Vector3 totalMTU = new Vector3(0, 0, 0);
+        for (int i = 0; i < anglesToCalculate.GetLength(0); ++i)
+        {
+            Vector3 lowerJoint = LeftHandPositions[anglesToCalculate[i, 0]];
+            Vector3 middleJoint = LeftHandPositions[anglesToCalculate[i, 1]];
+            Vector3 upperJoint = LeftHandPositions[anglesToCalculate[i, 2]];
+
+            Vector3 middleToLower = lowerJoint - middleJoint;
+            Vector3 middleToUpper = upperJoint - middleJoint;
+
+            Debug.Log("MTL: " + middleToLower);
+            Debug.Log("MTU: " + middleToUpper);
+
+            float angle = Vector3.Angle(middleToLower, middleToUpper);
+            totalMTU += middleToUpper;
+
+            angleSum += angle;
+        }
+
+        Debug.Log("IF:" + totalMTU);
+        if (totalMTU[1] > 2.0f) {
+            return true;
+        }
+        else
+            return false;
     }
 }

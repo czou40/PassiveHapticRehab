@@ -11,7 +11,7 @@ import mediapipe.python.solutions.hands as mp_hands
 import os
 
 # Toggle this in order to view how your WebCam is being interpreted (reduces performance).
-DEBUG = False
+DEBUG = True
 
 # To switch cameras. Sometimes takes a while.
 WEBCAM_INDEX = 0
@@ -118,7 +118,7 @@ class HandThread(threading.Thread):
                             distances.sort(key=lambda x: x[1])
                             # print(distances)
 
-                            if (distances[0][1] < 0.027):
+                            if (distances[0][1] < 0.035):
                                 finger = ''
                                 match distances[0][0]:
                                     case 8:
