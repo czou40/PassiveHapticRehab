@@ -72,7 +72,6 @@ public class Game6Workflow : MonoBehaviour
         CurrentStage = GameStage.PRE_GAME;
         Score = new Game6Score();
         Score.MarkStartTime();
-        UpdateScoreUI();
         DataReceiver = GameManager.Instance.DataReceiver;
         GameStepInstructionShower = GetComponent<GameStepInstructionShower>();
         RoundResultShower = GetComponent<RoundResultShower>();
