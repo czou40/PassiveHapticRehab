@@ -626,6 +626,7 @@ MonoBehaviour:
   minYPosition: -4
   speed: 1
   spawnDuration: 30
+  currentSpawnIndex: 0
 --- !u!1 &271710412
 GameObject:
   m_ObjectHideFlags: 0
@@ -695,7 +696,7 @@ SpriteRenderer:
   m_Size: {x: 3.2, y: 0.66}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &271710414
@@ -782,7 +783,7 @@ SpriteRenderer:
   m_Size: {x: 4.5, y: 3.65}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &283947947
@@ -1005,7 +1006,7 @@ SpriteRenderer:
   m_Size: {x: 3.64, y: 0.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &611051639
@@ -1254,7 +1255,7 @@ SpriteRenderer:
   m_Size: {x: 2.22, y: 0.66}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &763023845
@@ -1317,7 +1318,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4faab77263c1c4393baca9f4d00ea592, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scoreText: {fileID: 0}
+  scoreText: {fileID: 1603968668}
+  currentSpawnIndex: 0
   caterpillarSpawner: {fileID: 260107097}
 --- !u!1 &1603968666
 GameObject:
@@ -1331,7 +1333,7 @@ GameObject:
   - component: {fileID: 1603968669}
   - component: {fileID: 1603968668}
   m_Layer: 5
-  m_Name: CoordinationScore
+  m_Name: Score Text Element
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1441,7 +1443,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -2.400238, y: 0, z: 172.0199, w: 10.401172}
+  m_margin: {x: -2.400238, y: 0, z: 93.11494, w: 10.401172}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1524,7 +1526,7 @@ SpriteRenderer:
   m_Size: {x: 4.5, y: 3.65}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1810010881
@@ -1611,7 +1613,7 @@ SpriteRenderer:
   m_Size: {x: 3.64, y: 0.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1950181834

@@ -104,8 +104,9 @@ public class Game6Workflow : MonoBehaviour
                 string fingerName = fingerNames.ContainsKey(touchedFinger) ? 
                     fingerNames[touchedFinger] : "No finger";
 
-                if (touchedFinger == (caterpillarSpawner.currentSpawnIndex + 1))
+                if (touchedFinger == (caterpillarSpawner.currentSpawnIndex + 1) && caterpillarSpawner.newSpawn)
                 {
+                    caterpillarSpawner.newSpawn = false;
                     UpdateScoreUI();
                 }
             }

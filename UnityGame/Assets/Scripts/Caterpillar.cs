@@ -13,6 +13,7 @@ public class Caterpillar : MonoBehaviour
 
     private bool isSpawning = true;
     public int currentSpawnIndex;
+    public bool newSpawn = false;
 
     void Start()
     {
@@ -30,6 +31,7 @@ public class Caterpillar : MonoBehaviour
         while (isSpawning)
         {
             currentSpawnIndex = Random.Range(0, spawnPoints.Length);
+            newSpawn = true;
             Debug.Log($"Spawned at: {currentSpawnIndex}");
             Vector3 spawnPosition = spawnPoints[currentSpawnIndex];
 
