@@ -244,6 +244,7 @@ public class GameManager : MonoBehaviour
     private bool isGameActive = false;
 
     public Text timerText;
+    public Text scoreText;
 
     void Awake()
     {
@@ -287,6 +288,12 @@ public class GameManager : MonoBehaviour
             CreateTimerTextUI();
         }
 
+        if (scoreText == null)
+        {
+            Debug.LogWarning("Timer text not found, creating dynamically.");
+            CreateScoreTextUI();
+        }
+
     }
 
     private void CreateTimerTextUI()
@@ -308,6 +315,28 @@ public class GameManager : MonoBehaviour
 
         RectTransform rectTransform = timerText.GetComponent<RectTransform>();
         rectTransform.sizeDelta = new Vector2(200, 80);
+        rectTransform.anchoredPosition = new Vector2(0, 400);
+    }
+
+    private void CreateScoreTextUI()
+    {
+        GameObject canvasGO = new GameObject("ScoreCanvas");
+        Canvas canvas = canvasGO.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        CanvasScaler canvasScaler = canvasGO.AddComponent<CanvasScaler>();
+        canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        canvasScaler.referenceResolution = new Vector2(1920, 1080);
+
+        GameObject scoreTextGO = new GameObject("ScoreText");
+        scoreTextGO.transform.parent = canvasGO.transform;
+
+        scoreText = scoreTextGO.AddComponent<Text>();
+        scoreText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        scoreText.fontSize = 40;
+        scoreText.alignment = TextAnchor.MiddleCenter;
+
+        RectTransform rectTransform = scoreText.GetComponent<RectTransform>();
+        rectTransform.sizeDelta = new Vector2(175, 175);
         rectTransform.anchoredPosition = new Vector2(0, 400);
     }
 

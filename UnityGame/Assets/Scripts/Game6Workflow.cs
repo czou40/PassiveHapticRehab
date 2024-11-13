@@ -12,9 +12,10 @@ public class Game6Workflow : MonoBehaviour
     private Game6Score Score;
     public TMP_Text scoreText; // Reference to the on-screen score text
     private int caterpillarsSpawnedThisRound = 0; // Track number of crows spawned in current round
-    private int CatMatchedThisRound = 0;
+    private int CorrectFingerThisRound = 0;
     private int MaxAttempts = 3;
     private int CurrentAttempt = 0;
+    public int currentSpawnIndex;
 
     //Variables for finger touch detection
     private DataReceiverFingerCoord fingerReceiver; 
@@ -71,7 +72,7 @@ public class Game6Workflow : MonoBehaviour
         CurrentStage = GameStage.PRE_GAME;
         Score = new Game6Score();
         Score.MarkStartTime();
-        // UpdateScoreUI();
+        UpdateScoreUI();
         DataReceiver = GameManager.Instance.DataReceiver;
         GameStepInstructionShower = GetComponent<GameStepInstructionShower>();
         RoundResultShower = GetComponent<RoundResultShower>();
@@ -97,10 +98,17 @@ public class Game6Workflow : MonoBehaviour
             // Only log if the touched finger has changed
             if (touchedFinger != lastTouchedFinger)
             {
+                Debug.Log($"Touched finger: {touchedFinger}");
+                Debug.Log($"Spawned at: {caterpillarSpawner.currentSpawnIndex}");
+
                 lastTouchedFinger = touchedFinger;
                 string fingerName = fingerNames.ContainsKey(touchedFinger) ? 
                     fingerNames[touchedFinger] : "No finger";
-                Debug.Log($"Thumb is touching: {fingerName}");
+
+                if (touchedFinger == (caterpillarSpawner.currentSpawnIndex + 1))
+                {
+                    UpdateScoreUI();
+                }
             }
         }
     }
@@ -199,7 +207,6 @@ public class Game6Workflow : MonoBehaviour
                     Timer.StopTimer();
                     RoundResultShower.Hide();
                     resetScores();
-                    // UpdateScoreUI();
                     CurrentStage = GameStage.PRE_GAME;
                 }
                 else
@@ -218,8 +225,9 @@ public class Game6Workflow : MonoBehaviour
         initializeCurrentStage();
     }
 
-    // private void UpdateScoreUI()
-    // {
-    //     scoreText.text = CatMatchedThisRound.ToString();
-    // }
+    private void UpdateScoreUI()
+    {
+        CorrectFingerThisRound += 1; 
+        scoreText.text = CorrectFingerThisRound.ToString();
+    }
 }

@@ -8,10 +8,11 @@ public class Caterpillar : MonoBehaviour
 
     [SerializeField] float topYPosition = 5f;
     [SerializeField] float minYPosition = -4f;
-    [SerializeField] float speed = 1f;
+    [SerializeField] float speed = 0.05f;
     [SerializeField] float spawnDuration = 30f; // Duration to keep spawning
 
     private bool isSpawning = true;
+    public int currentSpawnIndex;
 
     void Start()
     {
@@ -28,7 +29,9 @@ public class Caterpillar : MonoBehaviour
 
         while (isSpawning)
         {
-            Vector3 spawnPosition = spawnPoints[Random.Range(0, spawnPoints.Length)];
+            currentSpawnIndex = Random.Range(0, spawnPoints.Length);
+            Debug.Log($"Spawned at: {currentSpawnIndex}");
+            Vector3 spawnPosition = spawnPoints[currentSpawnIndex];
 
             GameObject caterpillar = Instantiate(
                 caterpillarPrefab[Random.Range(0, caterpillarPrefab.Length)],

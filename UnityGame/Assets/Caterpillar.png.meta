@@ -158,7 +158,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Caterpillar_0: -4863376513923204046
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
