@@ -89,6 +89,11 @@ public class Game6Workflow : MonoBehaviour
                 Debug.Log("Fist :)");
             }
 
+            if (DataReceiver.isOk())
+            {
+                Debug.Log("OK! 👌");
+            }
+
             if (Angle > MaxAngle && CurrentStage == GameStage.UNFURL_GAME)
             {
                 MaxAngle = Angle;
