@@ -15,15 +15,15 @@ public class Game5Workflow : MonoBehaviour
 
     // maximum distance needed to slow down the caterpillar
     private float MaxDistanceThreshold = 0.4f;
-    private int PreGameCountdown = 3;
+    private int PreGameCountdown = 5;
     private int InstructionCountdown = 5;
-    private int InstructionCountdownFirstTime = 5;//todo change back to 8
+    private int InstructionCountdownFirstTime = 8;//todo change back to 8
     private int TimerDuration = 30; //TODO: change to 30
     //private bool MinAngleExceeded = false;
     private bool fingerTouching = false;
     private bool fingerSeparated = false;
     
-    public float bufferTime = 0.4f;
+    public float bufferTime = 1f;
     private float tappingBuffer;
     private bool buffered = false;
 
@@ -101,10 +101,19 @@ public class Game5Workflow : MonoBehaviour
         tappingBuffer = bufferTime;
     }
 
+
+    void updateCaterpillar()
+    {
+        //if (CurrentStage == GameStage.INDEX_GAME || CurrentStage == GameStage.MIDDLE_GAME || CurrentStage == GameStage.RING_GAME || CurrentStage == GameStage.PINKIE_GAME)
+        //{
+        Debug.Log("Caterpillar updated");
+        caterpillar.GetComponent<CaterpillarController>().slowMovement();
+        //}
+    }
+
     // Update is called once per frame
     void Update()
     {
-        checkScore();
 
         if (!buffered)
         {
@@ -119,26 +128,20 @@ public class Game5Workflow : MonoBehaviour
 
         if (buffered && fingerTouching && fingerSeparated)
         {
+            fingerTouching = false;
+            fingerSeparated = false;
+            buffered = false;
+            tappingBuffer = bufferTime;
             //condition reached, increment score
             FingerTapCount += 1;
             Debug.Log("Count: " + FingerTapCount);
             updateCaterpillar();
             //reset the exceed flags
-            fingerTouching = false;
-            fingerSeparated = false;
-            buffered = false;
-            tappingBuffer = bufferTime;
+            
         }
+        checkScore();
     }
 
-    void updateCaterpillar()
-    {
-        if (CurrentStage == GameStage.INDEX_GAME || CurrentStage == GameStage.MIDDLE_GAME || CurrentStage == GameStage.RING_GAME || CurrentStage == GameStage.PINKIE_GAME)
-        {
-            Debug.Log("Caterpillar updated");
-            caterpillar.GetComponent<CaterpillarController>().slowMovement();
-        }
-    }
 
     void checkScore()
     {

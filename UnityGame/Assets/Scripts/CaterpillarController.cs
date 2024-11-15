@@ -8,7 +8,7 @@ public class CaterpillarController : MonoBehaviour
     bool goalReached = false;
 
     public Vector3 startPosition;
-    //public GameObject effect;
+    public GameObject effect;
     public GameObject[] clones; 
     private bool active = false;
 
@@ -20,7 +20,8 @@ public class CaterpillarController : MonoBehaviour
             clones[i].SetActive(false);
         }
         transform.position = startPosition;
-        currSpeed = speed;
+        currSpeed = speed; 
+        //this.active = true;
     }
 
     // Update is called once per frame
@@ -43,7 +44,7 @@ public class CaterpillarController : MonoBehaviour
         {
             Debug.Log("Slow caterpillar");
             transform.position += new Vector3(0, currSpeed * slowFactor * Time.deltaTime, 0);
-
+            
         }
     }
 
