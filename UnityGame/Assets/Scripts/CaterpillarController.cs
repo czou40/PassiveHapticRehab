@@ -7,7 +7,6 @@ public class CaterpillarController : MonoBehaviour
     public float slowFactor = 2f;
     bool goalReached = false;
 
-    private Rigidbody2D rb2d;
     public Vector3 startPosition;
     //public GameObject effect;
     public GameObject[] clones; 

@@ -17,7 +17,7 @@ public class Game5Workflow : MonoBehaviour
     private float MaxDistanceThreshold = 0.4f;
     private int PreGameCountdown = 3;
     private int InstructionCountdown = 5;
-    private int InstructionCountdownFirstTime = 8;
+    private int InstructionCountdownFirstTime = 5;//todo change back to 8
     private int TimerDuration = 30; //TODO: change to 30
     //private bool MinAngleExceeded = false;
     private bool fingerTouching = false;
@@ -28,9 +28,6 @@ public class Game5Workflow : MonoBehaviour
     private bool buffered = false;
 
     private HandMovementControl HandMovementControl;
-
-    // private ArrayList MinAngles = new ArrayList();
-    // private ArrayList MaxAngles = new ArrayList();
 
     private Game5Score Score;
 
