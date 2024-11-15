@@ -216,6 +216,8 @@ RectTransform:
   - {fileID: 1810010881}
   - {fileID: 1603968667}
   - {fileID: 295810260}
+  - {fileID: 763023845}
+  - {fileID: 271710414}
   - {fileID: 150540118}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -305,7 +307,7 @@ Transform:
   m_GameObject: {fileID: 150540116}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1280.19, y: -719.9, z: 0}
+  m_LocalPosition: {x: -1279.99, y: -800, z: 0}
   m_LocalScale: {x: 1.75, y: 1.75, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -389,13 +391,13 @@ GameObject:
   m_Component:
   - component: {fileID: 271710414}
   - component: {fileID: 271710413}
-  m_Layer: 0
-  m_Name: TouchTheBirdToCatchIt_0
+  m_Layer: 5
+  m_Name: TouchTheBirdToCatchIt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &271710413
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -437,9 +439,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1138585453
+  m_SortingLayer: 6
+  m_SortingOrder: 2
   m_Sprite: {fileID: 4147152072274298699, guid: e80efcc8b679146d2b726a6ea8e7c9b0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -459,12 +461,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 271710412}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.4, y: -5.39, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1285.9, y: -802.77, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 36286582}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &283947945
 GameObject:
@@ -951,13 +953,13 @@ GameObject:
   m_Component:
   - component: {fileID: 763023845}
   - component: {fileID: 763023844}
-  m_Layer: 0
-  m_Name: TouchYourNose_0
+  m_Layer: 5
+  m_Name: TouchYourNose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &763023844
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -999,9 +1001,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1138585453
+  m_SortingLayer: 6
+  m_SortingOrder: 1
   m_Sprite: {fileID: -4920245495117983631, guid: ce1b46e1b65ee40159d3ce5078ce5204, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -1021,12 +1023,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 763023843}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.59, y: -6.8, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1286.35, y: -802.78, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 36286582}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1196721771 stripped
 GameObject:
@@ -1073,6 +1075,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4faab77263c1c4393baca9f4d00ea592, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TouchYourNose: {fileID: 763023843}
+  TouchTheBirdToCatchIt: {fileID: 271710412}
   CrowPrefab: {fileID: 5740400428864339755, guid: f0470d87134244177a4197accc40a8f9, type: 3}
   NumberOfCrowsPerRound: 5
   SpawnAreaMin: {x: -7.3, y: -3.1}
@@ -1632,6 +1636,4 @@ SceneRoots:
   - {fileID: 716380817}
   - {fileID: 229685138}
   - {fileID: 283947947}
-  - {fileID: 271710414}
-  - {fileID: 763023845}
   - {fileID: 611051639}

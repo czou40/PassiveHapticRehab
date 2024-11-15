@@ -10,6 +10,10 @@ using TMPro;
 public class Game4Workflow : MonoBehaviour
 {
 
+    public GameObject TouchYourNose; // Active when nose is touched
+    public GameObject TouchTheBirdToCatchIt; // Active when nose is not touched
+
+
     // Crow Spawning variables
     public GameObject CrowPrefab; // Reference to the crow prefab
     public int NumberOfCrowsPerRound = 5; // Number of crows to spawn each round
@@ -74,6 +78,8 @@ public class Game4Workflow : MonoBehaviour
         GameStepInstructionShower = GetComponent<GameStepInstructionShower>();
         RoundResultShower = GetComponent<RoundResultShower>();
         Timer = GetComponent<Timer>();
+        // Ensure one image is active and the other is inactive at the start
+        UpdateImageDisplay();
         initializeCurrentStage();
     }
 
@@ -189,7 +195,9 @@ public class Game4Workflow : MonoBehaviour
         if (DataReceiver != null && DataReceiver.HasNoseTouch())
         {
             noseTouched = true;
+            UpdateImageDisplay();
         }
+
     }
 
     private void StartCrowSpawning()
@@ -240,10 +248,25 @@ public class Game4Workflow : MonoBehaviour
             Debug.Log("New total is: " + CrowClicksThisRound);
             UpdateScoreUI(); // Update the score on the UI
             noseTouched = false;
+            UpdateImageDisplay();
         }
         else
         {
             Debug.Log("Please touch your nose before selecting a crow.");
+        }
+    }
+
+    private void UpdateImageDisplay()
+    {
+        // Toggle the active states of the images
+        if (TouchYourNose != null && TouchTheBirdToCatchIt != null)
+        {
+            TouchYourNose.SetActive(!noseTouched);
+            TouchTheBirdToCatchIt.SetActive(noseTouched);
+        }
+        else
+        {
+            Debug.LogWarning("Image references are not assigned!");
         }
     }
 
