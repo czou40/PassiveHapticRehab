@@ -21,7 +21,6 @@ public class CaterpillarController : MonoBehaviour
         }
         transform.position = startPosition;
         currSpeed = speed;
-        rb2d = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
