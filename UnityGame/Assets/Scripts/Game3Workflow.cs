@@ -19,7 +19,7 @@ public class Game3Workflow : MonoBehaviour
     private int PreGameCountdown = 3;
     private int InstructionCountdown = 5;
     private int InstructionCountdownFirstTime = 10;
-    private int TimerDuration = 8;
+    private int TimerDuration = 4;
     private bool MinAngleExceeded = false;
     private bool MaxAngleExceeded = false;
     private HandMovementControl HandMovementControl;
@@ -96,6 +96,7 @@ public class Game3Workflow : MonoBehaviour
             MinAngleExceeded = false;
         }
     }
+
 
     void updateAppleScale()
     {
