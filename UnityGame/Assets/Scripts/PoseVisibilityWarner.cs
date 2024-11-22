@@ -12,13 +12,13 @@ public class PoseVisibilityWarner : MonoBehaviour
 
     public string WarningMessage = "Please adjust your position so that your entire upper body is visible.";
 
-    public bool isInGameScene = false;
+    public bool isInGameScene = true;
 
-    public bool shouldShowWhenPaused = true;
+    // public bool shouldShowWhenPaused = true;
 
-    public bool shouldPauseWhenNotVisible = false;
+    public bool shouldPauseWhenNotVisible = true;
 
-    public bool shouldShowWarningWhenNotVisible = true;
+    public bool shouldShowWarningWhenPaused = true;
 
     public float countDownTimeBeforeGameStart = 5.0f;
 
@@ -45,11 +45,6 @@ public class PoseVisibilityWarner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (GameManager.Instance.gamePaused && !shouldShowWhenPaused)
-        {
-            HideWarning();
-            return;
-        }
         if (dataReceiver.isUpperBodyVisible)
         {
             float visibleTime = dataReceiver.secondsSinceUpperBodyVisible;
@@ -59,10 +54,7 @@ public class PoseVisibilityWarner : MonoBehaviour
                 HideWarning();
                 if (canVisibilityCountDownEndEventTrigger)
                 {
-                    if (shouldPauseWhenNotVisible)
-                    {
-                        GameManager.Instance.ResumeGame();
-                    }
+                    GameManager.Instance.ResumeGame();
                     onVisibilityCountDownEnd.Invoke();
                 }
                 canVisibilityGainedEventTrigger = false;
@@ -72,9 +64,9 @@ public class PoseVisibilityWarner : MonoBehaviour
             else
             {
                 warningText.text = WarningMessage + "\n" + "Game " + (isInGameScene ? "resuming" : "starting") + " in " + (isInGameScene ? countDownTimeBeforeGameResume - visibleTime : countDownTimeBeforeGameStart - visibleTime).ToString("F1") + " seconds.";
-            
+
                 ShowWarning();
-    
+
                 if (canVisibilityGainedEventTrigger)
                 {
                     onVisibilityGained.Invoke();
@@ -94,9 +86,9 @@ public class PoseVisibilityWarner : MonoBehaviour
             {
                 warningText.text = WarningMessage;
             }
-            
+
             ShowWarning();
-            
+
             if (canVisibilityLostEventTrigger)
             {
                 if (shouldPauseWhenNotVisible)
@@ -118,7 +110,7 @@ public class PoseVisibilityWarner : MonoBehaviour
 
     private void ShowWarning()
     {
-        if (!shouldShowWarningWhenNotVisible)
+        if (!shouldShowWarningWhenPaused)
         {
             warningObject.SetActive(false);
         } else
