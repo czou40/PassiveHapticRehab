@@ -14,7 +14,7 @@ public class Game5Workflow : MonoBehaviour
     private float Distance;
 
     // maximum distance needed to slow down the caterpillar
-    private float MaxDistanceThreshold = 0.5f;
+    private float MaxDistanceThreshold = 0.3f;
     private int PreGameCountdown = 5;
     private int InstructionCountdown = 5;
     private int InstructionCountdownFirstTime = 8;//todo change back to 8
@@ -96,7 +96,6 @@ public class Game5Workflow : MonoBehaviour
         HandMovementControl = GetComponent<HandMovementControl>();
         Timer = GetComponent<Timer>();
         initializeCurrentStage();
-        //CaterpillarController catControl = caterpillar.GetComponent<CaterpillarController>();
 
         tappingBuffer = bufferTime;
     }
@@ -177,6 +176,7 @@ public class Game5Workflow : MonoBehaviour
                 fingerTouching = true;
             } else
             {
+                fingerTouching = false;
                 fingerSeparated = true;
             }
 

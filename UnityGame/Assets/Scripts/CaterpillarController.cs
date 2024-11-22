@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class CaterpillarController : MonoBehaviour
@@ -9,7 +10,8 @@ public class CaterpillarController : MonoBehaviour
 
     public Vector3 startPosition;
     public GameObject effect;
-    public GameObject[] clones; 
+    public GameObject[] clones;
+    public GameObject effects;
     private bool active = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -20,17 +22,17 @@ public class CaterpillarController : MonoBehaviour
             clones[i].SetActive(false);
         }
         transform.position = startPosition;
-        currSpeed = speed; 
+        currSpeed = 0; 
         //this.active = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //if (!goalReached && active)
-        //{
-        //    transform.position -= new Vector3(0, currSpeed * Time.deltaTime, 0);
-        //} 
+        if (!goalReached && active)
+        {
+            transform.position -= new Vector3(0, currSpeed * Time.deltaTime, 0);
+        } 
     }
 
     public void setActive(bool active)
@@ -38,14 +40,29 @@ public class CaterpillarController : MonoBehaviour
         this.active = active;
     }
 
+    IEnumerator Countdown()
+    {
+        int counter = 1;
+        while (counter > 0)
+        {
+            yield return new WaitForSeconds(1); 
+            counter--;
+        }
+        currSpeed -= speed;
+    }
+
     public void moveCaterpillar()
     {
-        Debug.Log("Mvoe caterpillar called");
+        Debug.Log("Move caterpillar called");
         if (active)
         {
+            Vector3 pos = new Vector3(transform.position.x + Random.Range(-2, 2), transform.position.y + Random.Range(-4, 0), transform.position.z);
+            GameObject effect = (GameObject)Instantiate(effects, pos, transform.rotation);
+            effect.active = true;
             Debug.Log("Move caterpillar");
-            transform.position -= new Vector3(0, currSpeed * 10 * Time.deltaTime, 0);
-            
+            currSpeed += speed;
+            StartCoroutine(Countdown());
+            //transform.position -= new Vector3(0, currSpeed * 10 * Time.deltaTime, 0);
         }
     }
 

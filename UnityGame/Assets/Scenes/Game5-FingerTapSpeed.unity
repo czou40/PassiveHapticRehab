@@ -1800,7 +1800,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 820274d3520b7da42aa725d27f4d2e2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bufferTime: 0.4
+  bufferTime: 0.5
   ScoreText: {fileID: 336833334}
   caterpillar: {fileID: 1559361833}
   gameEvent:
@@ -3915,6 +3915,7 @@ Transform:
   - {fileID: 33605907}
   - {fileID: 471477545}
   - {fileID: 180079103}
+  - {fileID: 2595758851457313289}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1303682240
@@ -4500,6 +4501,7 @@ MonoBehaviour:
   - {fileID: 33605904}
   - {fileID: 471477543}
   - {fileID: 180079100}
+  effects: {fileID: 3851444130273854100}
 --- !u!70 &1559361837
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -5987,6 +5989,67 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!1001 &386709945223151009
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1198803495}
+    m_Modifications:
+    - target: {fileID: 140183662562783782, guid: b7d3043ef0f575e4fa096530d3102468, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -4.2322702
+      objectReference: {fileID: 0}
+    - target: {fileID: 140183662562783782, guid: b7d3043ef0f575e4fa096530d3102468, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.6648855
+      objectReference: {fileID: 0}
+    - target: {fileID: 140183662562783782, guid: b7d3043ef0f575e4fa096530d3102468, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 9.938582
+      objectReference: {fileID: 0}
+    - target: {fileID: 140183662562783782, guid: b7d3043ef0f575e4fa096530d3102468, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.9954712
+      objectReference: {fileID: 0}
+    - target: {fileID: 140183662562783782, guid: b7d3043ef0f575e4fa096530d3102468, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 140183662562783782, guid: b7d3043ef0f575e4fa096530d3102468, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 140183662562783782, guid: b7d3043ef0f575e4fa096530d3102468, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.09506396
+      objectReference: {fileID: 0}
+    - target: {fileID: 140183662562783782, guid: b7d3043ef0f575e4fa096530d3102468, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 140183662562783782, guid: b7d3043ef0f575e4fa096530d3102468, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 140183662562783782, guid: b7d3043ef0f575e4fa096530d3102468, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -10.91
+      objectReference: {fileID: 0}
+    - target: {fileID: 8256885424303197001, guid: b7d3043ef0f575e4fa096530d3102468, type: 3}
+      propertyPath: m_Name
+      value: Game5-flower effect
+      objectReference: {fileID: 0}
+    - target: {fileID: 8256885424303197001, guid: b7d3043ef0f575e4fa096530d3102468, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b7d3043ef0f575e4fa096530d3102468, type: 3}
 --- !u!224 &966818321490664807
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6029,6 +6092,11 @@ RectTransform:
   m_AnchoredPosition: {x: 0.000022888, y: 0.0011063}
   m_SizeDelta: {x: 2560, y: 1600}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!4 &2595758851457313289 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 140183662562783782, guid: b7d3043ef0f575e4fa096530d3102468, type: 3}
+  m_PrefabInstance: {fileID: 386709945223151009}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &3617095648751734987
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6048,6 +6116,11 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &3851444130273854100 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8256885424303197001, guid: b7d3043ef0f575e4fa096530d3102468, type: 3}
+  m_PrefabInstance: {fileID: 386709945223151009}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &4783927453662476575
 GameObject:
   m_ObjectHideFlags: 0
@@ -6148,7 +6221,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 367063114134984560, guid: 55b1232b6ecbb4e4fbfe351bfde2166e, type: 3}
       propertyPath: m_SortingOrder
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3026485134239902007, guid: 55b1232b6ecbb4e4fbfe351bfde2166e, type: 3}
       propertyPath: m_Name

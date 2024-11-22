@@ -293,7 +293,7 @@ public class Game5Score : GameScore
         }
         double count = FingerTapCount[round];
         // one decimal place
-        return $"Round {round + 1}\nFinger Tapping count: {count:F1}\nScore: {count:F1}";
+        return $"Round {round + 1}\nScore: {count:F1}";
     }
 
     public string GetResultForRound()
