@@ -494,4 +494,98 @@ public class DataReceiver : MonoBehaviour
         else
             return false;
     }
+
+    public bool isFlat()
+    {
+        int[,] anglesToCalculate = {{1, 2, 3},
+                                    {2, 3, 4},
+                                    {0, 5, 6},
+                                    {5, 6, 7},
+                                    {6, 7, 8},
+                                    {0, 9, 10},
+                                    {9, 10, 11},
+                                    {10, 11, 12},
+                                    {0, 13, 14},
+                                    {13, 14, 15},
+                                    {14, 15, 16},
+                                    {0, 17, 18},
+                                    {17, 18, 19},
+                                    {18, 19, 20}};
+        float angleSum = 0.0f;
+        Vector3 totalMTU = new Vector3(0, 0, 0);
+        for (int i = 0; i < anglesToCalculate.GetLength(0); ++i)
+        {
+            Vector3 lowerJoint = LeftHandPositions[anglesToCalculate[i, 0]];
+            Vector3 middleJoint = LeftHandPositions[anglesToCalculate[i, 1]];
+            Vector3 upperJoint = LeftHandPositions[anglesToCalculate[i, 2]];
+
+            Vector3 middleToLower = lowerJoint - middleJoint;
+            Vector3 middleToUpper = upperJoint - middleJoint;
+
+            Debug.Log("MTL: " + middleToLower);
+            Debug.Log("MTU: " + middleToUpper);
+
+            float angle = Vector3.Angle(middleToLower, middleToUpper);
+            totalMTU += middleToUpper;
+
+            angleSum += angle;
+        }
+
+        Debug.Log("IF:" + totalMTU);
+        if (totalMTU[1] < -2.5f)
+        {
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public bool isOk()
+    {
+        return areFingersFlexed() && isThumbTouchingIndex();
+    }
+    private bool areFingersFlexed()
+    {
+        int[,] flexedFingers = {{0, 9, 10},
+                                {9, 10, 11},
+                                {10, 11, 12},
+                                {0, 13, 14},
+                                {13, 14, 15},
+                                {14, 15, 16},
+                                {0, 17, 18},
+                                {17, 18, 19},
+                                {18, 19, 20}};
+        float angleSum = 0.0f;
+        Vector3 totalMTU = new Vector3(0, 0, 0);
+        for (int i = 0; i < flexedFingers.GetLength(0); ++i)
+        {
+            Vector3 lowerJoint = LeftHandPositions[flexedFingers[i, 0]];
+            Vector3 middleJoint = LeftHandPositions[flexedFingers[i, 1]];
+            Vector3 upperJoint = LeftHandPositions[flexedFingers[i, 2]];
+            Vector3 middleToLower = lowerJoint - middleJoint;
+            Vector3 middleToUpper = upperJoint - middleJoint;
+            float angle = Vector3.Angle(middleToLower, middleToUpper);
+            totalMTU += middleToUpper;
+            angleSum += angle;
+        }
+        return totalMTU[1] < -2f && totalMTU[2] < -0.9f;
+    }
+    private bool isThumbTouchingIndex()
+    {
+        int[,] anglesToCalculate = { { 3, 4, 8 }, { 4, 8, 7 } };
+        float angleSum = 0.0f;
+        Vector3 totalMTU = new Vector3(0, 0, 0);
+        for (int i = 0; i < anglesToCalculate.GetLength(0); ++i)
+        {
+            Vector3 lowerJoint = LeftHandPositions[anglesToCalculate[i, 0]];
+            Vector3 middleJoint = LeftHandPositions[anglesToCalculate[i, 1]];
+            Vector3 upperJoint = LeftHandPositions[anglesToCalculate[i, 2]];
+            Vector3 middleToLower = lowerJoint - middleJoint;
+            Vector3 middleToUpper = upperJoint - middleJoint;
+            float angle = Vector3.Angle(middleToLower, middleToUpper);
+            totalMTU += middleToUpper;
+            angleSum += angle;
+        }
+        return totalMTU[1] > -0.2f && totalMTU[2] < 0.05f;
+    }
 }

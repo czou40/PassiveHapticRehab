@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 
 public class Game6Workflow : MonoBehaviour
 {
@@ -22,7 +23,8 @@ public class Game6Workflow : MonoBehaviour
     // private ArrayList MinAngles = new ArrayList();
     // private ArrayList MaxAngles = new ArrayList();
 
-    private Game3Score Score;
+    //private Game3Score Score;
+    private int Score = 0;
 
     private int MaxAttempts = 3;
     private int CurrentAttempt = 0;
@@ -32,6 +34,10 @@ public class Game6Workflow : MonoBehaviour
     private RoundResultShower RoundResultShower;
     private Timer Timer;
     private GameStage CurrentStage = GameStage.PRE_GAME;
+
+    public GameObject flowers;
+    public GameObject ScoreText;
+    private bool mustStraighten;
 
     private enum GameStage
     {
@@ -52,10 +58,12 @@ public class Game6Workflow : MonoBehaviour
     {
         NumClenching = 0;
         CurrentStage = GameStage.PRE_GAME;
-        Score = new Game3Score();
-        Score.MarkStartTime();
+        //Score = new Game3Score();
+        //Score.MarkStartTime();
+
         DataReceiver = GameManager.Instance.DataReceiver;
         GameStepInstructionShower = GetComponent<GameStepInstructionShower>();
+        GameStepInstructionShower.onInstructionCountdownEnd.AddListener(InstructionListener);
         // game 3 requires hand in position
         PoseVisibilityWarner = GetComponent<PoseVisibilityWarner>();
         RoundResultShower = GetComponent<RoundResultShower>();
@@ -68,14 +76,16 @@ public class Game6Workflow : MonoBehaviour
     void Update()
     {
         checkScore();
-        if (MaxAngleExceeded && MinAngleExceeded)
-        {
-            //condition reached, increment score
-            NumClenching += 1;
-            //reset the exceed flags
-            MaxAngleExceeded = false;
-            MinAngleExceeded = false;
-        }
+    }
+
+    void InstructionListener()
+    {
+        Debug.Log("Instructions finished");
+        CurrentStage = GameStage.CLENCH_GAME;
+        GameStepInstructionShower.HideInstruction();
+
+        // Start the timer
+        Timer.StartTimer(60);
     }
 
     void checkScore()
@@ -84,36 +94,39 @@ public class Game6Workflow : MonoBehaviour
         {
             Angle = DataReceiver.getLeftAverageFingerExtensionAngle();
 
-            if (DataReceiver.isFist())
+            if (CurrentStage == GameStage.CLENCH_GAME && DataReceiver.isOk() && !mustStraighten && flowers.transform.childCount >= 1)
             {
+                
                 Debug.Log("Fist :)");
+                GameObject flower_to_score = flowers.transform.GetChild(0).gameObject;
+                Destroy(flower_to_score);
+                mustStraighten = true;
+                Score += 50;
+                updateScoreText();
+                if (flowers.transform.childCount == 1)
+                {
+                    moveToNextStage();
+                }
             }
 
-            if (Angle > MaxAngle && CurrentStage == GameStage.UNFURL_GAME)
-            {
-                MaxAngle = Angle;
-            }
-
-            if (Angle < MinAngle && CurrentStage == GameStage.CLENCH_GAME)
-            {
-                MinAngle = Angle;
-            }
-
-            if (Angle > MaxAngleThreshold)
-            {
-                MaxAngleExceeded = true;
-            }
-            else if (Angle < MinAngleThreshold)
-            {
-                MinAngleExceeded = true;
-            }
+            //if (DataReceiver.isFlat())
+            //{
+            //    mustStraighten = false;
+            //}
         }
+    }
+
+    void updateScoreText()
+    {
+        TextMeshProUGUI text = ScoreText.GetComponent<TextMeshProUGUI>();
+        text.text = "Score: " + Score;
+        Debug.Log("updating the score to something");
     }
 
 
     public void displayScore()
     {
-        GameManager.Instance.sendCompoundScore(Score);
+        //GameManager.Instance.sendCompoundScore(Score);
     }
 
     public void onVisibilityLost()
@@ -145,7 +158,7 @@ public class Game6Workflow : MonoBehaviour
                 break;
             case GameStage.CLENCH_GAME:
                 CurrentAttempt += 1;
-                Score.AddRound(MinAngle, MaxAngle);
+                //Score.AddRound(MinAngle, MaxAngle);
                 CurrentStage = GameStage.ROUND_RESULT;
                 break;
             case GameStage.ROUND_RESULT:
@@ -155,7 +168,7 @@ public class Game6Workflow : MonoBehaviour
                 }
                 else
                 {
-                    Score.MarkEndTime();
+                    //Score.MarkEndTime();
                     CurrentStage = GameStage.FINISHED;
                 }
                 break;
@@ -177,66 +190,67 @@ public class Game6Workflow : MonoBehaviour
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
                 resetScores();
-                GameStepInstructionShower.SetInstructionText("Attempt " + (CurrentAttempt + 1) + " out of " + MaxAttempts + ". Get ready to start the game!");
+                GameStepInstructionShower.SetInstructionText("Slowly make the OK symbol in order to collect flowers!");
                 GameStepInstructionShower.ShowInstruction();
                 RoundResultShower.Hide();
                 GameStepInstructionShower.StartCountdown(PreGameCountdown);
                 HandMovementControl.HideInstruction();
                 Debug.Log("Pre-game End");
                 break;
-            case GameStage.UNFURL_INSTRUCTION:
-                Debug.Log("UNFURL_INSTRUCTION");
-                GameManager.Instance.PauseGame();
-                PoseVisibilityWarner.ResetTriggers();
-                GameStepInstructionShower.SetInstructionText("First, you need to unfurl your fingers to the maximum to harvest more fruits. Ready?");
-                GameStepInstructionShower.ShowInstruction();
-                GameStepInstructionShower.SetDisplayedContent(0);
-                break;
-            case GameStage.UNFURL_GAME:
-                Debug.Log("UNFURL_GAME");
-                GameManager.Instance.PauseGame();
-                PoseVisibilityWarner.ResetTriggers();
-                GameStepInstructionShower.HideDisplayedContent();
-                GameStepInstructionShower.HideInstruction();
-                HandMovementControl.ShowInstruction1();
-                Timer.StartTimer(TimerDuration);
-                break;
-            case GameStage.CLENCH_INSTRUCTION:
-                Debug.Log("CLENCH_INSTRUCTION");
-                GameManager.Instance.PauseGame();
-                PoseVisibilityWarner.ResetTriggers();
-                GameStepInstructionShower.SetInstructionText("Now, you need to clench your fingers tightly to collect more fruits. Ready?");
-                GameStepInstructionShower.ShowInstruction();
-                GameStepInstructionShower.SetDisplayedContent(1);
-                HandMovementControl.HideInstruction();
-                break;
-            case GameStage.CLENCH_GAME:
-                Debug.Log("CLENCH_GAME");
-                GameManager.Instance.PauseGame();
-                PoseVisibilityWarner.ResetTriggers();
-                GameStepInstructionShower.HideDisplayedContent();
-                GameStepInstructionShower.HideInstruction();
-                HandMovementControl.ShowInstruction2();
-                Timer.StartTimer(TimerDuration);
-                break;
+            //case GameStage.UNFURL_INSTRUCTION:
+            //    Debug.Log("UNFURL_INSTRUCTION");
+            //    GameManager.Instance.PauseGame();
+            //    PoseVisibilityWarner.ResetTriggers();
+            //    GameStepInstructionShower.SetInstructionText("First, you need to unfurl your fingers to the maximum to harvest more fruits. Ready?");
+            //    GameStepInstructionShower.ShowInstruction();
+            //    GameStepInstructionShower.SetDisplayedContent(0);
+            //    break;
+            //case GameStage.UNFURL_GAME:
+            //    Debug.Log("UNFURL_GAME");
+            //    GameManager.Instance.PauseGame();
+            //    PoseVisibilityWarner.ResetTriggers();
+            //    GameStepInstructionShower.HideDisplayedContent();
+            //    GameStepInstructionShower.HideInstruction();
+            //    HandMovementControl.ShowInstruction1();
+            //    Timer.StartTimer(TimerDuration);
+            //    break;
+            //case GameStage.CLENCH_INSTRUCTION:
+            //    Debug.Log("CLENCH_INSTRUCTION");
+            //    GameManager.Instance.PauseGame();
+            //    PoseVisibilityWarner.ResetTriggers();
+            //    GameStepInstructionShower.SetInstructionText("Now, you need to clench your fingers tightly to collect more fruits. Ready?");
+            //    GameStepInstructionShower.ShowInstruction();
+            //    GameStepInstructionShower.SetDisplayedContent(1);
+            //    HandMovementControl.HideInstruction();
+            //    break;
+            //case GameStage.CLENCH_GAME:
+            //    Debug.Log("CLENCH_GAME");
+            //    GameManager.Instance.PauseGame();
+            //    PoseVisibilityWarner.ResetTriggers();
+            //    GameStepInstructionShower.HideDisplayedContent();
+            //    GameStepInstructionShower.HideInstruction();
+            //    HandMovementControl.ShowInstruction2();
+            //    Timer.StartTimer(TimerDuration);
+            //    break;
             case GameStage.ROUND_RESULT:
                 Debug.Log("ROUND_RESULT");
                 GameManager.Instance.PauseGame();
                 PoseVisibilityWarner.ResetTriggers();
                 GameStepInstructionShower.HideInstruction();
-                RoundResultShower.SetResultText(Score.GetResultForRound());
+                RoundResultShower.SetResultText(Score.ToString());
                 bool isLastAttempt = CurrentAttempt == MaxAttempts;
-                RoundResultShower.SetNextButtonText(isLastAttempt ? "View Results" : "Jump to Round " + (CurrentAttempt + 1));
+                RoundResultShower.SetNextButtonText(isLastAttempt ? "View Results" : "View Results");
                 RoundResultShower.Show();
                 HandMovementControl.HideInstruction();
+                Timer.StopTimer();
                 break;
-            case GameStage.FINISHED:
-                Debug.Log("FINISHED");
-                RoundResultShower.Hide();
-                HandMovementControl.HideInstruction();
-                Debug.Log("Game Finished");
-                displayScore();
-                break;
+            //case GameStage.FINISHED:
+            //    Debug.Log("FINISHED");
+            //    RoundResultShower.Hide();
+            //    HandMovementControl.HideInstruction();
+            //    Debug.Log("Game Finished");
+            //    displayScore();
+            //    break;
             default:
                 GameStepInstructionShower.HideInstruction();
                 break;
@@ -278,13 +292,13 @@ public class Game6Workflow : MonoBehaviour
 
     public void onCheatActivated()
     {
-        while (CurrentAttempt < MaxAttempts)
-        {
-            CurrentAttempt += 1;
-            Score.AddRound(0f, 180f);
-        }
-        Score.MarkEndTime();
-        CurrentStage = GameStage.FINISHED;
-        initializeCurrentStage();
+        //while (CurrentAttempt < MaxAttempts)
+        //{
+        //    CurrentAttempt += 1;
+        //    Score.AddRound(0f, 180f);
+        //}
+        //Score.MarkEndTime();
+        //CurrentStage = GameStage.FINISHED;
+        //initializeCurrentStage();
     }
 }

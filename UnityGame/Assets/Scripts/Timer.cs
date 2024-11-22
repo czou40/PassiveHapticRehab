@@ -64,5 +64,12 @@ public class Timer : MonoBehaviour
         RemainingTime = TotalTime;
         TimerOn = true;
     }
-    
+
+    public void StopTimer(float totalTime = -1f)
+    {
+        Debug.Log("Time is up");
+        RemainingTime = 0;
+        TimerOn = false;
+    }
+
 }
