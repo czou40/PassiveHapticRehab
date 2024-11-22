@@ -1178,9 +1178,8 @@ MonoBehaviour:
   warningObject: {fileID: 1231459821}
   WarningMessage: Please adjust your position so that your entire upper body is visible.
   isInGameScene: 1
-  shouldShowWhenPaused: 1
   shouldPauseWhenNotVisible: 1
-  shouldShowWarningWhenNotVisible: 1
+  shouldShowWarningWhenPaused: 1
   countDownTimeBeforeGameStart: 5
   countDownTimeBeforeGameResume: 0
   onVisibilityLost:
@@ -1197,7 +1196,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 1
   onVisibilityGained:
     m_PersistentCalls:
       m_Calls:
@@ -1212,7 +1211,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 1
   onVisibilityCountDownEnd:
     m_PersistentCalls:
       m_Calls:
@@ -1227,7 +1226,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 1
 --- !u!114 &445269094
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1296,7 +1295,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 1
   ContentObjects:
   - {fileID: 254425459}
   - {fileID: 844410301}
@@ -1326,7 +1325,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 1
 --- !u!114 &445269099
 MonoBehaviour:
   m_ObjectHideFlags: 0
