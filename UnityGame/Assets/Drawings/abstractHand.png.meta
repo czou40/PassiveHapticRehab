@@ -1,0 +1,617 @@
+fileFormatVersion: 2
+guid: fe1a600d27b2fa443bcaaaf9c504ac65
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 245598889193861698
+    second: abstractHand_0
+  - first:
+      213: 3564732903193861463
+    second: abstractHand_1
+  - first:
+      213: -1043895034251007145
+    second: abstractHand_2
+  - first:
+      213: 4550445823650631194
+    second: abstractHand_3
+  - first:
+      213: 8778659754226413917
+    second: abstractHand_4
+  - first:
+      213: 3400210365884212324
+    second: abstractHand_5
+  - first:
+      213: -2294167953286845695
+    second: abstractHand_6
+  - first:
+      213: 5211742242499565212
+    second: abstractHand_7
+  - first:
+      213: 7643049313826847940
+    second: abstractHand_8
+  - first:
+      213: -985157593956287393
+    second: abstractHand_9
+  - first:
+      213: 8889014995884370306
+    second: abstractHand_10
+  - first:
+      213: 8128872953343447163
+    second: abstractHand_11
+  - first:
+      213: -1488412739695246940
+    second: abstractHand_12
+  - first:
+      213: -604212670628441651
+    second: abstractHand_13
+  - first:
+      213: 9191020936744774221
+    second: abstractHand_14
+  - first:
+      213: -1800846346390119104
+    second: abstractHand_15
+  - first:
+      213: -3208935744932122802
+    second: abstractHand_16
+  - first:
+      213: 7410219670746451904
+    second: abstractHand_17
+  - first:
+      213: -7850388539465764815
+    second: abstractHand_18
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: abstractHand_0
+      rect:
+        serializedVersion: 2
+        x: 273
+        y: 636
+        width: 91
+        height: 111
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline:
+      - - {x: 45.5, y: -30.5}
+        - {x: 45.5, y: 42.5}
+        - {x: 33.5, y: 55.5}
+        - {x: -31.5, y: 55.5}
+        - {x: -45.5, y: 43.5}
+        - {x: -45.5, y: -37.5}
+        - {x: -39.5, y: -55.5}
+        - {x: 34.5, y: -55.5}
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 24271a373ea886300800000000000000
+      internalID: 245598889193861698
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: abstractHand_1
+      rect:
+        serializedVersion: 2
+        x: 482
+        y: 647
+        width: 91
+        height: 109
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 75d540e40b9787130800000000000000
+      internalID: 3564732903193861463
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: abstractHand_2
+      rect:
+        serializedVersion: 2
+        x: 688
+        y: 569
+        width: 95
+        height: 102
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 75baca44ff65381f0800000000000000
+      internalID: -1043895034251007145
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: abstractHand_3
+      rect:
+        serializedVersion: 2
+        x: 278
+        y: 525
+        width: 94
+        height: 99
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a1e0b580e5e662f30800000000000000
+      internalID: 4550445823650631194
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: abstractHand_4
+      rect:
+        serializedVersion: 2
+        x: 462
+        y: 533
+        width: 94
+        height: 99
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d51feaef88014d970800000000000000
+      internalID: 8778659754226413917
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: abstractHand_5
+      rect:
+        serializedVersion: 2
+        x: 649
+        y: 455
+        width: 94
+        height: 97
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 464212c0059ff2f20800000000000000
+      internalID: 3400210365884212324
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: abstractHand_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 385
+        width: 97
+        height: 107
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 10ba049c66a7920e0800000000000000
+      internalID: -2294167953286845695
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: abstractHand_7
+      rect:
+        serializedVersion: 2
+        x: 286
+        y: 422
+        width: 94
+        height: 99
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c969511e4f3d35840800000000000000
+      internalID: 5211742242499565212
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: abstractHand_8
+      rect:
+        serializedVersion: 2
+        x: 447
+        y: 428
+        width: 94
+        height: 99
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4cc31773bd0911a60800000000000000
+      internalID: 7643049313826847940
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: abstractHand_9
+      rect:
+        serializedVersion: 2
+        x: 963
+        y: 448
+        width: 75
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f5cf47c43640452f0800000000000000
+      internalID: -985157593956287393
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: abstractHand_10
+      rect:
+        serializedVersion: 2
+        x: 46
+        y: 263
+        width: 105
+        height: 103
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 289eec0fa002c5b70800000000000000
+      internalID: 8889014995884370306
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: abstractHand_11
+      rect:
+        serializedVersion: 2
+        x: 325
+        y: 22
+        width: 88
+        height: 394
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b701158e1ee8fc070800000000000000
+      internalID: 8128872953343447163
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: abstractHand_12
+      rect:
+        serializedVersion: 2
+        x: 419
+        y: 27
+        width: 72
+        height: 389
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4a18c4bcf78185be0800000000000000
+      internalID: -1488412739695246940
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: abstractHand_13
+      rect:
+        serializedVersion: 2
+        x: 617
+        y: 360
+        width: 90
+        height: 87
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dc1d66ef6c76d97f0800000000000000
+      internalID: -604212670628441651
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: abstractHand_14
+      rect:
+        serializedVersion: 2
+        x: 910
+        y: 366
+        width: 72
+        height: 73
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d4aa9d988d01d8f70800000000000000
+      internalID: 9191020936744774221
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: abstractHand_15
+      rect:
+        serializedVersion: 2
+        x: 500
+        y: 9
+        width: 151
+        height: 329
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 04d5b5c0acb1207e0800000000000000
+      internalID: -1800846346390119104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: abstractHand_16
+      rect:
+        serializedVersion: 2
+        x: 854
+        y: 276
+        width: 80
+        height: 76
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e4f644011f19773d0800000000000000
+      internalID: -3208935744932122802
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: abstractHand_17
+      rect:
+        serializedVersion: 2
+        x: 118
+        y: 5
+        width: 200
+        height: 247
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0cf447e878366d660800000000000000
+      internalID: 7410219670746451904
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: abstractHand_18
+      rect:
+        serializedVersion: 2
+        x: 665
+        y: 0
+        width: 218
+        height: 263
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 130785c6731dd0390800000000000000
+      internalID: -7850388539465764815
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 0ef4ef58414ffbc43888c216989e43be
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      abstractHand_0: 245598889193861698
+      abstractHand_1: 3564732903193861463
+      abstractHand_10: 8889014995884370306
+      abstractHand_11: 8128872953343447163
+      abstractHand_12: -1488412739695246940
+      abstractHand_13: -604212670628441651
+      abstractHand_14: 9191020936744774221
+      abstractHand_15: -1800846346390119104
+      abstractHand_16: -3208935744932122802
+      abstractHand_17: 7410219670746451904
+      abstractHand_18: -7850388539465764815
+      abstractHand_2: -1043895034251007145
+      abstractHand_3: 4550445823650631194
+      abstractHand_4: 8778659754226413917
+      abstractHand_5: 3400210365884212324
+      abstractHand_6: -2294167953286845695
+      abstractHand_7: 5211742242499565212
+      abstractHand_8: 7643049313826847940
+      abstractHand_9: -985157593956287393
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
