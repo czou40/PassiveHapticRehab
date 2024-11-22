@@ -9,12 +9,23 @@ import mediapipe.python.solutions.drawing_utils as mp_drawing
 import mediapipe.python.solutions.pose as mp_pose
 import mediapipe.python.solutions.hands as mp_hands
 import os
+import platform
+
 
 # Toggle this in order to view how your WebCam is being interpreted (reduces performance).
 DEBUG = False
 
 # To switch cameras. Sometimes takes a while.
-WEBCAM_INDEX = 0
+
+
+# Determine the operating system
+current_os = platform.system()
+
+# Set WEBCAM_INDEX based on the operating system
+if current_os == "Darwin":  # macOS
+    WEBCAM_INDEX = 1
+else:  # Windows or Linux
+    WEBCAM_INDEX = 0
 
 # Settings do not universally apply, not all WebCams support all frame rates and resolutions
 USE_CUSTOM_CAM_SETTINGS = False
@@ -146,8 +157,9 @@ if __name__ == "__main__":
         while hand_thread.is_alive():
             if hand_thread.dirty:
                 data_unencoded = hand_thread.data
-                data = data_unencoded.encode("utf-8")
-                data_client_socket.sendto(data, data_server_address)
+                if data_unencoded:
+                    data = data_unencoded.encode("utf-8")
+                    data_client_socket.sendto(data, data_server_address)
                 hand_thread.dirty = False
                 image = hand_thread.image
                 height, width = image.shape[:2]

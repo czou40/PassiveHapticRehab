@@ -7,13 +7,10 @@
       </SelectionState>
       <SelectionState runConfigName="AndroidApp.PHL.app">
         <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="PassiveHapticRehab.AndroidApp.PHL.app">
-        <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-06-24T01:08:25.547113100Z">
+        <DropdownSelection timestamp="2024-11-22T02:59:28.460835Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\chunh\.android\avd\Pixel_7_Pro_API_34_1.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/chunhaozou/.android/avd/Medium_Phone.avd" />
             </handle>
           </Target>
         </DropdownSelection>
