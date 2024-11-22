@@ -1608,9 +1608,8 @@ MonoBehaviour:
   warningObject: {fileID: 1346458883}
   WarningMessage: Please adjust your position so that your hand is visible.
   isInGameScene: 1
-  shouldShowWhenPaused: 1
   shouldPauseWhenNotVisible: 1
-  shouldShowWarningWhenNotVisible: 1
+  shouldShowWarningWhenPaused: 1
   countDownTimeBeforeGameStart: 5
   countDownTimeBeforeGameResume: 0
   onVisibilityLost:
@@ -6296,10 +6295,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'There is a long caterpillar coming to your farm!
+  m_text: 'There is a long, hungry caterpillar looking to get some food!
 
-    Tap your finger
-    as quickly and widely as you can to stop it!'
+    Help
+    the caterpillar reach the bushes to be able to eat!'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
