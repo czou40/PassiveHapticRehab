@@ -94,7 +94,7 @@ public class Game6Workflow : MonoBehaviour
         {
             Angle = DataReceiver.getLeftAverageFingerExtensionAngle();
 
-            if (CurrentStage == GameStage.CLENCH_GAME && DataReceiver.isOk() && !mustStraighten && flowers.transform.childCount >= 1)
+            if (CurrentStage == GameStage.CLENCH_GAME && DataReceiver.isFist() && !mustStraighten && flowers.transform.childCount >= 1)
             {
                 
                 Debug.Log("Fist :)");
@@ -109,10 +109,10 @@ public class Game6Workflow : MonoBehaviour
                 }
             }
 
-            //if (DataReceiver.isFlat())
-            //{
-            //    mustStraighten = false;
-            //}
+            if (DataReceiver.isFlat())
+            {
+                mustStraighten = false;
+            }
         }
     }
 
