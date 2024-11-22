@@ -35,10 +35,12 @@ public class Game3Workflow : MonoBehaviour
     private GameStepInstructionShower GameStepInstructionShower;
     private PoseVisibilityWarner PoseVisibilityWarner;
     private RoundResultShower RoundResultShower;
+    private PreGameInstructions PreGameInstructions;
     private Timer Timer;
-    private GameStage CurrentStage = GameStage.PRE_GAME;
+    private GameStage CurrentStage = GameStage.PRE_GAME_INSTRUCTIONS;
     
     [SerializeField] private TMP_Text ScoreText; 
+    [SerializeField] private TMP_Text AngleText; 
     [SerializeField] private GameObject mainApple;
 
     public List<GameObject> ScoreApples = new List<GameObject>();
@@ -70,7 +72,7 @@ public class Game3Workflow : MonoBehaviour
     void Start()
     {
         NumClenching = 0;
-        CurrentStage = GameStage.PRE_GAME;
+        CurrentStage = GameStage.PRE_GAME_INSTRUCTIONS;
         Score = new Game3Score();
         Score.MarkStartTime();
         DataReceiver = GameManager.Instance.DataReceiver;
@@ -78,6 +80,7 @@ public class Game3Workflow : MonoBehaviour
         // game 3 requires hand in position
         PoseVisibilityWarner = GetComponent<PoseVisibilityWarner>();
         RoundResultShower = GetComponent<RoundResultShower>();
+        PreGameInstructions = GetComponent<PreGameInstructions>();
         HandMovementControl = GetComponent<HandMovementControl>();
         Timer = GetComponent<Timer>();
         initializeCurrentStage();
@@ -156,6 +159,14 @@ public class Game3Workflow : MonoBehaviour
         if (DataReceiver.isUpperBodyVisible)
         {
             Angle = DataReceiver.getLeftAverageFingerExtensionAngle();
+            if (CurrentStage == GameStage.UNFURL_GAME || CurrentStage == GameStage.CLENCH_GAME)
+            {
+                AngleText.text = string.Format("Angle: {0:0.##}", (int) Angle);
+            }
+            else
+            {
+                AngleText.text = "Angle: 0";
+            }
 
             if (Angle > MaxAngle && CurrentStage == GameStage.UNFURL_GAME)
             {
@@ -205,6 +216,9 @@ public class Game3Workflow : MonoBehaviour
         Debug.Log("Prev Stage: " + CurrentStage);
         switch (CurrentStage)
         {
+            case GameStage.PRE_GAME_INSTRUCTIONS:
+                CurrentStage = GameStage.PRE_GAME;
+                break;
             case GameStage.PRE_GAME:
                 CurrentStage = GameStage.UNFURL_INSTRUCTION;
                 break;
@@ -262,6 +276,18 @@ public class Game3Workflow : MonoBehaviour
     {
         switch (CurrentStage)
         {
+            case GameStage.PRE_GAME_INSTRUCTIONS:
+                Debug.Log("Pre-game Instruction");
+                GameManager.Instance.PauseGame();
+                PoseVisibilityWarner.ResetTriggers();
+                resetScores();
+                GameStepInstructionShower.HideInstruction();
+                RoundResultShower.Hide();
+                PreGameInstructions.Show();
+                HandMovementControl.HideInstruction();
+                Debug.Log("Pre-game Instruction End");
+                break;
+
             case GameStage.PRE_GAME:
                 Debug.Log("Pre-game Start");
                 GameManager.Instance.PauseGame();
@@ -270,6 +296,7 @@ public class Game3Workflow : MonoBehaviour
                 GameStepInstructionShower.SetInstructionText("Attempt " + (CurrentAttempt + 1) + " out of " + MaxAttempts + ". Get ready to start the game!");
                 GameStepInstructionShower.ShowInstruction();
                 RoundResultShower.Hide();
+                PreGameInstructions.Hide();
                 GameStepInstructionShower.StartCountdown(PreGameCountdown);
                 HandMovementControl.HideInstruction();
                 Debug.Log("Pre-game End");
@@ -358,7 +385,7 @@ public class Game3Workflow : MonoBehaviour
                 RoundResultShower.SetResultText($"{Score.Score}");
                 RoundResultShower.SetNextButtonText("Next Game");
 
-                RoundResultShower.ResultPanel.transform.GetChild(1).GetComponent<TextMeshPro>().SetText("Great! Your overall score is:");
+                RoundResultShower.ResultPanel.transform.GetChild(1).GetComponent<TextMeshPro>().SetText("Great! Your average score is:");
 
                 RoundResultShower.Show();
                 HandMovementControl.HideInstruction();
