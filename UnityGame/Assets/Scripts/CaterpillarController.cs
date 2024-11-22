@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class CaterpillarController : MonoBehaviour
 {
-    public float speed = 0.2f;
+    public float speed = 0.5f;
     float currSpeed;
-    public float slowFactor = 2f;
+    public float slowFactor = 20f;
     bool goalReached = false;
 
     public Vector3 startPosition;
@@ -27,10 +27,10 @@ public class CaterpillarController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!goalReached && active)
-        {
-            transform.position -= new Vector3(0, currSpeed * Time.deltaTime, 0);
-        } 
+        //if (!goalReached && active)
+        //{
+        //    transform.position -= new Vector3(0, currSpeed * Time.deltaTime, 0);
+        //} 
     }
 
     public void setActive(bool active)
@@ -38,12 +38,13 @@ public class CaterpillarController : MonoBehaviour
         this.active = active;
     }
 
-    public void slowMovement()
+    public void moveCaterpillar()
     {
+        Debug.Log("Mvoe caterpillar called");
         if (active)
         {
-            Debug.Log("Slow caterpillar");
-            transform.position += new Vector3(0, currSpeed * slowFactor * Time.deltaTime, 0);
+            Debug.Log("Move caterpillar");
+            transform.position -= new Vector3(0, currSpeed * 10 * Time.deltaTime, 0);
             
         }
     }

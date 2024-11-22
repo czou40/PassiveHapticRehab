@@ -1569,7 +1569,6 @@ GameObject:
   - component: {fileID: 445269097}
   - component: {fileID: 445269098}
   - component: {fileID: 445269099}
-  - component: {fileID: 445269101}
   - component: {fileID: 445269102}
   - component: {fileID: 445269103}
   m_Layer: 0
@@ -1775,18 +1774,6 @@ MonoBehaviour:
   ResultPanel: {fileID: 1348136469}
   ResultText: {fileID: 364359781}
   NextButtonText: {fileID: 1888594291}
---- !u!114 &445269101
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 445269088}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a75ec16181a44c5ea1b25744b732100, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &445269102
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4486,7 +4473,7 @@ Transform:
   m_GameObject: {fileID: 1559361833}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.02, y: 8.13, z: 0}
+  m_LocalPosition: {x: -0.06, y: 6.33, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4505,9 +4492,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f515c7758e4b4849b67fd774b60dc41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0.3
-  slowFactor: 3
-  startPosition: {x: 0, y: 8, z: 0}
+  speed: 0.2
+  slowFactor: 10
+  startPosition: {x: 0, y: 6, z: 0}
+  effect: {fileID: 0}
   clones:
   - {fileID: 33605904}
   - {fileID: 471477543}

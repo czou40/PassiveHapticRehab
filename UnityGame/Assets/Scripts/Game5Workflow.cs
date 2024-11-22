@@ -14,7 +14,7 @@ public class Game5Workflow : MonoBehaviour
     private float Distance;
 
     // maximum distance needed to slow down the caterpillar
-    private float MaxDistanceThreshold = 0.4f;
+    private float MaxDistanceThreshold = 0.5f;
     private int PreGameCountdown = 5;
     private int InstructionCountdown = 5;
     private int InstructionCountdownFirstTime = 8;//todo change back to 8
@@ -41,7 +41,7 @@ public class Game5Workflow : MonoBehaviour
     private GameStage CurrentStage = GameStage.PRE_GAME;
 
     [SerializeField] private TMP_Text ScoreText;
-    [SerializeField] private GameObject caterpillar;
+    [SerializeField] public GameObject caterpillar;
     public UnityEvent gameEvent;
 
     public List<GameObject> Game5Score = new List<GameObject>();
@@ -96,7 +96,7 @@ public class Game5Workflow : MonoBehaviour
         HandMovementControl = GetComponent<HandMovementControl>();
         Timer = GetComponent<Timer>();
         initializeCurrentStage();
-        CaterpillarController catControl = caterpillar.GetComponent<CaterpillarController>();
+        //CaterpillarController catControl = caterpillar.GetComponent<CaterpillarController>();
 
         tappingBuffer = bufferTime;
     }
@@ -104,17 +104,21 @@ public class Game5Workflow : MonoBehaviour
 
     void updateCaterpillar()
     {
-        //if (CurrentStage == GameStage.INDEX_GAME || CurrentStage == GameStage.MIDDLE_GAME || CurrentStage == GameStage.RING_GAME || CurrentStage == GameStage.PINKIE_GAME)
-        //{
-        Debug.Log("Caterpillar updated");
-        caterpillar.GetComponent<CaterpillarController>().slowMovement();
-        //}
+        if (caterpillar == null || caterpillar.GetComponent<CaterpillarController>() == null)
+        {
+            Debug.LogError("CaterpillarController not found on caterpillar GameObject!");
+        }
+        Debug.Log("In update caterpillar");
+        if (CurrentStage == GameStage.INDEX_GAME || CurrentStage == GameStage.MIDDLE_GAME || CurrentStage == GameStage.RING_GAME || CurrentStage == GameStage.PINKIE_GAME)
+        {
+            Debug.Log("Caterpillar updated");
+            caterpillar.GetComponent<CaterpillarController>().moveCaterpillar();
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-
         if (!buffered)
         {
             tappingBuffer -= Time.deltaTime;
@@ -125,17 +129,19 @@ public class Game5Workflow : MonoBehaviour
             buffered = true;
             tappingBuffer = bufferTime;
         }
+        Debug.Log($"buffered: {buffered}, fingerTouching: {fingerTouching}, fingerSeparated: {fingerSeparated}, CurrentStage: {CurrentStage}");
 
         if (buffered && fingerTouching && fingerSeparated)
         {
+            updateCaterpillar();
             fingerTouching = false;
             fingerSeparated = false;
             buffered = false;
             tappingBuffer = bufferTime;
             //condition reached, increment score
             FingerTapCount += 1;
-            Debug.Log("Count: " + FingerTapCount);
-            updateCaterpillar();
+            Debug.Log("Tap count: " + FingerTapCount);
+            
             //reset the exceed flags
             
         }
@@ -470,11 +476,6 @@ public class Game5Workflow : MonoBehaviour
                 //do nothing
                 break;
         }
-    }
-
-    public void onGrabFruit()
-    {
-
     }
 
     public void onCheatActivated()
