@@ -4,6 +4,7 @@ using System;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using static Game3Workflow;
+using UnityEngine.Events;
 
 public class Timer : MonoBehaviour
 {
@@ -12,8 +13,8 @@ public class Timer : MonoBehaviour
     public bool TimerOn = false;
     public TMP_Text timerText;
 
-    public Game3Workflow Game3Workflow;
-
+    //public Game3Workflow Game3Workflow;
+    public UnityEvent nextStage;
 
     public 
     void Start()
@@ -39,7 +40,8 @@ public class Timer : MonoBehaviour
                 RemainingTime = 0;
                 TimerOn = false;
 
-                Game3Workflow.moveToNextStage();
+                nextStage.Invoke();
+                //Game3Workflow.moveToNextStage();
                 
             }
         }

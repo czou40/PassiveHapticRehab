@@ -14,7 +14,8 @@ public enum Game
     None=0,
     Game1=1,
     Game2=2,
-    Game3=3
+    Game3=3,
+    Game5=5
 }
 
 public abstract class GameScore
@@ -188,7 +189,7 @@ public class Game3Score : GameScore
         MaxAngles = new List<float>();
     }
 
-    public void AddRound(float minAngle, float maxAngle)
+        public void AddRound(float minAngle, float maxAngle)
     {
         MinAngles.Add(minAngle);
         MaxAngles.Add(maxAngle);
@@ -246,6 +247,76 @@ public class Game3Score : GameScore
 }
 
 
+
+public class Game5Score : GameScore
+{
+    public List<float> FingerTapCount { get; private set; }
+
+    public override int Score
+    {
+        get
+        {
+            if (NumRounds == 0)
+            {
+                return 0;
+            }
+            else
+            {
+                float averageCount = 0;
+                for (int i = 0; i < NumRounds; i++)
+                {
+                    averageCount += FingerTapCount[i];
+                }
+                averageCount /= NumRounds;
+                return (int)(averageCount);
+            }
+        }
+    }
+
+    public Game5Score()
+    {
+        Game = Game.Game5;
+        FingerTapCount = new List<float>();
+    }
+
+    public void AddRound(float count)
+    {
+        FingerTapCount.Add(count);
+        NumRounds++;
+    }
+
+    public override string ToString()
+    {
+        string s = "Game: Finger Tapping - Speed\n";
+        s += "NumRounds: " + NumRounds.ToString() + "\n";
+        s += "TapCount: ";
+        foreach (float f in FingerTapCount)
+        {
+            s += f.ToString() + ", ";
+        }
+        
+        s += "\nScore: " + Score.ToString();
+        return s;
+    }
+
+    public string GetResultForRound(int round)
+    {
+        if (round < 0 || round >= NumRounds)
+        {
+            throw new ArgumentOutOfRangeException("round", "Round index out of range");
+        }
+        double count = FingerTapCount[round];
+        // one decimal place
+        return $"Round {round + 1}\nScore: {count:F1}";
+    }
+
+    public string GetResultForRound()
+    {
+        return GetResultForRound(NumRounds - 1);
+    }
+}
+
+
 public class GameManager : MonoBehaviour
 {
 
@@ -290,19 +361,23 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("StartScene1"); // Load the game scene
     }
 
-    public void StartGame3()
-    {
-        SceneManager.LoadScene("Game3"); // Load the game scene
-    }
 
-
-    public void StartGame2()
+        public void StartGame2()
     {
         SceneManager.LoadScene("Game2"); // Load the game scene
     }
 
-    // Function to pause the game.
-    public void PauseGame()
+        public void StartGame3()
+    {
+            SceneManager.LoadScene("Game3"); // Load the game scene
+    }
+        public void StartGame5()
+    {
+            SceneManager.LoadScene("Game3"); // Load the game scene
+    }
+
+        // Function to pause the game.
+        public void PauseGame()
     {
         Time.timeScale = 0; // This pauses the game.
         gamePaused = true; // Set the flag to true.
