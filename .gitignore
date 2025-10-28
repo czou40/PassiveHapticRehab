@@ -1,1 +1,43 @@
 AndroidBuild/*
+
+# Unity generated
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+UserSettings/
+MemoryCaptures/
+*.pidb
+*.csproj
+*.sln
+*.userprefs
+*.unitypackage
+*.db
+*.mdb
+*.opendb
+
+# Mac / OS files
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# Python / venv
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Build outputs
+/Build/
+/bin/
+/obj/
+/*.app
+output.txt
