@@ -13,7 +13,8 @@ public enum Game
 {
     None=0,
     Game1=1,
-    Game2=2
+    Game2=2,
+    Game3=3
 }
 
 public abstract class GameScore
@@ -197,6 +198,11 @@ public class GameManager : MonoBehaviour
     public void StartGame2()
     {
         SceneManager.LoadScene("Game2"); // Load the game scene
+    }
+
+    public void StartGame3()
+    {
+        SceneManager.LoadScene("Game3"); // Load the game scene
     }
 
     // Function to pause the game.
