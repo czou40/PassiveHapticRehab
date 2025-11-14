@@ -55,7 +55,7 @@ class HandThread(threading.Thread):
     def run(self):
         print("HandThread started")
         self.isRunning = True
-        self.cap = cv2.VideoCapture(WEBCAM_INDEX)
+        self.cap = cv2.VideoCapture(0)
         if USE_CUSTOM_CAM_SETTINGS:
             self.cap.set(cv2.CAP_PROP_FPS, FPS)
             self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, WIDTH)
@@ -162,27 +162,28 @@ if __name__ == "__main__":
                     data_client_socket.sendto(data, data_server_address)
                 hand_thread.dirty = False
                 image = hand_thread.image
-                height, width = image.shape[:2]
-                aspect_ratio = width / height
-                new_width = int(math.sqrt(100000 * aspect_ratio))
-                new_height = int(100000 / new_width)
-                resized_image = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_LINEAR)
-                image = resized_image
-                # Encode image as JPEG with lower quality
-                _, buffer = cv2.imencode('.jpg', image, [int(cv2.IMWRITE_JPEG_QUALITY), 10])  # Adjust quality here
-                image_data = buffer.tobytes()
-                # clear screen
-                os.system('cls' if os.name == 'nt' else 'clear')
-                print(f"Size of image data: {len(image_data)/1024} KB")
-                print(data_unencoded)
-                try:
-                    image_client_socket.sendto(image_data, image_server_address)
-                except Exception as e:
-                    print(f"Failed to send image data: {e}")
-                if DEBUG:
-                    cv2.imshow("Hand and Body Tracking", image)
-                    if cv2.waitKey(5) & 0xFF == ord("q"):
-                        break
+                if image is not None:
+                    height, width = image.shape[:2]
+                    aspect_ratio = width / height
+                    new_width = int(math.sqrt(100000 * aspect_ratio))
+                    new_height = int(100000 / new_width)
+                    resized_image = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_LINEAR)
+                    image = resized_image
+                    # Encode image as JPEG with lower quality
+                    _, buffer = cv2.imencode('.jpg', image, [int(cv2.IMWRITE_JPEG_QUALITY), 10])  # Adjust quality here
+                    image_data = buffer.tobytes()
+                    # clear screen
+                    os.system('cls' if os.name == 'nt' else 'clear')
+                    print(f"Size of image data: {len(image_data)/1024} KB")
+                    print(data_unencoded)
+                    try:
+                        image_client_socket.sendto(image_data, image_server_address)
+                    except Exception as e:
+                        print(f"Failed to send image data: {e}")
+                    if DEBUG:
+                        cv2.imshow("Hand and Body Tracking", image)
+                        if cv2.waitKey(5) & 0xFF == ord("q"):
+                            break
             time.sleep(0.016)
     except KeyboardInterrupt:
         print("Interrupt received, stopping...")
