@@ -6,6 +6,7 @@ using TMPro;
 public class Game3Workflow : MonoBehaviour
 {
     [Header("UI Panels")]
+    public GameObject instructionsPanel;   // new
     public GameObject countdownPanel;
     public GameObject uiFlowPanel;
 
@@ -13,12 +14,28 @@ public class Game3Workflow : MonoBehaviour
     public TMP_Text countdownText;
     public int startTime = 3;
 
+    private bool hasStarted = false;
+
     void Start()
     {
-        // Make sure initial state is correct
-        countdownPanel.SetActive(true);
-        uiFlowPanel.SetActive(false);
+        // Show instructions first
+        if (instructionsPanel != null)
+            instructionsPanel.SetActive(true);
 
+        countdownPanel.SetActive(false);
+        uiFlowPanel.SetActive(false);
+    }
+
+    // Hook this to the "Lets Begin" button
+    public void OnBeginButtonPressed()
+    {
+        if (hasStarted) return;
+        hasStarted = true;
+
+        if (instructionsPanel != null)
+            instructionsPanel.SetActive(false);
+
+        countdownPanel.SetActive(true);
         StartCoroutine(StartCountdown());
     }
 
