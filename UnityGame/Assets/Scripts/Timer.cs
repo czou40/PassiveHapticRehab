@@ -3,7 +3,6 @@ using TMPro;
 using System;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using static Game1Workflow;
 
 public class Timer : MonoBehaviour
 {
@@ -12,17 +11,14 @@ public class Timer : MonoBehaviour
     public bool TimerOn = false;
     public TMP_Text timerText;
 
-    public Game1Workflow Game1Workflow;
+    // Inspector-assignable workflow component. Timer will call moveToNextStage() on this component when time runs out.
+    public MonoBehaviour GameWorkflow;
 
-
-    public 
     void Start()
     {
         RemainingTime = TotalTime;
         TimerOn = false;
     }
-
-
 
     private void Update()
     {
@@ -39,11 +35,19 @@ public class Timer : MonoBehaviour
                 RemainingTime = 0;
                 TimerOn = false;
 
-                Game1Workflow.moveToNextStage();
-                
+                if (GameWorkflow != null)
+                {
+                    // call moveToNextStage on the assigned workflow component (expects parameterless method)
+                    GameWorkflow.Invoke("moveToNextStage", 0f);
+                }
+                else
+                {
+                    Debug.LogWarning("Timer: GameWorkflow not assigned (cannot call moveToNextStage)");
+                }
             }
         }
     }
+
     private void updateTimer(float currentTime)
     {
         currentTime += 1;
@@ -56,11 +60,11 @@ public class Timer : MonoBehaviour
 
     public void StartTimer(float totalTime = -1f)
     {
-        if (totalTime > 0) {
+        if (totalTime > 0)
+        {
             TotalTime = totalTime;
         }
         RemainingTime = TotalTime;
         TimerOn = true;
     }
-    
 }
