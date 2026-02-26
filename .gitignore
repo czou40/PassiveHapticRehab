@@ -3,6 +3,8 @@
 
 # Python
 .venv/
+venv/
+*env/
 
 # Unity
 Library/
