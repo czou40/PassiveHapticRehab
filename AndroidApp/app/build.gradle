@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.application'
+//    id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     alias(libs.plugins.compose.compiler)
     id 'de.undercouch.download'
@@ -9,7 +10,9 @@ plugins {
 }
 
 android {
-    compileSdk getProperty("unity.compileSdkVersion") as int
+    namespace "com.ccg.phl"
+    compileSdk 34
+//    compileSdk getProperty("unity.compileSdkVersion") as int
     buildToolsVersion = getProperty("unity.buildToolsVersion")
 
     sourceSets {
@@ -21,7 +24,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.example.phl"
+        applicationId "com.ccg.phl"
         minSdk getProperty("unity.minSdkVersion") as int
         targetSdk getProperty("unity.targetSdkVersion") as int
 
