@@ -3,7 +3,7 @@ using TMPro;
 using System;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using static Game3Workflow;
+using static FingerFlexionWorkflow; // NOTE: Renamed jc-fingertapping/"Game3Workflow" to "FingerFlexionWorkflow". Unclear if scripts damaged.
 using UnityEngine.Events;
 
 public class Timer : MonoBehaviour
@@ -16,14 +16,14 @@ public class Timer : MonoBehaviour
     //public Game3Workflow Game3Workflow;
     public UnityEvent nextStage;
 
-    public 
-    void Start()
+    // Inspector-assignable workflow component. Timer will call moveToNextStage() on this component when time runs out.
+    public MonoBehaviour GameWorkflow;
+
+    public void Start()
     {
         RemainingTime = TotalTime;
         TimerOn = false;
     }
-
-
 
     private void Update()
     {
@@ -40,12 +40,24 @@ public class Timer : MonoBehaviour
                 RemainingTime = 0;
                 TimerOn = false;
 
-                nextStage.Invoke();
-                //Game3Workflow.moveToNextStage();
+		// TODO (from merge): Does `FingerFlextionWorkflow.cs` need a fix to use `GameWorkflow.Invoke("moveToNextStage", 0f);` or is it fine? I don't see where `nextStage` is defined, so it might be fine.
+		// From jc-fingertapping-speed:
+		// nextStage.Invoke();
+		//
                 
+                if (GameWorkflow != null)
+                {
+                    // call moveToNextStage on the assigned workflow component (expects parameterless method)
+                    GameWorkflow.Invoke("moveToNextStage", 0f);
+                }
+                else
+                {
+                    Debug.LogWarning("Timer: GameWorkflow not assigned (cannot call moveToNextStage)");
+                }
             }
         }
     }
+
     private void updateTimer(float currentTime)
     {
         currentTime += 1;
@@ -58,11 +70,11 @@ public class Timer : MonoBehaviour
 
     public void StartTimer(float totalTime = -1f)
     {
-        if (totalTime > 0) {
+        if (totalTime > 0)
+        {
             TotalTime = totalTime;
         }
         RemainingTime = TotalTime;
         TimerOn = true;
     }
-    
 }

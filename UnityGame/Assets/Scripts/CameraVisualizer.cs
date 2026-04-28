@@ -18,7 +18,19 @@ public class CameraVisualizer : MonoBehaviour
         rawImage = GetComponent<RawImage>();
         rawImageSize = 90000; // rawImage.rectTransform.rect.width * rawImage.rectTransform.rect.height;
         AdjustRectTransform();
-        dataReceiver = GameManager.Instance.DataReceiver;
+        // Debug checks for GameManager and DataReceiver
+        if (GameManager.Instance == null)
+        {
+            Debug.LogError("CameraVisualizer: GameManager.Instance is null! Make sure GameManager is present and initialized before CameraVisualizer.");
+        }
+        else
+        {
+            dataReceiver = GameManager.Instance.DataReceiver;
+            if (dataReceiver == null)
+            {
+                Debug.LogError("CameraVisualizer: GameManager.Instance.DataReceiver is null! Make sure DataReceiver is attached to GameManager and initialized.");
+            }
+        }
     }
 
     void AdjustRectTransform()

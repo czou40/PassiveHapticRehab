@@ -21,18 +21,21 @@ public class ShoulderAnimationControl : MonoBehaviour
 
     public void ShowAnimation1()
     {
+        Debug.Log("ShoulderAnimationControl: ShowAnimation1 called");
         AnimationObject1.SetActive(true);
         AnimationObject2.SetActive(false);
     }
 
     public void ShowAnimation2()
     {
+        Debug.Log("ShoulderAnimationControl: ShowAnimation2 called");
         AnimationObject1.SetActive(false);
         AnimationObject2.SetActive(true);
     }
 
     public void HideAnimations()
     {
+        Debug.Log("ShoulderAnimationControl: HideAnimations called");
         AnimationObject1.SetActive(false);
         AnimationObject2.SetActive(false);
     }

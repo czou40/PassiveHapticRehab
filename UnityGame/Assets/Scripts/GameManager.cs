@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using UnityEngine.Events;
 
+// TODO: Update this to work with divergent Game3's
 public enum Game
 {
     None=0,
@@ -348,22 +349,28 @@ public class GameManager : MonoBehaviour
     }
 
 
-        public void StartGame2()
+    public void StartGame2()
     {
         SceneManager.LoadScene("Game2"); // Load the game scene
     }
 
-        public void StartGame3()
-    {
-            SceneManager.LoadScene("Game3"); // Load the game scene
-    }
-        public void StartGame5()
+    public void StartGame3()
     {
             SceneManager.LoadScene("Game3"); // Load the game scene
     }
 
-        // Function to pause the game.
-        public void PauseGame()
+    public void StartGame5()
+    {
+            SceneManager.LoadScene("Game3"); // Load the game scene //TODO: Should this be game 5?
+    }
+
+    public void StartGame3()
+    {
+        SceneManager.LoadScene("Game3"); // Load the game scene
+    }
+
+    // Function to pause the game.
+    public void PauseGame()
     {
         Time.timeScale = 0; // This pauses the game.
         gamePaused = true; // Set the flag to true.
