@@ -3,6 +3,8 @@ using TMPro;
 using System;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using static FingerFlexionWorkflow; // NOTE: Renamed jc-fingertapping/"Game3Workflow" to "FingerFlexionWorkflow". Unclear if scripts damaged.
+using UnityEngine.Events;
 
 public class Timer : MonoBehaviour
 {
@@ -11,10 +13,13 @@ public class Timer : MonoBehaviour
     public bool TimerOn = false;
     public TMP_Text timerText;
 
+    //public Game3Workflow Game3Workflow;
+    public UnityEvent nextStage;
+
     // Inspector-assignable workflow component. Timer will call moveToNextStage() on this component when time runs out.
     public MonoBehaviour GameWorkflow;
 
-    void Start()
+    public void Start()
     {
         RemainingTime = TotalTime;
         TimerOn = false;
@@ -35,6 +40,11 @@ public class Timer : MonoBehaviour
                 RemainingTime = 0;
                 TimerOn = false;
 
+		// TODO (from merge): Does `FingerFlextionWorkflow.cs` need a fix to use `GameWorkflow.Invoke("moveToNextStage", 0f);` or is it fine? I don't see where `nextStage` is defined, so it might be fine.
+		// From jc-fingertapping-speed:
+		// nextStage.Invoke();
+		//
+                
                 if (GameWorkflow != null)
                 {
                     // call moveToNextStage on the assigned workflow component (expects parameterless method)
