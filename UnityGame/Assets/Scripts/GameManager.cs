@@ -281,7 +281,7 @@ public class Game5Score : GameScore
         {
             s += f.ToString() + ", ";
         }
-        
+
         s += "\nScore: " + Score.ToString();
         return s;
     }
@@ -361,12 +361,7 @@ public class GameManager : MonoBehaviour
 
     public void StartGame5()
     {
-            SceneManager.LoadScene("Game3"); // Load the game scene //TODO: Should this be game 5?
-    }
-
-    public void StartGame3()
-    {
-        SceneManager.LoadScene("Game3"); // Load the game scene
+            SceneManager.LoadScene("Game3FingerFlexion"); // Load the game scene //TODO: Should this be game 5? It was originally "Game3"
     }
 
     // Function to pause the game.

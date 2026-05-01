@@ -4,12 +4,11 @@ using UnityEngine;
 using System.Timers;
 using JetBrains.Annotations;
 
-public class Game3Workflow : MonoBehaviour
+public class FingerFlexionWorkflow : MonoBehaviour
 {
     // Start is called before the first frame update
     private int NumClenching; // Currently unused
     private float Angle;
-
     private float MaxAngle = -99999;
     private float MinAngle = 99999;
     // //minimum and maximum angle needed to reach to increment score
@@ -42,13 +41,9 @@ public class Game3Workflow : MonoBehaviour
         PRE_GAME,
         UNFURL_INSTRUCTION,
         UNFURL_GAME,
-
         CLENCH_INSTRUCTION,
-
         CLENCH_GAME,
-
         ROUND_RESULT,
-
         FINISHED
     }
 
@@ -84,7 +79,7 @@ public class Game3Workflow : MonoBehaviour
 
     void checkScore()
     {
-        if (DataReceiver.isUpperBodyVisible)
+        if (DataReceiver.isUpperBodyVisible) // TODO: Check hands, not upper body
         {
             Angle = DataReceiver.getLeftAverageFingerExtensionAngle();
 
@@ -106,7 +101,7 @@ public class Game3Workflow : MonoBehaviour
             {
                 MinAngleExceeded = true;
             }
-        }
+        } // TODO: add else pause game
     }
 
 
@@ -125,7 +120,7 @@ public class Game3Workflow : MonoBehaviour
 
     }
 
-    public void moveToNextStage()
+    public void moveToNextStage() // TODO: only called by editor>instruction countdown end, so game does not progress
     {
         Debug.Log("Prev Stage: " + CurrentStage);
         switch (CurrentStage)
@@ -147,7 +142,7 @@ public class Game3Workflow : MonoBehaviour
                 Score.AddRound(MinAngle, MaxAngle);
                 CurrentStage = GameStage.ROUND_RESULT;
                 break;
-            case GameStage.ROUND_RESULT: 
+            case GameStage.ROUND_RESULT:
                 if (CurrentAttempt < MaxAttempts)
                 {
                     CurrentStage = GameStage.PRE_GAME;
