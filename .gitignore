@@ -1,5 +1,6 @@
 # macOS
 .DS_Store
+*/.DS_Store
 
 # Python
 .venv/
@@ -15,6 +16,10 @@ UserSettings/
 MemoryCaptures/
 
 /[Uu]nity[Gg]ame/.utmp/
+
+*/*.slnx
+/*.sln
+/*.csproj
 
 # MediaPipe models
 *.task
