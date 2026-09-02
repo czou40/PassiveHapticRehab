@@ -41,5 +41,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Game3.unity
     guid: 6759e0daf77b445e8b481eb40a510d3f
+  - enabled: 1
+    path: Assets/Scenes/Game3FingerFlexion.unity
+    guid: c68d3237939ed4096b048ebf1e3261c2
+  - enabled: 1
+    path: Assets/Scenes/Game5-FingerTapSpeed.unity
+    guid: 1a2d585948ed1ce41a082ce40565b6c5
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

@@ -16,7 +16,7 @@ plugins {
     id 'com.android.application' version '8.5.0' apply false
     id 'com.android.library' version '8.5.0' apply false
     alias(libs.plugins.compose.compiler) apply false
-    id 'com.chaquo.python' version '14.0.2' apply false
+    id 'com.chaquo.python' version '17.0.0' apply false
     id 'com.google.relay' version '0.3.12' apply false
 }
 

@@ -19,74 +19,68 @@ class UnityAPI {
     enum class Scene {
         GAME_1,
         GAME_2,
+        GAME_3,
+        GAME_3_FingerFlexion,
         GAME_4,
+        GAME_5,
         None
     }
 
     companion object {
         fun launchUnityActivity(context: Context, scene: Scene) {
             if (scene == Scene.None) return
+
+            // Why is this an intent?? The intent just calls back to `loadStartScene()`
             val intent = Intent(context, MainUnityActivity::class.java)
             Log.d("UnityAPI", "Launching Unity Activity with scene: ${scene.name}")
             intent.putExtra("loadScene", scene.name)
             context.startActivity(intent)
+
+//            loadStartScene(scene)
         }
 
         fun loadStartScene(scene: Scene, pause: Boolean = true) {
+            Log.i("UnityAPI","Attempting to load unity scene ${scene.name}")
+            // Map scene enum to the scene's name in unity
+            var unitySceneName = ""
             when (scene) {
                 Scene.GAME_1 -> {
-                    UnityPlayer.UnitySendMessage(
-                        "GameManager",
-                        "ReceiveCommand",
-                        if (pause) "pload StartScene1" else "load StartScene1"
-                    )
+                    unitySceneName = "StartScene1"
                 }
 
                 Scene.GAME_2 -> {
-                    UnityPlayer.UnitySendMessage(
-                        "GameManager",
-                        "ReceiveCommand",
-                        if (pause) "pload StartScene2" else "load StartScene2"
-                    )
+                    unitySceneName = "StartScene2"
+                }
+
+                Scene.GAME_3 -> {
+                    unitySceneName = "Game3"
+                }
+
+                Scene.GAME_3_FingerFlexion -> {
+                    unitySceneName = "Game3FingerFlexion"
                 }
 
                 Scene.GAME_4 -> {
-                    UnityPlayer.UnitySendMessage(
-                        "GameManager", "ReceiveCommand", if (pause) "pload Game4" else "load Game4"
-                    )
+                    unitySceneName = "Game4"
+                }
+                Scene.GAME_5 -> {
+                    unitySceneName = "Game5-FingerTapSpeed"
                 }
 
                 Scene.None -> {
                     // Do nothing
                 }
             }
+
+            // Load the scene
+            UnityPlayer.UnitySendMessage(
+                "GameManager",
+                "ReceiveCommand",
+                if (pause) "pload $unitySceneName" else "load $unitySceneName"
+            )
+
         }
 
-        fun loadGameScene(scene: Scene, pause: Boolean = false) {
-            when (scene) {
-                Scene.GAME_1 -> {
-                    UnityPlayer.UnitySendMessage(
-                        "GameManager", "ReceiveCommand", if (pause) "pload Game1" else "load Game1"
-                    )
-                }
-
-                Scene.GAME_2 -> {
-                    UnityPlayer.UnitySendMessage(
-                        "GameManager", "ReceiveCommand", if (pause) "pload Game2" else "load Game2"
-                    )
-                }
-
-                Scene.GAME_4 -> {
-                    UnityPlayer.UnitySendMessage(
-                        "GameManager", "ReceiveCommand", if (pause) "pload Game4" else "load Game4"
-                    )
-                }
-
-                Scene.None -> {
-                    // Do nothing
-                }
-            }
-        }
 
         fun pauseGame() {
             UnityPlayer.UnitySendMessage(

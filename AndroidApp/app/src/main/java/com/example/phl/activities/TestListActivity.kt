@@ -2,6 +2,7 @@ package com.example.phl.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -128,6 +129,7 @@ fun TestCard(test: Test) {
             .fillMaxWidth()
             .shadow(6.dp),
         onClick = {
+            Log.d("UnityAPI", "Tapped ${test.scene.name}")
             if (test.scene != UnityAPI.Scene.None) {
                 UnityAPI.launchUnityActivity(context, test.scene)
             }
@@ -176,9 +178,9 @@ fun PreviewUpperLimbTestsScreen() {
         Test("Elbow Extension & Flexion", "Evaluate the range of motion of your elbow", R.drawable.elbow_extension_icon, UnityAPI.Scene.None),
         Test("Wrist Up & Down", "Evaluate the range of motion of your wrist", R.drawable.wrist_up_icon_compressed, UnityAPI.Scene.GAME_4),
         Test("Finger-to-Nose", "Evaluate the overall coordination of your upper-limb", R.drawable.finger_to_nose_icon_compressed, UnityAPI.Scene.None),
-        Test("Finger Extension & Flexion", "Evaluate the maximum range of motion of your fingers", R.drawable.finger_extension_icon, UnityAPI.Scene.None),
+        Test("Finger Extension & Flexion", "Evaluate the maximum range of motion of your fingers", R.drawable.finger_extension_icon, UnityAPI.Scene.GAME_3_FingerFlexion),
         Test("Finger Tapping - Coordination", "Evaluate the overall dexterity and coordination of your fingers", R.drawable.finger_tapping_1_icon, UnityAPI.Scene.None),
-        Test("Finger Tapping - Speed", "Evaluate the dexterity and movements of your fingers", R.drawable.finger_tapping_2_icon, UnityAPI.Scene.None),
+        Test("Finger Tapping - Speed", "Evaluate the dexterity and movements of your fingers", R.drawable.finger_tapping_2_icon, UnityAPI.Scene.GAME_5),
     )
 
 
