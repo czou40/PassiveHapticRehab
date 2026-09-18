@@ -163,4 +163,22 @@
     <string name="title_activity_game_instruction">GameInstructionActivity</string>
     <string name="title_activity_dashboard">DashboardActivity</string>
     <string name="title_activity_progress_visualization">ProgressVisualizationActivity</string>
+
+    <!-- Splash / first-launch Wi-Fi setup screen -->
+    <string name="setup_app_name">Passive Haptic Rehab</string>
+    <string name="setup_checking">Checking Your Connection…</string>
+    <string name="setup_step_of_total">Step %1$d of 3</string>
+    <string name="setup_connect_title">Step 1: Connect to Wi-Fi</string>
+    <string name="setup_connect_sub">Turn on Wi-Fi if it is off, choose your Wi-Fi network, and type the password if you know it.</string>
+    <string name="setup_connect_why">Your game scores will be uploaded over Wi-Fi so your doctor can see the results.</string>
+    <string name="setup_connect_button">Connect to Wi-Fi</string>
+    <string name="setup_skip_button">Skip for now</string>
+    <string name="setup_internet_title">Step 2: Checking Internet Connection…</string>
+    <string name="setup_internet_sub">One moment, please.</string>
+    <string name="setup_no_internet_title">We Can\u2019t Reach the Internet</string>
+    <string name="setup_no_internet_sub">Please check your Wi-Fi password and try again.</string>
+    <string name="setup_no_internet_button">Try Again</string>
+    <string name="setup_success_title">You\u2019re Connected!</string>
+    <string name="setup_success_sub">You\u2019re all set up. Let\u2019s get started!</string>
+    <string name="setup_continue_button">Continue</string>
 </resources>

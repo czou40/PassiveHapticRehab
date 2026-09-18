@@ -17,6 +17,10 @@
     <color name="ic_launcher_background">#FFFFFF</color>
     <color name="bottom_sheet_background">#EEEEEE</color>
     <color name="bottom_sheet_text_color">@android:color/black</color>
+    <!-- Setup (splash / Wi-Fi connection) screen colors -->
+    <color name="setup_primary">#0085C9</color>
+    <color name="setup_success">#2E7D32</color>
+    <color name="setup_text_secondary">#FF555555</color>
     <color name="icActive">#FFFFFFFF</color>
     <color name="icFocused">#DDFFFFFF</color>
     <color name="icPressed">#AAFFFFFF</color>
